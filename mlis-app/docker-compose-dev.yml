@@ -1,0 +1,47 @@
+version: '3'
+services:
+  client:
+    build: ./../mlis-client
+    image: mlis_client
+    ports:
+    - "3000:3000"
+    links:
+    - server
+    environment:
+    - TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling
+    - REACT_APP_FB_APP_ID=$APP_ID
+    - REACT_APP_GRAPHQL_URL=$CLIENT_GRAPHQL_URL
+    volumes:
+    - ./../mlis-client:/usr/src/app
+  agent:
+    build: ./../mlis-agent
+    image: mlis_agent
+    links:
+    - server
+    - pytorch
+    environment:
+    - ADMIN_TOKEN
+    - GRAPHQL_URL=$AGENT_GRAPHQL_URL
+    volumes:
+    - ./../mlis-agent:/usr/src/app
+    - /var/run/docker.sock:/var/run/docker.sock
+  server:
+    build: ./../mlis-server
+    image: mlis_server
+    ports:
+    - "4000:4000"
+    links:
+    - database
+    environment:
+    - APP_ID
+    - APP_SECRET
+    - JWT_SECRET
+    volumes:
+    - ./../mlis-server:/usr/src/app
+  pytorch:
+    build: ./../mlis-pytorch
+    image: mlis_pytorch
+  database:
+    image: postgres:alpine
+    volumes:
+    - ./.database:/var/lib/postgresql/data

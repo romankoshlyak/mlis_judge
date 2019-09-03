@@ -1,0 +1,20 @@
+version: '3'
+services:
+  client:
+    build: ./../mlis-client
+    image: mlis_client
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    command: npm install
+  agent:
+    build: ./../mlis-agent
+    image: mlis_agent
+    volumes:
+    - ./../mlis-agent:/usr/src/app
+    command: npm install
+  server:
+    build: ./../mlis-server
+    image: mlis_server
+    volumes:
+    - ./../mlis-server:/usr/src/app
+    command: npm install

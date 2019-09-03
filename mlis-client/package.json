@@ -1,0 +1,62 @@
+{
+  "name": "mlis-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "24.0.15",
+    "@types/node": "12.6.5",
+    "@types/react": "16.8.23",
+    "@types/react-bootstrap": "^0.32.19",
+    "@types/react-dom": "16.8.4",
+    "@types/react-facebook-login": "^4.1.0",
+    "@types/react-router-dom": "^4.3.4",
+    "@types/relay-runtime": "^5.0.2",
+    "@types/throttle-debounce": "^2.1.0",
+    "babel-plugin-relay": "^5.0.0",
+    "core-js": "^2.6.9",
+    "graphql": "^14.4.2",
+    "graphql-compiler": "^1.7.0",
+    "prismjs": "^1.17.1",
+    "react": "^16.8.6",
+    "react-bootstrap": "^0.32.4",
+    "react-dom": "^16.8.6",
+    "react-facebook-login": "^4.1.1",
+    "react-monaco-editor": "^0.28.0",
+    "react-relay": "^5.0.0",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "react-simple-code-editor": "^0.9.14",
+    "relay-compiler": "^5.0.0",
+    "relay-compiler-language-typescript": "^4.3.0",
+    "subscriptions-transport-ws": "^0.9.16",
+    "throttle-debounce": "^2.1.0",
+    "typescript": "^3.5"
+  },
+  "scripts": {
+    "update-schema": "graphql get-schema -e dev",
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql --language typescript",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/prismjs": "^1.16.0",
+    "@types/react-relay": "^5.0.0"
+  }
+}

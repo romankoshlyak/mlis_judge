@@ -1,0 +1,39 @@
+{
+  "name": "mlis-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/bluebird": "^3.5.27",
+    "@types/graphql": "^14.2.2",
+    "@types/graphql-relay": "^0.4.9",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^12.6.5",
+    "@types/node-fetch": "^2.3.7",
+    "@types/validator": "^10.11.1",
+    "apollo-server": "^2.7.0",
+    "graphql": "^14.4.2",
+    "graphql-relay": "^0.6.0",
+    "graphql-subscriptions": "^1.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
+    "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.10.1",
+    "subscriptions-transport-ws": "^0.9.16"
+  }
+}
