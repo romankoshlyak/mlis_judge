@@ -1,7 +1,5 @@
 import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin } from 'sequelize';
 import { HasOneGetAssociationMixin } from 'sequelize';
-import { subscribe } from 'graphql';
-
 
 const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
   host: 'database',

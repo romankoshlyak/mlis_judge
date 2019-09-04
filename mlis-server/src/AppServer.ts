@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 import { PubSub } from 'graphql-subscriptions';
 
 import resolvers from './resolvers';

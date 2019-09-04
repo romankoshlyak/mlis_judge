@@ -1,0 +1,25 @@
+version: '3'
+services:
+  client:
+    build: ./../mlis-client
+    image: mlis_client
+    environment:
+    - TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling
+    - REACT_APP_FB_APP_ID=$APP_ID
+    - REACT_APP_GRAPHQL_URL=$PRODUCTION_CLIENT_GRAPHQL_URL
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    - ./../mlis-server:/usr/src/server
+    command: sh -c "npm run build && cp -r ./build/ ./../server/client_build/"
+  server:
+    build: ./../mlis-server
+    image: mlis_server
+    volumes:
+    - ./../mlis-server:/usr/src/app
+    command: npm run build
+  agent:
+    build: ./../mlis-agent
+    image: mlis_agent
+    volumes:
+    - ./../mlis-agent:/usr/src/app
+    command: npm run build
