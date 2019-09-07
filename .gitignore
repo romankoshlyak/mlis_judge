@@ -2,6 +2,7 @@
 *.pyc
 *.ipynb
 *.pickle
+*__generated__
 dist
 node_modules
 mlis-pytorch/data
@@ -9,3 +10,4 @@ mlis-pytorch/mlis/problems/runs
 mlis-amazon/server.pem
 mlis-agent/exec
 mlis-server/client_build
+mlis-client/build
