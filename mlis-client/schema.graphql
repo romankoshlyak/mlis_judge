@@ -1,5 +1,5 @@
-# source: http://localhost:4000/
-# timestamp: Sat Aug 17 2019 01:50:28 GMT+0200 (Central European Summer Time)
+# source: http://localhost/graphql
+# timestamp: Sun Sep 08 2019 12:16:13 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -93,6 +93,7 @@ type Problem implements Node {
   id: ID!
   name: String!
   text: String!
+  codeTemplate: String!
   dataProvider: String!
   submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!
   testSets(after: String, first: Int, before: String, last: Int): TestSetConnection!

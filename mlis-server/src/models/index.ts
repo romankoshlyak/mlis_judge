@@ -47,6 +47,7 @@ export class Problem extends Model {
   public id!: number;
   public name!: string;
   public text!: string;
+  public codeTemplate!: string;
   public dataProvider!: string;
 
   public readonly createdAt!: Date;
@@ -66,6 +67,10 @@ Problem.init({
     allowNull: false,
   },
   text: {
+    type: new DataTypes.TEXT,
+    allowNull: false,
+  },
+  codeTemplate: {
     type: new DataTypes.TEXT,
     allowNull: false,
   },

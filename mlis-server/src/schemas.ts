@@ -47,6 +47,7 @@ export default gql`
     id: ID!
     name: String!
     text: String!
+    codeTemplate: String!
     dataProvider: String!
     submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!
     testSets(after: String, first: Int, before: String, last: Int): TestSetConnection!

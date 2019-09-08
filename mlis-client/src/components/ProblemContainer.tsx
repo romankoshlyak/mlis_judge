@@ -24,7 +24,7 @@ class ProblemContainer extends React.Component<Props> {
   state = { code: 'Loading...' };
   constructor(props: Props) {
     super(props);
-    let code = localStorage.getItem(this.savedCodeKey()) || '';
+    let code = localStorage.getItem(this.savedCodeKey()) || requireValue(this.props.main.viewer).problem.codeTemplate;
     this.state = { code };
   }
   savedCodeKey = () => {
@@ -114,6 +114,7 @@ export default createRefetchContainer(
               id
               name
               text
+              codeTemplate
               ...ProblemSubmissionList_problem
             }
           }
