@@ -34,7 +34,7 @@ class ProblemContainer extends React.Component<Props> {
   saveCode = (code: string) => {
     this.setState({code});
     throttle(500, () => {
-      localStorage.setItem(this.savedCodeKey(), this.state.code);
+      localStorage.setItem(this.savedCodeKey(), code);
     })();
   }
   _refetch = () => {
