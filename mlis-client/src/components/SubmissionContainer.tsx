@@ -5,6 +5,8 @@ import Panel from 'react-bootstrap/lib/Panel';
 
 import Facebook from './Facebook';
 import Viewer from './Viewer';
+import TestRunReportList from './TestRunReportList';
+import TestSetRunReport from './TestSetRunReport';
 import { SubmissionContainer_main } from './__generated__/SubmissionContainer_main.graphql';
 import { SubmissionContainer_submission } from './__generated__/SubmissionContainer_submission.graphql';
 import { requireValue } from './../utils';
@@ -38,7 +40,7 @@ class SubmissionContainer extends React.Component<Props> {
           <Panel>
             <Panel.Heading>
               <Panel.Title toggle>
-                {submission.problem.name} {submission.testSetRunReport.status} Show code
+                Submission code
               </Panel.Title>
             </Panel.Heading>
             <Panel.Collapse>
@@ -46,6 +48,19 @@ class SubmissionContainer extends React.Component<Props> {
                 <pre>
                   {submission.code}
                 </pre>
+              </Panel.Body>
+            </Panel.Collapse>
+          </Panel>
+          <Panel defaultExpanded>
+            <Panel.Heading>
+              <Panel.Title toggle>
+                Run details
+              </Panel.Title>
+            </Panel.Heading>
+            <Panel.Collapse>
+              <Panel.Body>
+                <TestRunReportList report={submission.testSetRunReport} />
+                <TestSetRunReport report={submission.testSetRunReport} />
               </Panel.Body>
             </Panel.Collapse>
           </Panel>
@@ -72,6 +87,8 @@ export default createRefetchContainer(
           }
           testSetRunReport {
             status
+            ...TestRunReportList_report
+            ...TestSetRunReport_report
           }
           code
         }`,

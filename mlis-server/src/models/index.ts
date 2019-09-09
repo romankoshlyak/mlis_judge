@@ -85,6 +85,7 @@ Problem.init({
 
 export class Test extends Model {
   public id!: number;
+  public number!: number;
   public description!: string;
   public config!: string;
   // Limits
@@ -104,6 +105,10 @@ Test.init({
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  number: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   description: {
     type: new DataTypes.STRING,

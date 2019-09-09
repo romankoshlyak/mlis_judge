@@ -17,9 +17,18 @@ export default gql`
   }
   type Test implements Node {
     id: ID!
-    testSet: TestSet!
+    number: Int!
     description: String!
     config: String!
+
+    modelSizeLimit: Float
+    trainingStepsLimit: Float
+    trainingTimeLimit: Float
+    evaluationTimeLimit: Float
+    trainAccuracyLimit: Float
+    testAccuracyLimit: Float
+
+    testSet: TestSet!
   }
   type TestEdge {
     node: Test!
@@ -60,15 +69,44 @@ export default gql`
   type TestRunReport implements Node {
     id: ID!
     status: RunStatus!
+    stdErr: String
+    stdOut: String
+    isAccepted: Boolean
+    rejectReason: String
+
+    modelSize: Float
+    trainingSteps: Float
+    trainingTime: Float
+    evaluationTime: Float
+    trainError: Float
+    trainCorrect: Float
+    trainTotal: Float
+    trainAccuracy: Float
+    trainMetric: Float
+    testError: Float
+    testCorrect: Float
+    testTotal: Float
+    testAccuracy: Float
+    testMetric: Float
+
     problem: Problem!
     submission: Submission!
     test: Test!
+  }
+  type TestRunReportEdge {
+    node: TestRunReport!
+    cursor: String!
+  }
+  type TestRunReportConnection {
+    pageInfo: PageInfo!
+    edges: [TestRunReportEdge!]!
   }
   type TestSetRunReport implements Node {
     id: ID!
     status: RunStatus!
     submission: Submission!
     testSet: TestSet!
+    testRunReports(after: String, first: Int, before: String, last: Int): TestRunReportConnection!
     modelSizeMax: Float
     modelSizeMean: Float
     modelSizeMin: Float
@@ -242,5 +280,6 @@ export default gql`
   type Subscription {
     taskAdded: String!
     testSetRunReportChanged(id: ID!): TestSetRunReport!
+    testRunReportChanged(id: ID!): TestRunReport!
   }
 `

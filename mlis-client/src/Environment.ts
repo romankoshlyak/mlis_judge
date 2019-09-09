@@ -31,6 +31,5 @@ const environment = new Environment({
   network: Network.create(subscribeFn as FetchFunction, subscribeFn),
   store: new Store(new RecordSource()),  
 });
-console.log('environment', process.env);
 
 export default environment;

@@ -27,12 +27,13 @@ export default async function initDevData() {
   const xorProblem = await models.Problem.create({name: "Hello Xor", text: "You need to learn xor function", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate});
   const xorTestSet = await models.TestSet.create({problemId: xorProblem.id, name: "TestSet1"});
   const testLimits = {modelSizeLimit: 1000000.0, trainingStepsLimit: 1000000.0, trainingTimeLimit: 2.0, evaluationTimeLimit: 2.0, trainAccuracyLimit: 1.0, testAccuracyLimit: 1.0};
-  await models.Test.create({testSetId: xorTestSet.id, description: "Test1", config: '{"id":1}', ...testLimits});
-  await models.Test.create({testSetId: xorTestSet.id, description: "Test2", config: '{"id":2}', ...testLimits});
+  for (let testId = 0; testId < 10; testId++) {
+    await models.Test.create({testSetId: xorTestSet.id, number: testId+1, description: `Test${testId+1}`, config: `{"id":${testId+1}}`, ...testLimits});
+  }
   const generalCpuProblem = await models.Problem.create({name: "General Cpu", text: "You need to learn general function", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
   const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
-  await models.Test.create({testSetId: generalCpuTestSet.id, description: "Test1", config: '{"id":1}', ...testLimits});
-  await models.Test.create({testSetId: generalCpuTestSet.id, description: "Test2", config: '{"id":2}', ...testLimits});
+  await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
+  await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
 
   // Submit hello xor solution
   const romanToken = getTokenFromUser(roman);

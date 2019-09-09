@@ -1,15 +1,28 @@
 import * as React from 'react';
-import { createFragmentContainer } from 'react-relay';
+import { createFragmentContainer, RelayProp, Disposable } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
+import { requestSubscription } from 'react-relay';
 
 import { TestSetRunReport_report } from './__generated__/TestSetRunReport_report.graphql';
-import Label from 'react-bootstrap/lib/Label';
+import { TestSetRunReportSubscriptionResponse } from './__generated__/TestSetRunReportSubscription.graphql';
+import Panel from 'react-bootstrap/lib/Panel';
 import Table from 'react-bootstrap/lib/Table';
+import AcceptedLabel from './AcceptedLabel';
 
 interface Props {
+  relay: RelayProp
   report: TestSetRunReport_report
 }
 
+const testSetRunReportChangedSubscription = graphql`
+  subscription TestSetRunReportSubscription($id: ID!) {
+    testSetRunReportChanged(id: $id) {
+      status
+      isAccepted
+      ...TestSetRunReport_report
+    }
+  }
+`;
 class TestSetRunReport extends React.Component<Props> {
   formatNumber = (number:number|null) => {
     if (number != null) {
@@ -17,31 +30,41 @@ class TestSetRunReport extends React.Component<Props> {
     }
     return 'NA';
   }
-  render() {
-    let accepted = null;
-    const report = this.props.report;
-    const isAccepted = report.isAccepted;
-    if (isAccepted == null) {
-      accepted = (
-        <Label bsStyle="warning">
-          [WAITING...]
-        </Label>
-      );
-    } else if (isAccepted) {
-      accepted = (
-        <Label bsStyle="success">
-          [ACCEPTED]
-        </Label>
-      );
-    } else {
-      accepted = (
-        <Label bsStyle="danger">
-          [REJECTED]
-        </Label>
+  private subsription: Disposable | null = null;
+  componentDidMount() {
+    if (this.props.report.status !== "FINISHED") {
+      this.subsription = requestSubscription(
+        this.props.relay.environment,
+        {
+          subscription: testSetRunReportChangedSubscription,
+          variables: {id: this.props.report.id},
+          onCompleted: () => {
+            this.disposeSubscription();
+          },
+          onNext: (response) => {
+            if ((response as TestSetRunReportSubscriptionResponse).testSetRunReportChanged.status === "FINISHED") {
+              this.disposeSubscription();
+            }
+          },
+        },
       );
     }
+  }
+
+  disposeSubscription = () => {
+    if (this.subsription != null) {
+      this.subsription.dispose()
+      this.subsription = null;
+    }
+  }
+
+  componentWillUnmount() {
+    this.disposeSubscription();
+  }
+  render() {
+    const report = this.props.report;
     let table = null;
-    if (isAccepted != null) {
+    if (report.status === "FINISHED") {
       table = (
         <Table striped bordered condensed hover>
           <thead>
@@ -95,10 +118,22 @@ class TestSetRunReport extends React.Component<Props> {
 
     }
     return (
-      <div>
-        {accepted}
-        {table}
-      </div>
+      <Panel defaultExpanded>
+        <Panel.Heading>
+          <Panel.Title>
+            <Panel.Toggle>
+              Summary
+            </Panel.Toggle>
+            &nbsp;
+            <AcceptedLabel status={report.status} isAccepted={report.isAccepted} />
+          </Panel.Title>
+        </Panel.Heading>
+        <Panel.Collapse>
+          <Panel.Body>
+            {table}
+          </Panel.Body>
+        </Panel.Collapse>
+      </Panel>
     );
   }
 }

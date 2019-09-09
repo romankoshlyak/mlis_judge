@@ -43,6 +43,7 @@ async function updateTestRunReport(testRunReport: TestRunReport, input: any, tra
   console.log(isAccepted, rejectReason);
   const updatedTestRunReport = await testRunReport.save({transaction});
   assertTrue(updatedTestRunReport.status == FINISHED);
+  return updatedTestRunReport;
 }
 
 async function updateTestSetRunReport(testRunReport: TestRunReport, transaction: Transaction) {
@@ -115,7 +116,15 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
     assertTrue(task.status == RUNNING);
     assertTrue(task.attempt == taskAttempt);
     const testRunReport = await task.getTestRunReport({transaction});
-    await updateTestRunReport(testRunReport, input, transaction);
+    const updatedTestRunReport = await updateTestRunReport(testRunReport, input, transaction);
+    let publishTestRunReportChanged = async () => {
+        await pubsub.publish(
+          `testRunReportChanged:${testRunReport.id}`,
+          {
+            testRunReportChanged : updatedTestRunReport
+          }
+        );
+    }
     const testsLeft = await models.TestRunReport.count(
         {
         where: {
@@ -137,12 +146,13 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
               testSetRunReportChanged : updatedTestSetRunReport
             }
           );
-      }
+        }
     }
     task.status = FINISHED;
     const savedTask = await task.save({transaction});
     assertTrue(savedTask.status == FINISHED);
-    transaction.commit();
+    await transaction.commit();
+    await publishTestRunReportChanged();
     await publishTestSetRunReportChanged();
     return {
       clientMutationId: input.clientMutationId,

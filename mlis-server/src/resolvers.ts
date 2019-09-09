@@ -70,6 +70,10 @@ export default {
   },
   TestSetRunReport: {
     id: (testSetRunReport: TestSetRunReport) => getGlobalId(testSetRunReport),
+    testRunReports: async (testSetRunReport: TestSetRunReport, args: any, { viewer }: AppContext) => {
+      const testRunReports = await testSetRunReport.getTestRunReports();
+      return connectionFromArray(testRunReports, args);
+    },
   },
   Task: {
     id: (task: Task) => getGlobalId(task),
@@ -254,6 +258,7 @@ export default {
           }
         )
 
+        let publishTestRunReportChanged = async () => {}
         let publishTestSetRunReportChanged = async () => {}
         if (nextTask != null) {
           nextTask.status = RUNNING;
@@ -263,6 +268,14 @@ export default {
           if (testRunReport.status !== RUNNING) {
             testRunReport.status = RUNNING;
             savePromises.push(testRunReport.save({transaction}));
+            publishTestRunReportChanged = async () => {
+              await pubsub.publish(
+                `testRunReportChanged:${testRunReport.id}`,
+                {
+                  testRunReportChanged : testRunReport
+                }
+              );
+            }
           }
           const testSetRunReport = await testRunReport.getTestSetRunReport();
           if (testSetRunReport.status !== RUNNING) {
@@ -280,6 +293,7 @@ export default {
           await Promise.all(savePromises);
         }
         await transaction.commit();
+        await publishTestRunReportChanged();
         await publishTestSetRunReportChanged();
         await taskAdded();
         return {
@@ -395,9 +409,15 @@ export default {
       }
     },
     testSetRunReportChanged: {
-      subscribe: (parent:any, input:any, {pubsub}:{pubsub:PubSub}) => {
+      subscribe: (parent:any, input:any, {pubsub}:AppContext) => {
         const id = fromGlobalId(input.id).id;
         return pubsub.asyncIterator(`testSetRunReportChanged:${id}`)
+      }
+    },
+    testRunReportChanged: {
+      subscribe: (parent:any, input:any, {pubsub}:AppContext) => {
+        const id = fromGlobalId(input.id).id;
+        return pubsub.asyncIterator(`testRunReportChanged:${id}`)
       }
     }
   },

@@ -8,7 +8,7 @@ import { ProblemSubmissionListItemSubscriptionResponse } from './__generated__/P
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 import { requestSubscription } from 'react-relay';
 
-import TestSetRunReport from './TestSetRunReport';
+import AcceptedLabel from './AcceptedLabel';
 
 interface Props {
   relay: RelayProp
@@ -19,17 +19,15 @@ const testSetRunReportChangedSubscription = graphql`
   subscription ProblemSubmissionListItemSubscription($id: ID!) {
     testSetRunReportChanged(id: $id) {
       status
-      ...TestSetRunReport_report
+      isAccepted
     }
   }
 `;
 
-const FINISHED: RunStatus = "FINISHED";
-
 class ProblemSubmissionListItem extends React.Component<Props> {
   private subsription: Disposable | null = null;
   componentDidMount() {
-    if (this.props.submission.testSetRunReport.status !== FINISHED) {
+    if (this.props.submission.testSetRunReport.status !== "FINISHED") {
       this.subsription = requestSubscription(
         this.props.relay.environment,
         {
@@ -39,11 +37,10 @@ class ProblemSubmissionListItem extends React.Component<Props> {
             this.disposeSubscription();
           },
           onNext: (response) => {
-            if ((response as ProblemSubmissionListItemSubscriptionResponse).testSetRunReportChanged.status === FINISHED) {
+            if ((response as ProblemSubmissionListItemSubscriptionResponse).testSetRunReportChanged.status === "FINISHED") {
               this.disposeSubscription();
             }
           },
-          //updater: (store, data) => console.log(data),
         },
       );
     }
@@ -61,11 +58,12 @@ class ProblemSubmissionListItem extends React.Component<Props> {
   }
 
   render() {
+    const testSetRunReport = this.props.submission.testSetRunReport;
     return (
       <ListGroupItem>
         <Link to={`/submission/${this.props.submission.id}`}>Submission {this.props.submission.id}</Link>
-        <div>{this.props.submission.testSetRunReport.status}</div>
-        <TestSetRunReport report={this.props.submission.testSetRunReport} />
+        &nbsp;
+        <AcceptedLabel status={testSetRunReport.status} isAccepted={testSetRunReport.isAccepted} />
       </ListGroupItem>
     );
   }
@@ -79,7 +77,7 @@ export default createFragmentContainer(
         testSetRunReport {
           id
           status
-          ...TestSetRunReport_report
+          isAccepted
         }
       }
     `,
