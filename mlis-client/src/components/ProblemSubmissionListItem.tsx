@@ -3,7 +3,7 @@ import { createFragmentContainer, RelayProp, Disposable } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import { Link } from 'react-router-dom';
 
-import { RunStatus, ProblemSubmissionListItem_submission } from './__generated__/ProblemSubmissionListItem_submission.graphql';
+import { ProblemSubmissionListItem_submission } from './__generated__/ProblemSubmissionListItem_submission.graphql';
 import { ProblemSubmissionListItemSubscriptionResponse } from './__generated__/ProblemSubmissionListItemSubscription.graphql';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 import { requestSubscription } from 'react-relay';
