@@ -10,7 +10,7 @@ services:
     volumes:
     - ./../mlis-client:/usr/src/app
     - ./../mlis-server:/usr/src/server
-    command: sh -c "npm run build && rm -rf ./../server/client_build/ && cp -r ./build/ ./../server/client_build/"
+    command: sh -c "npm run relay && npm run build && rm -rf ./../server/client_build/ && cp -r ./build/ ./../server/client_build/"
   server:
     build: ./../mlis-server
     image: mlis_server
