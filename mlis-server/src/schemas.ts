@@ -50,7 +50,7 @@ export default gql`
   }
   type TestSetConnection {
     pageInfo: PageInfo!
-    edges: [TestSetEdge]
+    edges: [TestSetEdge!]!
   }
   type Problem implements Node {
     id: ID!

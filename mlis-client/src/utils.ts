@@ -4,3 +4,8 @@ export function requireValue<ValueType>(input: ValueType|null|undefined){
   }
   return input;
 }
+export function assertTrue(b: boolean) {
+  if (!b) {
+    throw Error("Assertion failed");
+  }
+}

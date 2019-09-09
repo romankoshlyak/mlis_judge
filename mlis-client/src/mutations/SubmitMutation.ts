@@ -29,6 +29,7 @@ let tempID = 0;
 function commit(
   environment: Environment,
   problemId: string,
+  testSetId: string,
   submissionCode: string
 ) {
   return commitMutation<SubmitMutation>(
@@ -39,7 +40,7 @@ function commit(
         input: {
           problemId,
           submissionCode,
-          testSetId: 'VGVzdFNldDox',
+          testSetId,
           clientMutationId: (tempID++).toString(),
         },
       },

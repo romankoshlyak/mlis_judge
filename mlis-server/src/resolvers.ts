@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken';
 import Helper from './utils';
-import { connectionFromArray, cursorForObjectInConnection, toGlobalId, fromGlobalId } from 'graphql-relay';
+import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import ModelTypes, { Test, TestSetRunReport, TestRunReport, Task } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
-import { Op, Transaction, ModelScopeOptions } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import moment from 'moment';
-import { PubSub } from 'graphql-subscriptions';
 import AppContext from './context';
 import adminSaveTaskRunReport from './resolvers/adminSaveTaskRunReport';
 
@@ -40,6 +39,10 @@ export default {
       });
       return connectionFromArray(submissions, args);
     },
+    testSets: async (problem: Problem, args: any, { viewer }: AppContext) => {
+      const testSets = await problem.getTestSets();
+      return connectionFromArray(testSets, args);
+    },
   },
   User: {
     id: (parent: User) => getGlobalId(parent),
@@ -52,6 +55,9 @@ export default {
     problem: async (submission: Submission) => {
       return await submission.getProblem();
     },
+  },
+  TestSet: {
+    id: (testSet: TestSet) => getGlobalId(testSet),
   },
   Test: {
     id: (test: Test) => getGlobalId(test),
@@ -214,7 +220,7 @@ export default {
         clientMutationId: input.clientMutationId,
       }
     },
-    adminGetTask: async (parent: any, { input }: any, { models, pubsub }: { models: typeof ModelTypes, pubsub: PubSub }) => {
+    adminGetTask: async (parent: any, { input }: any, { models, pubsub }: AppContext) => {
       const transaction = await models.sequelize.transaction(
         {
           isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,

@@ -54,6 +54,7 @@ export class Problem extends Model {
   public readonly updatedAt!: Date;
 
   public getSubmissions!: HasManyGetAssociationsMixin<Submission>;
+  public getTestSets!: HasManyGetAssociationsMixin<TestSet>;
 }
 
 Problem.init({
@@ -519,6 +520,7 @@ TestRunReport.hasOne(Test, {foreignKey: 'id', sourceKey: 'testId', constraints: 
 TestRunReport.hasOne(Submission, {foreignKey: 'id', sourceKey: 'submissionId', constraints: false});
 Task.hasOne(TestRunReport, {foreignKey: 'id', sourceKey: 'testRunReportId', constraints: false});
 Problem.hasMany(Submission, {foreignKey: 'problemId'});
+Problem.hasMany(TestSet, {foreignKey: 'problemId'});
 User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})

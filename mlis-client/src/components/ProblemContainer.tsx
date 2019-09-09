@@ -13,7 +13,7 @@ import 'prismjs/components/prism-python';
 import '../css/prism.css';
 import Button from 'react-bootstrap/lib/Button';
 import { throttle } from 'throttle-debounce';
-import { requireValue } from '../utils';
+import { requireValue, assertTrue } from '../utils';
 
 interface Props {
   relay: RelayRefetchProp,
@@ -55,9 +55,12 @@ class ProblemContainer extends React.Component<Props> {
     fileReader.readAsText(event.target.files[0]);
   }
   _submit = () => {
+    const problem = requireValue(this.props.main.viewer).problem;
+    assertTrue(problem.testSets.edges.length === 1);
     SubmitMutation.commit(
       this.props.relay.environment,
-      this.props.main.viewer!.problem.id,
+      problem.id,
+      problem.testSets.edges[0].node.id,
       this.state.code
     );
   }
@@ -115,6 +118,15 @@ export default createRefetchContainer(
               name
               text
               codeTemplate
+              testSets(
+                last: 1000
+              ) @connection(key: "ProblemContainer_testSets") {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
               ...ProblemSubmissionList_problem
             }
           }
