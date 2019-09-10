@@ -15,7 +15,7 @@ export default class Facebook extends Component<Props> {
     }
     responseFacebook = (loginInfo: ReactFacebookLoginInfo) => {
         LoginMutation.commit(
-            '',
+            'FB_TOKEN',
             loginInfo.accessToken,
             this.props.onLogin
         );

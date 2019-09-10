@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import Helper from './utils';
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
 import { Test, TestSetRunReport, TestRunReport, Task, TestSet } from './models';
@@ -9,6 +7,8 @@ import { Op, Transaction } from 'sequelize';
 import moment from 'moment';
 import AppContext from './context';
 import adminSaveTaskRunReport from './resolvers/adminSaveTaskRunReport';
+import login from './resolvers/login';
+import logout from './resolvers/logout';
 
 export default {
   Node: {
@@ -120,66 +120,8 @@ export default {
     },
   },
   Mutation: {
-    loginOld: async (parent: any, { authType, accessToken }: any, context: AppContext) => {
-      const models = context.models;
-      const connection = context.connection;
-      const appId = process.env.APP_ID;
-      const appSecret = process.env.APP_SECRET; 
-      const jwtSecret = process.env.JWT_SECRET || '';
-      const appTokenUrl = `https://graph.facebook.com/oauth/access_token?client_id=${appId}&client_secret=${appSecret}&grant_type=client_credentials`;
-      const appAccessToenJson = await Helper.loadJson(appTokenUrl);
-      const appAccessToken = appAccessToenJson.access_token;
-      const debugTokenUrl = `https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${appAccessToken}`
-      const accessTokenInfoJson = await Helper.loadJson(debugTokenUrl);
-      const data = accessTokenInfoJson.data;
-      if (data.is_valid && data.type == 'USER' && data.app_id == appId && data.user_id.length > 0) {
-        let andEmail = ''
-        if (data.scopes.includes('email')) {
-          andEmail = ',email'
-        }
-        const getUserUrl = `https://graph.facebook.com/me?fields=id,name${andEmail}&access_token=${accessToken}`
-        const userJson = await Helper.loadJson(getUserUrl);
-        const userObj = {
-          fbId: userJson.id,
-          name: userJson.name,
-          email: userJson.email
-        }
-        const [user, ] = await models.User.findOrCreate({
-          where: {fbId: userObj.fbId},
-          defaults: userObj,
-        });
-        if (user.fbId == userObj.fbId) {
-          const token = jwt.sign(
-            { user_id: user.id },
-            jwtSecret,
-            { expiresIn: '1y' },
-          );
-          if (connection != null) {
-            connection.context.state.authorization = token;
-          }
-          return token;
-        }
-      }
-    },
-    login: async (parent: any, { input }: any, { connection }: AppContext) => {
-      if (input.authType == 'CRYPTO_TOKEN') {
-        const jwtSecret = process.env.JWT_SECRET;
-        const tokenInfo = <{user_id:number}> await jwt.verify(input.token, jwtSecret!);
-        const authorization = jwt.sign(
-          { user_id: tokenInfo.user_id },
-          jwtSecret!,
-          { expiresIn: 60 },
-        );
-          if (connection != null) {
-            connection.context.state.authorization = authorization;
-          }
-        return {
-          authorization: authorization,
-          clientMutationId: input.clientMutationId,
-        }
-      }
-      throw new Error('Access denied');
-    },
+    login,
+    logout,
     adminSaveTaskRunReport,
     adminAddProblem: async (parent: any, { input }: any, { models }: any) => {
       const problem = await models.Problem.create(input);

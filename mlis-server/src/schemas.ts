@@ -266,9 +266,15 @@ export default gql`
     authorization: String!
     clientMutationId: String
   }
+  input LogoutInput {
+    clientMutationId: String
+  }
+  type LogoutPayload {
+    clientMutationId: String
+  }
   type Mutation {
-    loginOld(authType: String!, accessToken: String!): String!
-    login(input: LoginInput): LoginPayload!
+    login(input: LoginInput!): LoginPayload!
+    logout(input: LogoutInput!): LogoutPayload!
     submit(input: SubmitInput!): SubmitPayload!
 
     adminGetTask(input: GetTaskInput!): GetTaskPayload!

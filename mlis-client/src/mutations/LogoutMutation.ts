@@ -3,36 +3,32 @@ import { graphql } from 'babel-plugin-relay/macro';
 import environment from './../Environment';
 import { AUTHORIZATION } from './../constants'
 
-import { AuthType, LoginMutation } from './__generated__/LoginMutation.graphql'
+import { LogoutMutation } from './__generated__/LogoutMutation.graphql'
 
 const mutation = graphql`
-  mutation LoginMutation($input: LoginInput!) {
-    login(input:$input) {
-      authorization
+  mutation LogoutMutation($input: LogoutInput!) {
+    logout(input:$input) {
+      clientMutationId
     }
   }
 `;
 
 function commit(
-  authType: AuthType,
-  token: string,
   onCompleted: any,
 ) {
-  return commitMutation<LoginMutation>(
+  return commitMutation<LogoutMutation>(
     environment,
     {
       mutation,
       variables: {
         input: {
-          authType,
-          token,
         }
       },
       onCompleted: (response, errors) => {
         if (errors != null) {
           console.log(errors);
         }
-        localStorage.setItem(AUTHORIZATION, response.login.authorization);
+        localStorage.removeItem(AUTHORIZATION);
         onCompleted();
       },
       onError: err => console.error(err),

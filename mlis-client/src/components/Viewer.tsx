@@ -1,14 +1,11 @@
 import * as React from 'react';
-import {
-  createFragmentContainer,
-  RelayProp,
-} from 'react-relay';
+import { createFragmentContainer, RelayProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 
 import { Viewer_viewer } from './__generated__/Viewer_viewer.graphql';
-import { AUTHORIZATION } from '../constants';
 import { Navbar, NavItem, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import LogoutMutation from '../mutations/LogoutMutation';
 
 interface Props {
   relay: RelayProp
@@ -32,8 +29,9 @@ class Viewer extends React.Component<Props> {
               {this.props.viewer.user.name}
             </NavItem>
             <NavItem onClick={() => {
-                    localStorage.removeItem(AUTHORIZATION);
-                    this.props.onLogout()
+                    LogoutMutation.commit(
+                      this.props.onLogout
+                    );
                   }}>
               Logout
             </NavItem>

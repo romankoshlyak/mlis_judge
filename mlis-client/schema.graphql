@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Mon Sep 09 2019 15:51:28 GMT-0700 (Pacific Daylight Time)
+# timestamp: Tue Sep 10 2019 15:58:20 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -63,13 +63,21 @@ type LoginPayload {
   clientMutationId: String
 }
 
+input LogoutInput {
+  clientMutationId: String
+}
+
+type LogoutPayload {
+  clientMutationId: String
+}
+
 type Main {
   viewer: Viewer
 }
 
 type Mutation {
-  loginOld(authType: String!, accessToken: String!): String!
-  login(input: LoginInput): LoginPayload!
+  login(input: LoginInput!): LoginPayload!
+  logout(input: LogoutInput!): LogoutPayload!
   submit(input: SubmitInput!): SubmitPayload!
   adminGetTask(input: GetTaskInput!): GetTaskPayload!
   adminSaveTaskRunReport(input: SaveTaskRunReportInput!): SaveTaskRunReportPayload!
