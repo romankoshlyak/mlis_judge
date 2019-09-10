@@ -4,9 +4,10 @@ import { graphql } from 'babel-plugin-relay/macro';
 import { ProblemSubmissionList_problem } from './__generated__/ProblemSubmissionList_problem.graphql';
 import ProblemSubmissionListItem from './ProblemSubmissionListItem';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
-import { Panel } from 'react-bootstrap';
+import Panel from 'react-bootstrap/lib/Panel';
 
 interface Props {
+  style?: React.CSSProperties
   problem: ProblemSubmissionList_problem
 }
 
@@ -22,15 +23,17 @@ class ProblemSubmissionList extends React.Component<Props> {
   }
   render() {
     return (
-      <Panel>
+      <Panel defaultExpanded style={this.props.style}>
         <Panel.Heading>
-          <Panel.Title>Submissions:</Panel.Title>
+          <Panel.Title>
+            <Panel.Toggle>Submissions:</Panel.Toggle>
+          </Panel.Title>
         </Panel.Heading>
-        <Panel.Body>
+        <Panel.Collapse>
           <ListGroup>
             {this.renderSubmissions()}
           </ListGroup>
-        </Panel.Body>
+        </Panel.Collapse>
       </Panel>
     );
   }
