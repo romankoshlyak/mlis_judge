@@ -43,6 +43,10 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "babelMacros": {
+    "relay": {
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
