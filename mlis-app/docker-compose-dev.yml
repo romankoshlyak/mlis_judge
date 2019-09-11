@@ -8,6 +8,7 @@ services:
     links:
     - server
     environment:
+    - HTTPS=true
     - TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling
     - REACT_APP_FB_APP_ID=$APP_ID
     - REACT_APP_GRAPHQL_URL=$DEV_CLIENT_GRAPHQL_URL

@@ -31,6 +31,7 @@ export default class Facebook extends Component<Props> {
             <FacebookLogin
                 appId={appId}
                 autoLoad={false}
+                disableMobileRedirect={true}
                 fields="name,email,picture"
                 onClick={this.componentClicked}
                 callback={this.responseFacebook} />
