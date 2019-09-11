@@ -33,7 +33,7 @@ async function loadCredentials() {
   return credentials;
 }
 function redirectNonWwwToWww(app: Express) {
-  app.all(/.*/, function(req, res, next) {
+  app.get(/.*/, function(req, res, next) {
     const host = req.header("host");
     if (host && host != 'localhost' && !host.match(/^www\..*/i)) {
       res.redirect(301, "https://www." + host + req.url);
@@ -75,7 +75,7 @@ async function main() {
       res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
       res.end();
     });
-    httpServer.listen(8080);
+    httpServer.listen(8000);
   } else {
     const httpServer = http.createServer(app);
     graphqlServer.installSubscriptionHandlers(httpServer);
