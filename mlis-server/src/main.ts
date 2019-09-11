@@ -4,6 +4,7 @@ import https from 'https';
 import path from 'path';
 import util from 'util';
 import express from 'express';
+import {Express} from "express-serve-static-core";
 
 import AppServer from './AppServer';
 import initDevData from './initDevData';
@@ -31,6 +32,16 @@ async function loadCredentials() {
   const credentials = {key: privateKey, cert: certificate};
   return credentials;
 }
+function redirectNonWwwToWww(app: Express) {
+  app.all(/.*/, function(req, res, next) {
+    const host = req.header("host");
+    if (host && host != 'localhost' && !host.match(/^www\..*/i)) {
+      res.redirect(301, "https://www." + host + req.url);
+    } else {
+      next();
+    }
+  });
+}
 async function main() {
   console.log('Init data');
   while (true) {
@@ -47,18 +58,28 @@ async function main() {
 
   const app = express();
   graphqlServer.applyMiddleware({app});
+  // Redirect non www to www
+  redirectNonWwwToWww(app);
   app.use(express.static(path.join(__dirname, '../client_build')));
   app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client_build', 'index.html'));
   });
-  const httpServer = http.createServer(app);
-  graphqlServer.installSubscriptionHandlers(httpServer);
-  httpServer.listen(8000);
   const credentials = await loadCredentials();
   if (credentials != null) {
     const httpsServer = https.createServer(credentials, app);
     graphqlServer.installSubscriptionHandlers(httpsServer);
     httpsServer.listen(8443);
+
+    // Redirect http to https
+    const httpServer = http.createServer(function(req, res) {
+      res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+      res.end();
+    });
+    httpServer.listen(8080);
+  } else {
+    const httpServer = http.createServer(app);
+    graphqlServer.installSubscriptionHandlers(httpServer);
+    httpServer.listen(8000);
   }
   console.log('Server started');
 }
