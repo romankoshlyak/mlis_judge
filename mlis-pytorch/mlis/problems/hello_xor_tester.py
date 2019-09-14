@@ -12,5 +12,5 @@ class TesterConfig:
 def main():
     SolutionTester().run(TesterConfig(), case_number=-1)
 
-if __name__ == '__main__"':
+if __name__ == '__main__':
     main()

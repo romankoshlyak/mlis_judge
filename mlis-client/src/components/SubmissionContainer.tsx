@@ -3,7 +3,7 @@ import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import Panel from 'react-bootstrap/lib/Panel';
 
-import Facebook from './Facebook';
+import Login from './Login';
 import Viewer from './Viewer';
 import TestRunReportList from './TestRunReportList';
 import TestSetRunReport from './TestSetRunReport';
@@ -29,7 +29,7 @@ class SubmissionContainer extends React.Component<Props> {
   render() {
     if (this.props.main.viewer == null) {
       return (
-        <Facebook onLogin={this._refetch}/>
+        <Login onLogin={this._refetch}/>
       )
     }
     const submission = requireValue(this.props.submission);

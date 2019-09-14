@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import MainProblemList from './MainProblemList';
-import Facebook from './Facebook';
+import Login from './Login';
 import Viewer from './Viewer';
 import { MainContainer_main } from './__generated__/MainContainer_main.graphql';
 
@@ -23,7 +23,7 @@ class MainContainer extends React.Component<Props> {
   render() {
     if (this.props.main.viewer == null) {
       return (
-        <Facebook onLogin={this._refetch}/>
+        <Login onLogin={this._refetch}/>
       )
     }
     return (

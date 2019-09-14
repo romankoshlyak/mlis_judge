@@ -43,15 +43,18 @@ function redirectNonWwwToWww(app: Express) {
   });
 }
 async function main() {
-  console.log('Init data');
-  while (true) {
-    try {
-      await initDevData();
-      break;
-    } catch {
-      const waitingTime = 10;
-      console.log(`Wating for ${waitingTime} seconds...`);
-      await sleep(waitingTime * 1000);
+  const initData = process.env.INIT_DATA;
+  if (initData === 'true') {
+    console.log('Init data');
+    while (true) {
+      try {
+        await initDevData();
+        break;
+      } catch {
+        const waitingTime = 10;
+        console.log(`Wating for ${waitingTime} seconds...`);
+        await sleep(waitingTime * 1000);
+      }
     }
   }
   const graphqlServer = new AppServer();

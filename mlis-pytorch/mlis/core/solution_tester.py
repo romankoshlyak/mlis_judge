@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -31,7 +32,9 @@ class SolutionTester():
         with torch.no_grad():
             data = self.sampleData(data)
             target = self.sampleData(target)
+            evaluation_start_time = time.time()
             output = model(data)
+            evaluation_end_time = time.time()
             # Number of correct predictions
             predict = model.calc_predict(output)
             error = model.calc_error(output, target)
@@ -42,6 +45,7 @@ class SolutionTester():
                     'correct': correct.item(),
                     'total': total,
                     'accuracy': correct.item()/total,
+                    'evaluation_time': evaluation_end_time - evaluation_start_time,
                     }
 
     def train_model(self, solution, train_data, context):
@@ -88,16 +92,19 @@ class SolutionTester():
         train_stat = self.calc_model_stats(config, model, data, target)
         data, target = case_data.test_data
         test_stat = self.calc_model_stats(config, model, data, target)
+
         return {
             'modelSize': model_size,
             'trainingSteps': step,
             'trainingTime': execution_time,
             'evaluationTime': 1.0,
+            'trainEvaluationTime': train_stat['evaluation_time'],
             'trainError': train_stat['error'],
             'trainCorrect': train_stat['correct'],
             'trainTotal': train_stat['total'],
             'trainAccuracy': train_stat['accuracy'],
             'trainMetric': 1.0,
+            'testEvaluationTime': test_stat['evaluation_time'],
             'testError': test_stat['error'],
             'testCorrect': test_stat['correct'],
             'testTotal': test_stat['total'],

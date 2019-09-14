@@ -22,6 +22,7 @@
     "react-dom": "^16.8.6",
     "react-facebook-login": "^4.1.1",
     "react-monaco-editor": "^0.28.0",
+    "react-player": "^1.12.0",
     "react-relay": "^5.0.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
@@ -44,8 +45,7 @@
     "extends": "react-app"
   },
   "babelMacros": {
-    "relay": {
-    }
+    "relay": {}
   },
   "browserslist": {
     "production": [

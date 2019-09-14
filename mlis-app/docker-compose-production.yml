@@ -26,6 +26,7 @@ services:
     - APP_SECRET
     - JWT_SECRET
     - HOSTNAME
+    - INIT_DATA
     volumes:
     - ./../mlis-server:/usr/src/app
     command: npm run start

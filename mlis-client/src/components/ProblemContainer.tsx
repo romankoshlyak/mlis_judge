@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import ProblemSubmissionList from './ProblemSubmissionList';
-import Facebook from './Facebook';
+import Login from './Login';
 import Viewer from './Viewer';
 import { ProblemContainer_main } from './__generated__/ProblemContainer_main.graphql';
 import SubmissionEditor from './SubmissionEditor';
@@ -25,7 +25,7 @@ class ProblemContainer extends React.Component<Props> {
   render() {
     if (this.props.main.viewer == null) {
       return (
-        <Facebook onLogin={this._refetch}/>
+        <Login onLogin={this._refetch}/>
       )
     }
     const noMargin = {
