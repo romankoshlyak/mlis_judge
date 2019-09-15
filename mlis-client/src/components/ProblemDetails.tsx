@@ -20,12 +20,12 @@ class ProblemDetails extends React.Component<Props> {
           </Panel.Toggle>
         </Panel.Title>
       </Panel.Heading>
-        <Panel.Collapse>
-          {this.props.problem.name}
-          <pre>
-            {this.props.problem.text}
-          </pre>
-        </Panel.Collapse>
+      <Panel.Collapse>
+        {this.props.problem.name}
+        <pre>
+          {this.props.problem.text}
+        </pre>
+      </Panel.Collapse>
     </Panel>
     );
   }

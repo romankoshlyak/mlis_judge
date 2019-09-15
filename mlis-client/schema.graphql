@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Tue Sep 10 2019 15:58:20 GMT-0700 (Pacific Daylight Time)
+# timestamp: Sat Sep 14 2019 23:14:16 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -105,6 +105,7 @@ type Problem implements Node {
   dataProvider: String!
   submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!
   testSets(after: String, first: Int, before: String, last: Int): TestSetConnection!
+  ranking(after: String, first: Int, before: String, last: Int): RankingConnection!
 }
 
 type ProblemConnection {
@@ -120,6 +121,25 @@ type ProblemEdge {
 type Query {
   admin: Admin
   main: Main!
+}
+
+type Ranking implements Node {
+  id: ID!
+  problem: Problem!
+  submission: Submission!
+  user: User!
+  metric: Float!
+  updatedAt: Float!
+}
+
+type RankingConnection {
+  pageInfo: PageInfo!
+  edges: [RankingEdge!]!
+}
+
+type RankingEdge {
+  node: Ranking!
+  cursor: String!
 }
 
 input RemoveProblemInput {
@@ -279,7 +299,7 @@ type TestRunReportEdge {
 
 type TestSet implements Node {
   id: ID!
-  probelm: Problem!
+  problem: Problem!
   name: String!
   tests: TestConnection!
 }

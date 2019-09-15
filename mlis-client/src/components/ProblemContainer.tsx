@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
+import { Link } from 'react-router-dom';
 import ProblemSubmissionList from './ProblemSubmissionList';
 import Login from './Login';
 import Viewer from './Viewer';
 import { ProblemContainer_main } from './__generated__/ProblemContainer_main.graphql';
 import SubmissionEditor from './SubmissionEditor';
 import ProblemDetails from './ProblemDetails';
+import Button from 'react-bootstrap/lib/Button';
+import { LinkContainer } from 'react-router-bootstrap';
 
 interface Props {
   relay: RelayRefetchProp,
@@ -36,6 +39,9 @@ class ProblemContainer extends React.Component<Props> {
     return (
       <div>
         <Viewer viewer={this.props.main.viewer} onLogout={this._refetch} />
+        <LinkContainer to={`/problem_ranking/${problem.id}`}>
+          <Button bsStyle="success" block>See ranking</Button>
+        </LinkContainer>
         <ProblemDetails problem={problem} style={noMargin} />
         <SubmissionEditor problem={problem} style={noMargin} />
         <ProblemSubmissionList problem={problem} style={noMargin} />
@@ -54,6 +60,7 @@ export default createRefetchContainer(
           viewer {
             ...Viewer_viewer
             problem(id:$id) {
+              id
               ...ProblemDetails_problem
               ...SubmissionEditor_problem
               ...ProblemSubmissionList_problem

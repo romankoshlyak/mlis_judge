@@ -6,6 +6,7 @@ import { Viewer_viewer } from './__generated__/Viewer_viewer.graphql';
 import { Navbar, NavItem, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LogoutMutation from '../mutations/LogoutMutation';
+import { LinkContainer } from 'react-router-bootstrap';
 
 interface Props {
   relay: RelayProp
@@ -25,9 +26,17 @@ class Viewer extends React.Component<Props> {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <NavItem>
-              {this.props.viewer.user.name}
-            </NavItem>
+            <LinkContainer to="/classes">
+              <NavItem>Classes</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/ranking">
+              <NavItem>Ranking</NavItem>
+            </LinkContainer>
+            <LinkContainer to={`/user/${this.props.viewer.user.id}`}>
+              <NavItem>
+                {this.props.viewer.user.name}
+              </NavItem>
+            </LinkContainer>
             <NavItem onClick={() => {
                     LogoutMutation.commit(
                       this.props.onLogout
@@ -46,6 +55,7 @@ export default createFragmentContainer(Viewer, {
   viewer: graphql`
     fragment Viewer_viewer on Viewer {
       user {
+        id
         name
       }
     }

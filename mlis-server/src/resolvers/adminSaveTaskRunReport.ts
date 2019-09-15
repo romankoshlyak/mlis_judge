@@ -100,6 +100,7 @@ async function updateTestSetRunReport(testRunReport: TestRunReport, transaction:
   testSetRunReport.status = FINISHED;
   const updatedTestSetRunReport = await testSetRunReport.save({transaction});
   assertTrue(updatedTestSetRunReport.status == FINISHED);
+
   return updatedTestSetRunReport;
 }
 
@@ -139,6 +140,22 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
     let publishTestSetRunReportChanged = async () => {}
     if (testsLeft == 0) {
         const updatedTestSetRunReport = await updateTestSetRunReport(testRunReport, transaction);
+        if (updatedTestSetRunReport.isAccepted) {
+          const submission = await updatedTestRunReport.getSubmission();
+          const ranking = await models.Ranking.create(
+            {
+              problemId: updatedTestRunReport.problemId,
+              userId: submission.ownerId,
+              submissionId: submission.id,
+              metric: updatedTestSetRunReport.trainingTimeMean,
+            },
+            {
+              transaction
+            }
+          );
+          assertTrue(ranking.id != null);
+        }
+
         publishTestSetRunReportChanged = async () => {
           await pubsub.publish(
             `testSetRunReportChanged:${updatedTestSetRunReport.id}`,

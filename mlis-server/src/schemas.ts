@@ -40,7 +40,7 @@ export default gql`
   }
   type TestSet implements Node {
     id: ID!
-    probelm: Problem!
+    problem: Problem!
     name: String!
     tests: TestConnection!
   }
@@ -52,6 +52,22 @@ export default gql`
     pageInfo: PageInfo!
     edges: [TestSetEdge!]!
   }
+  type Ranking implements Node {
+    id: ID!
+    problem: Problem!
+    submission: Submission!
+    user: User!
+    metric: Float!
+    updatedAt: Float!
+  }
+  type RankingEdge {
+    node: Ranking!
+    cursor: String!
+  }
+  type RankingConnection {
+    pageInfo: PageInfo!
+    edges: [RankingEdge!]!
+  }
   type Problem implements Node {
     id: ID!
     name: String!
@@ -60,6 +76,7 @@ export default gql`
     dataProvider: String!
     submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!
     testSets(after: String, first: Int, before: String, last: Int): TestSetConnection!
+    ranking(after: String, first: Int, before: String, last: Int): RankingConnection!
   }
   enum RunStatus {
     SCHEDULED,

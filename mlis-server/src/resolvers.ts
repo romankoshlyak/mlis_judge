@@ -1,6 +1,6 @@
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import { Test, TestSetRunReport, TestRunReport, Task, TestSet } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
 import { Op, Transaction } from 'sequelize';
@@ -30,6 +30,15 @@ export default {
       return connectionFromArray(problems, args);
     },
   },
+  Ranking: {
+    id: (parent: Ranking) => getGlobalId(parent),
+    user: async (ranking: Ranking) => {
+      return await ranking.getUser();
+    },
+    updatedAt: (ranking: Ranking) => {
+      return ranking.updatedAt.getTime();
+    }
+  },
   Problem: {
     id: (parent: Problem) => getGlobalId(parent),
     submissions: async (problem: Problem, args: any, { viewer }: AppContext) => {
@@ -42,6 +51,12 @@ export default {
     testSets: async (problem: Problem, args: any, { viewer }: AppContext) => {
       const testSets = await problem.getTestSets();
       return connectionFromArray(testSets, args);
+    },
+    ranking: async (problem: Problem, args: any, { viewer }: AppContext) => {
+      const ranking = await problem.getRankings({
+        order: ['metric']
+      });
+      return connectionFromArray(ranking, args);
     },
   },
   User: {

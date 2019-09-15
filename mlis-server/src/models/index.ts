@@ -7,10 +7,52 @@ const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
   logging: false,
 });
 
+export class Ranking extends Model {
+  public id!: number;
+  public problemId!: number;
+  public userId!: number;
+  public submissionId!: number;
+  public metric!: number;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  public getUser!: HasOneGetAssociationMixin<User>;
+}
+
+Ranking.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true,
+  },
+  problemId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  submissionId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  metric: {
+    type: DataTypes.DOUBLE,
+    allowNull: false,
+  },
+}, {
+  sequelize,
+  tableName: 'rankings',
+});
+
 export class Submission extends Model {
   public id!: number;
   public testSetRunReportId!: number;
   public code!: string;
+  public ownerId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -55,6 +97,7 @@ export class Problem extends Model {
 
   public getSubmissions!: HasManyGetAssociationsMixin<Submission>;
   public getTestSets!: HasManyGetAssociationsMixin<TestSet>;
+  public getRankings!: HasManyGetAssociationsMixin<Ranking>;
 }
 
 Problem.init({
@@ -199,6 +242,8 @@ export class TestRunReport extends Model {
 
   public isAccepted!: boolean;
   public rejectReason!: string;
+
+  public problemId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -521,8 +566,10 @@ TestRunReport.hasOne(Submission, {foreignKey: 'id', sourceKey: 'submissionId', c
 Task.hasOne(TestRunReport, {foreignKey: 'id', sourceKey: 'testRunReportId', constraints: false});
 Problem.hasMany(Submission, {foreignKey: 'problemId'});
 Problem.hasMany(TestSet, {foreignKey: 'problemId'});
+Problem.hasMany(Ranking, {foreignKey: 'problemId'});
 User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
+Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
 
-export default {User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Problem, Submission, sequelize};
+export default {User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, sequelize};
