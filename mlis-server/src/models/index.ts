@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin } from 'sequelize';
+import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes } from 'sequelize';
 import { HasOneGetAssociationMixin } from 'sequelize';
 
 const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
@@ -18,6 +18,23 @@ export class Ranking extends Model {
   public readonly updatedAt!: Date;
 
   public getUser!: HasOneGetAssociationMixin<User>;
+}
+export async function getGlobalRanking() {
+  const res = await sequelize.query(`
+    SELECT c."userId" as "userId", SUM(c."points") as "points"
+    FROM (
+      SELECT a."problemId" as "problemId", a."userId" as "userId", GREATEST(1000-count(b."metric"), 0) as points
+      FROM rankings a
+      LEFT OUTER JOIN rankings b
+      ON a."problemId" = b."problemId" AND b."metric" < a."metric"
+      GROUP BY a."problemId", a."userId"
+    ) c
+    GROUP BY c."userId"
+    ORDER BY "points" DESC;
+    `,
+    { type: QueryTypes.SELECT }
+  );
+  return res;
 }
 
 Ranking.init({
@@ -572,4 +589,4 @@ TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
 Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
 
-export default {User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, sequelize};
+export default {User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};

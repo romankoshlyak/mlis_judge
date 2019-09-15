@@ -1,6 +1,6 @@
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
 import { Op, Transaction } from 'sequelize';
@@ -38,6 +38,11 @@ export default {
     updatedAt: (ranking: Ranking) => {
       return ranking.updatedAt.getTime();
     }
+  },
+  GlobalRanking: {
+    user: async (ranking: any, args: any, { models }: AppContext) => {
+      return await models.User.findByPk(ranking.userId);
+    },
   },
   Problem: {
     id: (parent: Problem) => getGlobalId(parent),
@@ -119,6 +124,10 @@ export default {
     problems: async (_parent: any, args: any, { models }: AppContext) => {
       const problems = await models.Problem.findAll();
       return connectionFromArray(problems, args);
+    },
+    globalRanking: async (_parent: any, args: any, { models }: AppContext) => {
+      const globalRanking = await getGlobalRanking();
+      return connectionFromArray(globalRanking, args);
     },
   },
   Main: {

@@ -142,17 +142,36 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
         const updatedTestSetRunReport = await updateTestSetRunReport(testRunReport, transaction);
         if (updatedTestSetRunReport.isAccepted) {
           const submission = await updatedTestRunReport.getSubmission();
-          const ranking = await models.Ranking.create(
-            {
-              problemId: updatedTestRunReport.problemId,
-              userId: submission.ownerId,
-              submissionId: submission.id,
-              metric: updatedTestSetRunReport.trainingTimeMean,
+          const problemId = updatedTestRunReport.problemId;
+          const userId = submission.ownerId;
+          const submissionId = submission.id;
+          const metric = updatedTestSetRunReport.trainingTimeMean;
+          let ranking = await models.Ranking.findOne({
+            where : {
+              problemId,
+              userId
             },
-            {
-              transaction
+            transaction
+          })
+          if (ranking == null) {
+            ranking = await models.Ranking.create(
+              {
+                problemId,
+                userId,
+                submissionId,
+                metric,
+              },
+              {
+                transaction
+              }
+            );
+          } else {
+            if (ranking.metric > metric) {
+              ranking.metric = metric;
+              ranking.submissionId = submissionId;
+              ranking = await ranking.save();
             }
-          );
+          }
           assertTrue(ranking.id != null);
         }
 

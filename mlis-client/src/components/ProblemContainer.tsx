@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
-import { Link } from 'react-router-dom';
 import ProblemSubmissionList from './ProblemSubmissionList';
 import Login from './Login';
 import Viewer from './Viewer';

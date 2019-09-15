@@ -68,6 +68,18 @@ export default gql`
     pageInfo: PageInfo!
     edges: [RankingEdge!]!
   }
+  type GlobalRanking {
+    user: User!
+    points: Int!
+  }
+  type GlobalRankingEdge {
+    node: GlobalRanking!
+    cursor: String!
+  }
+  type GlobalRankingConnection {
+    pageInfo: PageInfo!
+    edges: [GlobalRankingEdge!]!
+  }
   type Problem implements Node {
     id: ID!
     name: String!
@@ -190,6 +202,7 @@ export default gql`
     submission(id: ID!): Submission!
     problem(id: ID!): Problem!
     problems(after: String, first: Int, before: String, last: Int): ProblemConnection
+    globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection
   }
   type Main {
     viewer: Viewer
