@@ -21,9 +21,13 @@ class ProblemDetails extends React.Component<Props> {
         </Panel.Title>
       </Panel.Heading>
       <Panel.Collapse>
-        {this.props.problem.name}
-        <pre>
+        <h3>{this.props.problem.name}</h3>
+        <div>
           {this.props.problem.text}
+        </div>
+        <h3>Data provider:</h3>
+        <pre>
+          {this.props.problem.dataProvider}
         </pre>
       </Panel.Collapse>
     </Panel>
@@ -36,6 +40,7 @@ export default createFragmentContainer(ProblemDetails, {
     fragment ProblemDetails_problem on Problem {
       name
       text
+      dataProvider
     }
   `,
 });
