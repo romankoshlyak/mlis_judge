@@ -32,56 +32,56 @@ export default async function initDevData() {
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
-  const xorProblem = await models.Problem.create({name: "Hello Xor", text: "You need to learn xor function", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate});
+  const xorProblem = await models.Problem.create({name: "Hello Xor", text: "You need to learn xor function. See details in the link", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/hello-xor/198583254277577/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate});
   const xorTestSet = await models.TestSet.create({problemId: xorProblem.id, name: "TestSet1"});
   for (let testId = 0; testId < 10; testId++) {
     await models.Test.create({testSetId: xorTestSet.id, number: testId+1, description: `Test${testId+1}`, config: `{"id":${testId+1}}`, ...testLimits});
   }
   // General CPU
   {
-    const generalCpuProblem = await models.Problem.create({name: "General Cpu", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "General Cpu", text: "See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/general-cpu/198587934277109/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // General CPU v2
   {
-    const generalCpuProblem = await models.Problem.create({name: "General Cpu v2", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "General Cpu v2", text: "See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/general-cpu-v2/203006817168554/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // Find me
   {
-    const generalCpuProblem = await models.Problem.create({name: "Find me", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "Find me", text: "See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/find-me/203685497100686/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // Vote prediction
   {
-    const generalCpuProblem = await models.Problem.create({name: "Vote prediction", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "Vote prediction", text: "See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/vote-prediction/360055404797027/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // MNIST
   {
-    const generalCpuProblem = await models.Problem.create({name: "MNIST", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "MNIST", text: "See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/mnist/198590804276822/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // Die Hard
   {
-    const generalCpuProblem = await models.Problem.create({name: "Die Hard", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "Die Hard", text: "See descripiton in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/die-hard/218888018913767/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
   // BB8
   {
-    const generalCpuProblem = await models.Problem.create({name: "BB8", text: "Not implemented", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "BB8", text:"See description in the link below", textUrl: "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/bb8/456173625185204/", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
