@@ -2,6 +2,7 @@ import argparse
 import bootstrapped.bootstrap as bs
 import bootstrapped.stats_functions as bs_stats
 from ..utils.grid_search import RunsLogs, GridSearchConfig, GridSearch
+from ..utils.plotter import Plotter
 from .hello_xor_tester import TesterConfig
 
 def main():
@@ -17,7 +18,7 @@ def main():
     grid_search_config.set_runs_config(
             runs_params_grid = dict(
                 hidden_size=[3, 4],
-                learning_rate=[1.0,2.0],
+                learning_rate=[1.0,2.0,3.0],
                 ),
             runs_per_params=10
             )
@@ -41,6 +42,8 @@ def main():
     df['value_umean'] = df.value_confidence_range.transform(lambda x: x[1])
     df = df.drop(columns=['value_confidence_range'])
     print(df)
+
+    Plotter(runs_logs).show_1d(query="hidden_size==4 and name=='time_left'")
 
 if __name__ == '__main__':
     main()

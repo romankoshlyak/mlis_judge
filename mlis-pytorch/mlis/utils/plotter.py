@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 class Plotter():
@@ -17,6 +18,5 @@ class Plotter():
         col_column = 'col:'+Plotter.COLUMN_DELIMITER.join(columns)
         df[col_column] = df.apply (lambda row: Plotter.COLUMN_DELIMITER.join([str(row[c]) for c in columns]), axis=1)
         sns.set(style="darkgrid")
-        sns.relplot(x=x_column, y="value", hue="type", col=col_column, col_wrap=2, kind="line", markers=True, data=df)
-
-
+        sns.relplot(x=x_column, y="value", hue="name", col=col_column, col_wrap=2, kind="line", markers=True, data=df)
+        plt.show()

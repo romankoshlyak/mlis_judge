@@ -51,6 +51,9 @@ class RunsLogs():
                     columns_dict[column] = True
         return columns
 
+    def get_columns(self):
+        return self.run_params_keys.copy()
+
     def get_dataframe(self):
         data = []
         for run_params, name_to_scalars in self.run_params_to_scalars.items():
