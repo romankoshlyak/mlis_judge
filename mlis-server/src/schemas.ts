@@ -117,6 +117,7 @@ export default gql`
     id: ID!
     name: String!
     text: String!
+    textUrl: String
     codeTemplate: String!
     dataProvider: String!
     submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!

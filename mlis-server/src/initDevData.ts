@@ -27,7 +27,7 @@ export default async function initDevData() {
   const testLimits = {modelSizeLimit: 1000000.0, trainingStepsLimit: 1000000.0, trainingTimeLimit: 2.0, evaluationTimeLimit: 2.0, trainAccuracyLimit: 1.0, testAccuracyLimit: 1.0};
   // Tutorial
   {
-    const generalCpuProblem = await models.Problem.create({name: "Tutorial", text: "If you new to Pytorch, start here https://colab.research.google.com/drive/18BZOWGX217Ix2FOic2VlSEQBV6wPhA1c", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
+    const generalCpuProblem = await models.Problem.create({name: "Tutorial", text: "If you new to Pytorch, click link below for Tutorial:", textUrl: "https://colab.research.google.com/drive/18BZOWGX217Ix2FOic2VlSEQBV6wPhA1c", dataProvider: xorDataProvider, codeTemplate: xorCodeTemplate });
     const generalCpuTestSet = await models.TestSet.create({problemId: generalCpuProblem.id, name: "TestSet2"});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});

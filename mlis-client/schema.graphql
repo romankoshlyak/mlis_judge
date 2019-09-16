@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Sun Sep 15 2019 18:59:55 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Sep 16 2019 06:37:27 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -166,6 +166,7 @@ type Problem implements Node {
   id: ID!
   name: String!
   text: String!
+  textUrl: String
   codeTemplate: String!
   dataProvider: String!
   submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!

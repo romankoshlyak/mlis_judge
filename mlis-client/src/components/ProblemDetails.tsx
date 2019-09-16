@@ -11,6 +11,12 @@ interface Props {
 
 class ProblemDetails extends React.Component<Props> {
   render() {
+    let link = null;
+    if (this.props.problem.textUrl != null) {
+      link = (
+        <a href={this.props.problem.textUrl}>{this.props.problem.textUrl}</a>
+      );
+    }
     return (
     <Panel style={this.props.style}>
       <Panel.Heading>
@@ -24,6 +30,9 @@ class ProblemDetails extends React.Component<Props> {
         <h3>{this.props.problem.name}</h3>
         <div>
           {this.props.problem.text}
+        </div>
+        <div>
+          {link}
         </div>
         <h3>Data provider:</h3>
         <pre>
@@ -40,6 +49,7 @@ export default createFragmentContainer(ProblemDetails, {
     fragment ProblemDetails_problem on Problem {
       name
       text
+      textUrl
       dataProvider
     }
   `,

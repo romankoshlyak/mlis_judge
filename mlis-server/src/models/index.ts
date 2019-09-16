@@ -186,6 +186,7 @@ export class Problem extends Model {
   public id!: number;
   public name!: string;
   public text!: string;
+  public textUrl!: string;
   public codeTemplate!: string;
   public dataProvider!: string;
 
@@ -210,6 +211,10 @@ Problem.init({
   text: {
     type: new DataTypes.TEXT,
     allowNull: false,
+  },
+  textUrl: {
+    type: new DataTypes.TEXT,
+    allowNull: true,
   },
   codeTemplate: {
     type: new DataTypes.TEXT,
