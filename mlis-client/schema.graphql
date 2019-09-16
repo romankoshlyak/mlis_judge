@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Sun Sep 15 2019 15:02:38 GMT-0700 (Pacific Daylight Time)
+# timestamp: Sun Sep 15 2019 18:59:55 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -22,6 +22,16 @@ type AdminViewer {
   problems(after: String, first: Int, before: String, last: Int): ProblemConnection
 }
 
+input ApplyForClassInput {
+  classId: ID!
+  clientMutationId: String
+}
+
+type ApplyForClassPayload {
+  class: Class!
+  clientMutationId: String
+}
+
 enum AuthType {
   FB_TOKEN
   CRYPTO_TOKEN
@@ -41,6 +51,45 @@ input ChangeProblemInput {
 type ChangeProblemPayload {
   problem: Problem!
   clientMutationId: String
+}
+
+type Class implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  startAt: Float!
+  firstTaskDueAt: Float!
+  mentor: User!
+  studentsCount: Int!
+  students(after: String, first: Int, before: String, last: Int): ClassStudentConnection!
+  viewerIsApplied: Boolean!
+}
+
+type ClassConnection {
+  pageInfo: PageInfo!
+  edges: [ClassEdge!]!
+}
+
+type ClassEdge {
+  node: Class!
+  cursor: String!
+}
+
+type ClassStudent implements Node {
+  id: ID!
+  class: Class!
+  student: User!
+  isEliminated: Boolean!
+}
+
+type ClassStudentConnection {
+  pageInfo: PageInfo!
+  edges: [ClassStudentEdge!]!
+}
+
+type ClassStudentEdge {
+  node: ClassStudent!
+  cursor: String!
 }
 
 input GetTaskInput {
@@ -93,6 +142,7 @@ type Main {
 type Mutation {
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
+  applyForClass(input: ApplyForClassInput!): ApplyForClassPayload!
   submit(input: SubmitInput!): SubmitPayload!
   adminGetTask(input: GetTaskInput!): GetTaskPayload!
   adminSaveTaskRunReport(input: SaveTaskRunReportInput!): SaveTaskRunReportPayload!
@@ -369,6 +419,7 @@ type Viewer {
   user: User!
   submission(id: ID!): Submission!
   problem(id: ID!): Problem!
-  problems(after: String, first: Int, before: String, last: Int): ProblemConnection
-  globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection
+  problems(after: String, first: Int, before: String, last: Int): ProblemConnection!
+  globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection!
+  classes(after: String, first: Int, before: String, last: Int): ClassConnection!
 }

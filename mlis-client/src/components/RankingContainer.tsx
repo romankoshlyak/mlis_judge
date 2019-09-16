@@ -18,7 +18,7 @@ class RankingContainer extends React.Component<Props> {
       return null;
     }
     const viewer = this.props.main.viewer;
-    const edges = viewer.globalRanking!.edges.slice(0);
+    const edges = viewer.globalRanking.edges.slice(0);
     const lines = edges.map((edge, index) => {
       const node = edge.node;
       return (

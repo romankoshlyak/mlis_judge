@@ -15,6 +15,39 @@ export default gql`
     name: String!
     email: String!
   }
+  type ClassStudent implements Node {
+    id: ID!
+    class: Class!
+    student: User!
+    isEliminated: Boolean!
+  }
+  type ClassStudentEdge {
+    node: ClassStudent!
+    cursor: String!
+  }
+  type ClassStudentConnection {
+    pageInfo: PageInfo!
+    edges: [ClassStudentEdge!]!
+  }
+  type Class implements Node {
+    id: ID!
+    name: String!
+    description: String!
+    startAt: Float!
+    firstTaskDueAt: Float!
+    mentor: User!
+    studentsCount: Int!
+    students(after: String, first: Int, before: String, last: Int): ClassStudentConnection!
+    viewerIsApplied: Boolean!
+  }
+  type ClassEdge {
+    node: Class!
+    cursor: String!
+  }
+  type ClassConnection {
+    pageInfo: PageInfo!
+    edges: [ClassEdge!]!
+  }
   type Test implements Node {
     id: ID!
     number: Int!
@@ -201,8 +234,9 @@ export default gql`
     user: User!
     submission(id: ID!): Submission!
     problem(id: ID!): Problem!
-    problems(after: String, first: Int, before: String, last: Int): ProblemConnection
-    globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection
+    problems(after: String, first: Int, before: String, last: Int): ProblemConnection!
+    globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection!
+    classes(after: String, first: Int, before: String, last: Int): ClassConnection!
   }
   type Main {
     viewer: Viewer
@@ -302,9 +336,18 @@ export default gql`
   type LogoutPayload {
     clientMutationId: String
   }
+  input ApplyForClassInput {
+    classId: ID!
+    clientMutationId: String
+  }
+  type ApplyForClassPayload {
+    class: Class!
+    clientMutationId: String
+  }
   type Mutation {
     login(input: LoginInput!): LoginPayload!
     logout(input: LogoutInput!): LogoutPayload!
+    applyForClass(input: ApplyForClassInput!): ApplyForClassPayload!
     submit(input: SubmitInput!): SubmitPayload!
 
     adminGetTask(input: GetTaskInput!): GetTaskPayload!

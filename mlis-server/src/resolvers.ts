@@ -1,6 +1,6 @@
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking, Class } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
 import { Op, Transaction } from 'sequelize';
@@ -28,6 +28,27 @@ export default {
     problems: async (_parent: any, args: any, { models }: AppContext) => {
       const problems = await models.Problem.findAll();
       return connectionFromArray(problems, args);
+    },
+  },
+  Class: {
+    id: (parent: Class) => getGlobalId(parent),
+    startAt: (clazz: Class) => {
+      return clazz.startAt.getTime();
+    },
+    firstTaskDueAt: (clazz: Class) => {
+      return clazz.firstTaskDueAt.getTime();
+    },
+    mentor: async (clazz: Class) => {
+      return await clazz.getUser();
+    },
+    studentsCount: async (clazz: Class) => {
+      const students = await clazz.getClassStudents();
+      return students.length;
+    },
+    viewerIsApplied: async (clazz: Class, args: any, {viewer}: AppContext) => {
+      const students = await clazz.getClassStudents();
+      students.filter((student) => student.studentId == viewer!.id)
+      return students.length > 0;
     },
   },
   Ranking: {
@@ -128,6 +149,10 @@ export default {
     globalRanking: async (_parent: any, args: any, { models }: AppContext) => {
       const globalRanking = await getGlobalRanking();
       return connectionFromArray(globalRanking, args);
+    },
+    classes: async (_parent: any, args: any, { models }: AppContext) => {
+      const classes = await models.Class.findAll();
+      return connectionFromArray(classes, args);
     },
   },
   Main: {
@@ -371,7 +396,35 @@ export default {
       } catch (e) {
         await transaction.rollback()
         throw e;
-    }
+      }
+    },
+    applyForClass: async (parent: null, { input }: any, { viewer, models, pubsub }: AppContext) => {
+      viewer = requireValue(viewer);
+
+      const transaction = await models.sequelize.transaction({isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE});
+      try {
+        const classId = parseInt(fromGlobalId(input.classId).id);
+        const clazz = requireValue(await models.Class.findByPk(classId));
+        const classStudent = await models.ClassStudent.create(
+          {
+            classId,
+            studentId: viewer.id,
+            isEleminated: false,
+          },
+          {
+            transaction
+          }
+        );
+        assertTrue(classStudent.id != null);
+        transaction.commit();
+        return {
+          class: clazz,
+          clientMutationId: input.clientMutationId,
+        };
+      } catch (e) {
+        await transaction.rollback()
+        throw e;
+      }
     }
   },
   Subscription: {

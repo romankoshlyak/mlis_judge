@@ -35,6 +35,12 @@ export default async function initDevData() {
   await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
   await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
 
+  // Create classes
+  const basicClassName = 'Basic deep learning';
+  const basicClassDescription = 'You need to know Python before you start this class. We will start with learning neural network, then we learn why deep neural network hard to learn and what to do with it, we learn how to make neural network to generalize'
+  await models.Class.create({name: basicClassName, description: basicClassDescription, startAt: new Date("11/16/2019, 08:00:01 AM"), firstTaskDueAt: new Date("9/23/2019, 07:00:01 AM"), mentorId: roman.id});
+  await models.Class.create({name: basicClassName, description: basicClassDescription, startAt: new Date("10/21/2019, 07:00:01 AM"), firstTaskDueAt: new Date("10/28/2019, 07:00:01 AM"), mentorId: roman.id});
+
   // Submit hello xor solution
   const romanToken = getTokenFromUser(roman);
   const context = await AppServer.getContextFromToken(romanToken);

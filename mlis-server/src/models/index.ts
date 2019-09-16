@@ -65,6 +65,86 @@ Ranking.init({
   tableName: 'rankings',
 });
 
+export class Class extends Model {
+  public id!: number;
+  public name!: string;
+  public description!: string;
+  public startAt!: Date;
+  public firstTaskDueAt!: Date;
+  public mentorId!: number;
+  public getUser!: HasOneGetAssociationMixin<User>;
+  public getClassStudents!: HasManyGetAssociationsMixin<ClassStudent>;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+Class.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  startAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  firstTaskDueAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  mentorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+}, {
+  sequelize,
+  tableName: 'classes',
+});
+
+export class ClassStudent extends Model {
+  public id!: number;
+  public classId!: number;
+  public studentId!: number;
+  public isEleminated!: boolean;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+ClassStudent.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true,
+  },
+  classId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  studentId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  isEleminated: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+}, {
+  sequelize,
+  tableName: 'classStudents',
+});
+
 export class Submission extends Model {
   public id!: number;
   public testSetRunReportId!: number;
@@ -588,5 +668,9 @@ User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
 Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
+Class.hasMany(ClassStudent, {foreignKey: 'classId'});
+Class.hasOne(User, {foreignKey: 'id', sourceKey: 'mentorId', constraints: false});
+ClassStudent.hasOne(User, {foreignKey: 'id', sourceKey: 'studentId', constraints: false});
+ClassStudent.hasOne(Class, {foreignKey: 'id', sourceKey: 'classId', constraints: false});
 
-export default {User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};
+export default {Class, ClassStudent, User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};
