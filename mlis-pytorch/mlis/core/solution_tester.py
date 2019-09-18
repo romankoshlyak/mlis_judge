@@ -183,7 +183,7 @@ class SolutionTester():
         time_mult = speed_calculator.calc_linear_time_mult()
         print("Local CPU time mult = {:.2f}".format(time_mult))
         if case_number != -1:
-            tests = self.filer_tests(tests, case_number)
+            tests = self.filter_tests(tests, case_number)
         case_results = []
         case_limits = []
         for test_config in tests:

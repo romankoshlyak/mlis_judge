@@ -47,6 +47,6 @@ class DataProvider:
         random_input_size = config['randomInputSize']
 
         data, target = self._create_data(2*data_size, input_size, random_input_size, seed)
-        case_data.set_train_data((data, target))
-        case_data.set_test_data((data, target))
+        case_data.set_train_data((data[:data_size], target[:data_size]))
+        case_data.set_test_data((data[data_size:], target[data_size:]))
         return case_data

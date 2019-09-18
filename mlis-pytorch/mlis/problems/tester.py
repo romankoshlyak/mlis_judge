@@ -21,6 +21,7 @@ class ProblemName(Enum):
     GENERAL_CPU = 'general_cpu'
     GENERAL_CPU_V2 = 'general_cpu_v2'
     FIND_ME = 'find_me'
+    VOTE_PREDICTION = 'vote_prediction'
 
     def __str__(self):
         return self.value
