@@ -51,6 +51,7 @@ async function main() {
         await initDevData();
         break;
       } catch (e) {
+        console.log(e);
         const waitingTime = 10;
         console.log(`Wating for ${waitingTime} seconds...`);
         await sleep(waitingTime * 1000);

@@ -261,7 +261,7 @@ Test.init({
     allowNull: false,
   },
   config: {
-    type: new DataTypes.STRING,
+    type: new DataTypes.TEXT,
     allowNull: false,
   },
   modelSizeLimit: {

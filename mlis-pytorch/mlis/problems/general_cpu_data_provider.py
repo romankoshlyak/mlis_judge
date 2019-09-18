@@ -20,7 +20,6 @@ class DataProvider:
 
     def create_case_data(self, config):
         case_data = CaseData()
-
         seed = config['seed']
         input_size = config['inputSize']
         data, target = self.create_data(input_size, seed)

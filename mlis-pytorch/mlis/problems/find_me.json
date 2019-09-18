@@ -1,0 +1,132 @@
+{
+  "name": "Find Me",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/find-me/203685497100686/",
+  "dataProviderFile": "find_me_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 1000000,
+        "trainingStepsLimit": 1000000,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 1.0,
+        "testAccuracyLimit": 1.0
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "8 inputs and 0 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 0
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "8 inputs and 4 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 4
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "8 inputs and 8 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 8
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "8 inputs and 12 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 12
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "8 inputs and 16 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 16
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "8 inputs and 20 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 20
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "8 inputs and 24 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 24
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "8 inputs and 28 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 28
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "8 inputs and 32 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 32
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "8 inputs and 32 random inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "randomInputSize": 32
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 {
-  "name": "General Cpu",
+  "name": "General Cpu V2",
   "text": "See description in the link below",
-  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/general-cpu/198587934277109/",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/general-cpu-v2/203006817168554/",
   "dataProviderFile": "general_cpu_data_provider.py",
   "codeTemplateFile": "see_hello_xor_code_template.py",
   "testSets": [
     {
       "name": "TestSet1",
       "limits": {
-        "modelSizeLimit": 10000,
+        "modelSizeLimit": 1000000,
         "trainingStepsLimit": 1000000,
         "trainingTimeLimit": 2.0,
         "evaluationTimeLimit": 2.0,
@@ -19,91 +19,91 @@
         {
           "number": 1,
           "runSeed": 1,
-          "description": "4 inputs",
+          "description": "8 inputs",
           "dataProviderConfig": {
             "seed": 1,
-            "inputSize": 4
+            "inputSize": 8
           }
         },
         {
           "number": 2,
           "runSeed": 2,
-          "description": "5 inputs",
+          "description": "9 inputs",
           "dataProviderConfig": {
             "seed": 2,
-            "inputSize": 5
+            "inputSize": 9
           }
         },
         {
           "number": 3,
           "runSeed": 3,
-          "description": "6 inputs",
+          "description": "10 inputs",
           "dataProviderConfig": {
             "seed": 3,
-            "inputSize": 6
+            "inputSize": 10
           }
         },
         {
           "number": 4,
           "runSeed": 4,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 4,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 5,
           "runSeed": 5,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 5,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 6,
           "runSeed": 6,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 6,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 7,
           "runSeed": 7,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 7,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 8,
           "runSeed": 8,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 8,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 9,
           "runSeed": 9,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 9,
-            "inputSize": 7
+            "inputSize": 11
           }
         },
         {
           "number": 10,
           "runSeed": 10,
-          "description": "7 inputs",
+          "description": "11 inputs",
           "dataProviderConfig": {
             "seed": 10,
-            "inputSize": 7
+            "inputSize": 11
           }
         }
       ]

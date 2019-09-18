@@ -9,7 +9,7 @@
       "name": "TestSet1",
       "limits": {
         "modelSizeLimit": 10000,
-        "trainingStepsLimit": 1000000.0,
+        "trainingStepsLimit": 1000000,
         "trainingTimeLimit": 2.0,
         "evaluationTimeLimit": 2.0,
         "trainAccuracyLimit": 1.0,

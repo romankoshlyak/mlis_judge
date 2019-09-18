@@ -11,6 +11,8 @@ async function getConfigList() {
   const configList = [
     'hello_xor.json',
     'general_cpu.json',
+    'general_cpu_v2.json',
+    'find_me.json',
   ];
   return configList.map(x => DIR_NAME + x);;
 }
