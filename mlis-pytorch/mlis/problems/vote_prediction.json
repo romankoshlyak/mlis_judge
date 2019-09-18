@@ -1,0 +1,132 @@
+{
+  "name": "Vote prediction",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/vote-prediction/360055404797027/",
+  "dataProviderFile": "vote_prediction_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 1000000,
+        "trainingStepsLimit": 1000000,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 1.0,
+        "testAccuracyLimit": 1.0
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "8 inputs per voter and 1 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 1
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "8 inputs per voter and 2 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 2
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "8 inputs per voter and 3 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 3
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "8 inputs per voter and 4 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 4
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "8 inputs per voter and 5 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 5
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "8 inputs per voter and 6 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 6
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "8 inputs per voter and 7 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 7
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "8 inputs per voter and 8 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 8
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "8 inputs per voter and 1 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 9
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "8 inputs per voter and 10 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 10
+          }
+        }
+      ]
+    }
+  ]
+}

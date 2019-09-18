@@ -5,9 +5,6 @@ import torch
 from ..core.case_data import CaseData
 
 class DataProvider:
-    def __init__(self):
-        self.number_of_cases = 10
-
     def _create_data(self, data_size, input_size, random_input_size, seed):
         torch.manual_seed(seed)
         function_size = 1 << input_size

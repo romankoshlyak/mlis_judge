@@ -1,40 +1,14 @@
+
 # There are random function from 8 inputs.
 # There are random input vector of size 8 * number of voters.
 # We calculate function number of voters times and sum result.
 # We return 1 if sum > voters/2, 0 otherwise
 # We split data in 2 parts, on first part you will train and on second
 # part we will test
-import time
-import random
 import torch
-import torchvision
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from ..utils import solutionmanager as sm
-from ..utils import gridsearch as gs
-
-class Solution():
-    # Return trained model
-    def train_model(self, train_data, train_target, context):
-        print("See helloXor for solution template")
-        exit(0)
-
-###
-###
-### Don't change code after this line
-###
-###
-class Limits:
-    def __init__(self):
-        self.time_limit = 2.0
-        self.size_limit = 1000000
-        self.test_limit = 1.0
+from ..core.case_data import CaseData
 
 class DataProvider:
-    def __init__(self):
-        self.number_of_cases = 10
-
     def get_index(self, tensor_index):
         index = 0
         for i in range(tensor_index.size(0)):
@@ -69,21 +43,14 @@ class DataProvider:
         data, target = self.create_data(2*data_size, input_size, input_count_size, case)
         return sm.CaseData(case, Limits(), (data[:data_size], target[:data_size]), (data[data_size:], target[data_size:])).set_description("{} inputs per voter and {} voters".format(input_size, input_count_size))
 
-class Config:
-    def __init__(self):
-        self.max_samples = 10000
+    def create_case_data(self, config):
+        case_data = CaseData()
+        seed = config['seed']
+        data_size = config['dataSize']
+        input_size = config['inputSize']
+        input_count_size = config['inputCountSize']
 
-    def get_data_provider(self):
-        return DataProvider()
-
-    def get_solution(self):
-        return Solution()
-
-run_grid_search = False
-# Uncomment next line if you want to run grid search
-#run_grid_search = True
-if run_grid_search:
-    gs.GridSearch().run(Config(), case_number=1, random_order=False, verbose=False)
-else:
-    # If you want to run specific case, put number here
-    sm.SolutionManager().run(Config(), case_number=-1)
+        data, target = self.create_data(2*data_size, input_size, input_count_size, seed)
+        case_data.set_train_data((data, target))
+        case_data.set_test_data((data, target))
+        return case_data
