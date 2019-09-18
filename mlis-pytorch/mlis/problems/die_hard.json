@@ -1,0 +1,122 @@
+{
+  "name": "Die Hard",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/die-hard/218888018913767/",
+  "dataProviderFile": "die_hard_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 1000000,
+        "trainingStepsLimit": 1000000,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 0.75,
+        "testAccuracyLimit": 0.75
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 1,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 2,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 3,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 4,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 5,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 6,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 7,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 8,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 9,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "Easy 2 inputs and hard 6 inputs",
+          "dataProviderConfig": {
+            "seed": 10,
+            "easyInputSize": 2,
+            "hardInputSize": 6
+          }
+        }
+      ]
+    }
+  ]
+}

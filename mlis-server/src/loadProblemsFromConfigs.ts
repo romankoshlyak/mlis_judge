@@ -14,6 +14,7 @@ async function getConfigList() {
     'general_cpu_v2.json',
     'find_me.json',
     'vote_prediction.json',
+    'die_hard.json',
   ];
   return configList.map(x => DIR_NAME + x);;
 }

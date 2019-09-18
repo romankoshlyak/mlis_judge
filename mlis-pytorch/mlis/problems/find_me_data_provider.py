@@ -5,7 +5,7 @@ import torch
 from ..core.case_data import CaseData
 
 class DataProvider:
-    def _create_data(self, data_size, input_size, random_input_size, seed):
+    def __create_data(self, data_size, input_size, random_input_size, seed):
         torch.manual_seed(seed)
         function_size = 1 << input_size
         function_input = torch.ByteTensor(function_size, input_size)
@@ -46,7 +46,7 @@ class DataProvider:
         input_size = config['inputSize']
         random_input_size = config['randomInputSize']
 
-        data, target = self._create_data(2*data_size, input_size, random_input_size, seed)
+        data, target = self.__create_data(2*data_size, input_size, random_input_size, seed)
         case_data.set_train_data((data[:data_size], target[:data_size]))
         case_data.set_test_data((data[data_size:], target[data_size:]))
         return case_data
