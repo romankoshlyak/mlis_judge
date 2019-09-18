@@ -20,7 +20,7 @@ class ProblemName(Enum):
     HELLO_XOR = 'hello_xor'
     GENERAL_CPU = 'general_cpu'
     GENERAL_CPU_V2 = 'general_cpu_v2'
-    GENERAL_CPU_V2 = 'find_me'
+    FIND_ME = 'find_me'
 
     def __str__(self):
         return self.value

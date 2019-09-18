@@ -71,7 +71,7 @@ async function updateTestSetRunReport(testRunReport: TestRunReport, transaction:
   testSetRunReport.testAccuracyMean = 0;
   testSetRunReport.testAccuracyMax = -Infinity;
   for (const report of testRunReports) {
-    testSetRunReport.isAccepted = testSetRunReport && report.isAccepted;
+    testSetRunReport.isAccepted = testSetRunReport.isAccepted && report.isAccepted;
     testSetRunReport.modelSizeMin =  (testSetRunReport.modelSizeMin < report.modelSize) ? testSetRunReport.modelSizeMin : report.modelSize;
     testSetRunReport.modelSizeMean += report.modelSize;
     testSetRunReport.modelSizeMax =  (testSetRunReport.modelSizeMax > report.modelSize) ? testSetRunReport.modelSizeMax : report.modelSize;
