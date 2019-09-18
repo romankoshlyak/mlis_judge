@@ -1,18 +1,31 @@
+import os
+import json
 import argparse
 import bootstrapped.bootstrap as bs
 import bootstrapped.stats_functions as bs_stats
 from ..utils.grid_search import RunsLogs, GridSearchConfig, GridSearch
 from ..utils.plotter import Plotter
-from .hello_xor_tester import TesterConfig
+from .hello_xor_data_provider import DataProvider
+from .hello_xor_solution import Solution
+from .tester import TesterConfig
+from ..core.solution_tester import SolutionTester
 
 def main():
     parser = argparse.ArgumentParser(description='Grid search', allow_abbrev=False)
     parser.add_argument('-run_count', type=int, default=10)
     parser.add_argument('-hidden_size', type=int, nargs='+', default=[1])
     parser.add_argument('-learning_rate', type=float, nargs='+', default=[1.0])
-    tester_config = TesterConfig()
+    tester_config = TesterConfig(DataProvider, Solution)
+    case_number = 1
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(dir_path, 'hello_xor.json'), 'r') as myfile:
+        problem_config = json.loads(myfile.read())
+    test_set = problem_config['testSets'][0]
+    solution_tester = SolutionTester()
+    tests = solution_tester.get_tests_with_limits(test_set)
+    tests = solution_tester.filter_tests(tests, case_number)
     grid_search_config = GridSearchConfig()
-    grid_search_config.set_case_number(1)
+    grid_search_config.set_test_config(tests[0])
     grid_search_config.set_verbose(False)
     #grid_search_config.set_grid_attributes_from_command_line(parser)
     grid_search_config.set_runs_config(

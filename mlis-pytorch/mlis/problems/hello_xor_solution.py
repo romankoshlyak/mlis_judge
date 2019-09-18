@@ -28,12 +28,11 @@ class Solution():
     # Return trained model
     def train_model(self, train_data, train_target, context):
         # Uncommend next line to understand grid search
-        print("Hint[1]: Increase hidden size")
-        hidden_size = 3
-        print("Hint[2]: Learning rate is too small")
-        learning_rate = 1.0
+        hidden_size = 4
+        learning_rate = 2
         # Set up trainng parameters from context
-        hidden_size, learning_rate = self.grid_search_tutorial_part1(context)
+        if context.type == context.__class__.GRID_SEARCH:
+            hidden_size, learning_rate = context.run_params.hidden_size, context.run_params.learning_rate
         # Model represent our neural network
         model = HelloXorModel(train_data.size(1), train_target.size(1), hidden_size)
         # Optimizer used for training neural network
@@ -64,21 +63,14 @@ class Solution():
             # update model: model.parameters() -= lr * gradient
             optimizer.step()
         # Log data for grid search
-        self.grid_search_tutorial_part2(context)
+        self.grid_search_tutorial(context)
         return model
 
     def print_stats(self, step, error, correct, total):
         if step % 1000 == 0:
             print("Step = {} Correct = {}/{} Error = {}".format(step, correct, total, error.item()))
 
-    def grid_search_tutorial_part1(self, context):
-        if context.type == context.__class__.GRID_SEARCH:
-            return context.run_params.hidden_size, context.run_params.learning_rate
-        else:
-            print("In order to run grid search execute: python3 -m mlis.problems.hello_xor_grid_search")
-            exit(0)
-
-    def grid_search_tutorial_part2(self, context):
+    def grid_search_tutorial(self, context):
         # During grid search, train_model will be called runs_per_params times with every possible combination of params.
         # This can be used for automatic parameters tunning.
         if context.type == context.__class__.GRID_SEARCH:

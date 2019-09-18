@@ -32,6 +32,7 @@ async function updateTestRunReport(testRunReport: TestRunReport, input: any, tra
   testRunReport.stdErr = input.stdErr;
   testRunReport.status = FINISHED;
   if (input.result != null) {
+    input.result.evaluationTime = input.result.testEvaluationTime;
     testRunReport.setAttributes(input.result);
   }
   const test = await testRunReport.getTest();

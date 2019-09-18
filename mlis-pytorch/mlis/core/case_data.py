@@ -1,11 +1,21 @@
 class CaseData:
-    def __init__(self, number, limits, train_data, test_data):
+    def __init__(self):
+        pass
+
+    def set_number(self, number):
         self.number = number
-        self.run_seed = number
-        self.limits = limits
+
+    def set_train_data(self, train_data):
         self.train_data = train_data
+
+    def set_test_data(self, test_data):
         self.test_data = test_data
-        self.description = None
+
+    def set_run_seed(self, run_seed):
+        self.run_seed = run_seed
+
+    def set_limits(self, limits):
+        self.limits = limits
 
     def set_description(self, description):
         self.description = description

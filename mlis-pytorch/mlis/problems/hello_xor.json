@@ -1,0 +1,82 @@
+{
+  "name": "Hello Xor",
+  "text": "You need to learn xor function. See details in the link",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/hello-xor/198583254277577/",
+  "dataProviderFile": "hello_xor_data_provider.py",
+  "codeTemplateFile": "hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 10000,
+        "trainingStepsLimit": 1000000.0,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 1.0,
+        "testAccuracyLimit": 1.0
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "xor function",
+          "dataProviderConfig": null
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "xor function",
+          "dataProviderConfig": null
+        }
+      ]
+    }
+  ]
+}

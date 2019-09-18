@@ -268,12 +268,13 @@ export default gql`
     modelSize: Int!
     trainingSteps: Int!
     trainingTime: Float!,
-    evaluationTime: Float!,
+    trainEvaluationTime: Float!,
     trainError: Float!,
     trainCorrect: Float,
     trainTotal: Float,
     trainAccuracy: Float,
     trainMetric: Float,
+    testEvaluationTime: Float!,
     testError: Float!,
     testCorrect: Float,
     testTotal: Float,

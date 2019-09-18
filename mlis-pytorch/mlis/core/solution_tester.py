@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from .speed_calculator import SpeedCalculator
 from .training_context import TrainingContext
 from .timer import Timer
+from .limits import Limits
 
 class SolutionTester():
     HINT_YELLOW = '\033[93m'
@@ -52,40 +53,31 @@ class SolutionTester():
         # We need to init random system, used for multiple runs
         torch.manual_seed(context.run_seed)
         model = solution.train_model(*train_data, context)
-        execution_time = context.timer.get_execution_time()
-        reject_reason = context.get_reject_reason()
-        return context.step, execution_time, reject_reason, model
+        return context.step, model
 
-    def run_case(self, config, case_data):
-        solution = config.get_solution()
-        run_seed = case_data.number
-        context = None
-        step, execution_time, reject_reason, model = self.train_model(solution, context)
-        model_size = self.calc_model_size(model)
-        model.eval()
-        data, target = case_data.train_data
-        train_stat = self.calc_model_stats(config, model, data, target)
-        data, target = case_data.test_data
-        test_stat = self.calc_model_stats(config, model, data, target)
-        return {
-                'case': case_data.number,
-                'step': step,
-                'time': execution_time,
-                'reject_reason': reject_reason,
-                'size': model_size,
-                'trainStat': train_stat,
-                'testStat': test_stat
-                }
+    def set_case_data_from_config(self, case_data, test_config):
+        case_data.set_number(test_config['number'])
+        case_data.set_run_seed(test_config['runSeed'])
+        case_data.set_description(test_config['description'])
+        case_data.set_limits(Limits(test_config['limits']))
+        return case_data
 
-    def run_case_from_test_config(self, config, test_config):
+    def get_case_data_from_test_config(self, config, test_config):
         data_provider = config.get_data_provider()
-        solution = config.get_solution()
-        case_data = data_provider.create_case_data(test_config)
+        data_provider_config = test_config['dataProviderConfig']
+        case_data = data_provider.create_case_data(data_provider_config)
+        case_data = self.set_case_data_from_config(case_data, test_config)
+        return case_data
+
+    def run_case_from_case_data(self, config, case_data, time_mult = 1.0):
         limits = case_data.get_limits()
-        time_mult = 1.0
-        timer = Timer(limits.time_limit, time_mult)
+        timer = Timer(limits.training_time_limit, time_mult)
         context = TrainingContext(case_data.run_seed, timer)
-        step, execution_time, reject_reason, model = self.train_model(solution, case_data.train_data, context)
+        training_start_time = time.time()
+        solution = config.get_solution()
+        step, model = self.train_model(solution, case_data.train_data, context)
+        training_end_time = time.time()
+        training_time = training_end_time - training_start_time
         model_size = self.calc_model_size(model)
         model.eval()
         data, target = case_data.train_data
@@ -96,8 +88,7 @@ class SolutionTester():
         return {
             'modelSize': model_size,
             'trainingSteps': step,
-            'trainingTime': execution_time,
-            'evaluationTime': 1.0,
+            'trainingTime': training_time,
             'trainEvaluationTime': train_stat['evaluation_time'],
             'trainError': train_stat['error'],
             'trainCorrect': train_stat['correct'],
@@ -111,6 +102,10 @@ class SolutionTester():
             'testAccuracy': test_stat['accuracy'],
             'testMetric': 1.0,
         }
+
+    def run_case_from_test_config(self, config, test_config, time_mult = 1.0):
+        case_data = self.get_case_data_from_test_config(config, test_config)
+        return self.run_case_from_case_data(config, case_data, time_mult)
 
     @classmethod
     def colored_string(self, s, color):
@@ -134,34 +129,34 @@ class SolutionTester():
     def evaluate_result(self, case_data, case_result):
         limits = case_data.get_limits()
         r = case_result
-        case = r['case']
-        description = r['description']
-        step = r['step']
-        size = r['size']
-        time = r['time']
-        reject_reason = r['reject_reason']
-        train_error = r['trainStat']['error']
-        train_correct = r['trainStat']['correct']
-        train_total = r['trainStat']['total']
-        train_ration = train_correct/float(train_total)
-        test_error = r['testStat']['error']
-        test_correct = r['testStat']['correct']
-        test_total = r['testStat']['total']
-        test_ratio = test_correct/float(test_total)
+        case = case_data.number
+        description = case_data.description
+        size = r['modelSize']
+        step = r['trainingSteps']
+        time = r['trainingTime']
+        reject_reason = None
+        train_error = r['trainError']
+        train_correct = r['trainCorrect']
+        train_total = r['trainTotal']
+        train_ration = r['trainAccuracy']
+        test_error = r['testError']
+        test_correct = r['testCorrect']
+        test_total = r['testTotal']
+        test_ratio = r['testAccuracy']
 
         print("Case #{}[{}] Step={} Size={}/{} Time={:.1f}/{:.1f}".format(
-            case, description, step, size, limits.size_limit, time, limits.time_limit))
+            case, description, step, size, limits.model_size_limit, time, limits.training_time_limit))
         print("Train correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
-            train_correct, train_total, train_ration, limits.test_limit, train_error))
+            train_correct, train_total, train_ration, limits.train_accuracy_limit, train_error))
         print("Test  correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
-            test_correct, test_total, test_ratio, limits.test_limit, test_error))
+            test_correct, test_total, test_ratio, limits.test_accuracy_limit, test_error))
         r['accepted'] = False
-        if size > limits.size_limit:
-            print(self.rejected_string("[REJECTED]")+": MODEL IS TOO BIG: Size={} Size Limit={}".format(size, limits.size_limit))
-        elif time > limits.time_limit:
-            print(self.rejected_string("[REJECTED]")+": TIME LIMIT EXCEEDED: Time={:.1f} Time Limit={:.1f}".format(time, limits.time_limit))
-        elif test_ratio < limits.test_limit:
-            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT LEARN: Learn ratio={}/{}".format(test_ratio, limits.test_limit))
+        if size > limits.model_size_limit:
+            print(self.rejected_string("[REJECTED]")+": MODEL IS TOO BIG: Size={} Size Limit={}".format(size, limits.model_size_limit))
+        elif time > limits.training_time_limit:
+            print(self.rejected_string("[REJECTED]")+": TIME LIMIT EXCEEDED: Time={:.1f} Time Limit={:.1f}".format(time, limits.training_time_limit))
+        elif test_ratio < limits.test_accuracy_limit:
+            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT LEARN: Learn ratio={}/{}".format(test_ratio, limits.test_accuracy_limit))
         elif reject_reason is not None:
             print(self.rejected_string("[REJECTED]")+": " + reject_reason)
         else:
@@ -170,21 +165,30 @@ class SolutionTester():
 
         return r
 
-    def run(self, config, case_number):
+    def get_tests_with_limits(self, test_set):
+        limits = test_set.get('limits', None)
+        tests = test_set['tests']
+        for test in tests:
+            if ('limits' not in test):
+                test['limits'] = limits
+        return tests
+
+    def filter_tests(self, tests, case_number):
+        tests = [test for test in tests if test['number'] == case_number]
+        return tests
+
+    def run(self, config, test_set, case_number):
+        tests = self.get_tests_with_limits(test_set)
         speed_calculator = SpeedCalculator()
         time_mult = speed_calculator.calc_linear_time_mult()
         print("Local CPU time mult = {:.2f}".format(time_mult))
-        data_provider = config.get_data_provider()
-        if case_number == -1:
-            casses = [i+1 for i in range(data_provider.number_of_cases)]
-        else:
-            casses = [case_number]
+        if case_number != -1:
+            tests = self.filer_tests(tests, case_number)
         case_results = []
         case_limits = []
-        for case in casses:
-            case_data = data_provider.create_case_data(case)
-            case_result = self.run_case(config, case_data)
-            case_result['description'] = case_data.description
+        for test_config in tests:
+            case_data = self.get_case_data_from_test_config(config, test_config)
+            case_result = self.run_case_from_case_data(config, case_data, time_mult)
             case_result = self.evaluate_result(case_data, case_result)
             if case_result['accepted'] == False:
                 print("Need more hint??? Ask for hint at Facebook comments")
@@ -192,17 +196,17 @@ class SolutionTester():
             case_limits.append(case_data.get_limits())
             case_results.append(case_result)
 
-        test_rates = [x['testStat']['correct']/float(x['testStat']['total']) for x in case_results]
+        test_rates = [x['testAccuracy'] for x in case_results]
         test_rate_max = max(test_rates)
         test_rate_mean = sum(test_rates)/len(test_rates)
         test_rate_min = min(test_rates)
         num_cases = float(len(case_results))
-        step_mean = sum([x['step'] for x in case_results])/num_cases
-        time_mean = sum([x['time'] for x in case_results])/num_cases
-        size_mean = sum([x['size'] for x in case_results])/num_cases
-        test_limit_mean = sum([x.test_limit for x in case_limits])/num_cases
-        time_limit_mean = sum([x.time_limit for x in case_limits])/num_cases
-        size_limit_mean = sum([x.size_limit for x in case_limits])/num_cases
+        step_mean = sum([x['trainingSteps'] for x in case_results])/num_cases
+        time_mean = sum([x['trainingTime'] for x in case_results])/num_cases
+        size_mean = sum([x['modelSize'] for x in case_results])/num_cases
+        test_limit_mean = sum([x.test_accuracy_limit for x in case_limits])/num_cases
+        time_limit_mean = sum([x.training_time_limit for x in case_limits])/num_cases
+        size_limit_mean = sum([x.model_size_limit for x in case_limits])/num_cases
         print("Test rate (max/mean/min/limit) = {:.3f}/{:.3f}/{:.3f}/{:.3f}".format(
             test_rate_max, test_rate_mean, test_rate_min, test_limit_mean))
         print("Average steps = {:.3f}".format(step_mean))

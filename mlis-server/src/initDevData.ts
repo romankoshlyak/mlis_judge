@@ -4,7 +4,8 @@ import fs from 'fs';
 import models, { User } from './models';
 import resolvers from './resolvers';
 import AppServer from './AppServer';
-import { getGlobalId } from './utils';
+import { getGlobalId, requireValue } from './utils';
+import loadProblemsFromConfigs from './loadProblemsFromConfigs';
 
 async function getFile(fileName: string) {
   return (await fs.promises.readFile(fileName)).toString();
@@ -21,6 +22,9 @@ export default async function initDevData() {
   await models.sequelize.sync({ force: true });
   const admin = await models.User.create({name: "admin"});
   const roman = await models.User.create({fbId: "10211973801580089", email: "rkoshlyak@gmail.com", name: "Roman Koshlyak"});
+
+  const problem = requireValue(await loadProblemsFromConfigs());
+  /*
 
   const xorDataProvider = await getFile('./problems/hello_xor_data_provider.py');
   const xorCodeTemplate = await getFile('./problems/hello_xor_code_template.py');
@@ -86,6 +90,7 @@ export default async function initDevData() {
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 1, description: "Test1", config: '{"id":1}', ...testLimits});
     await models.Test.create({testSetId: generalCpuTestSet.id, number: 2, description: "Test2", config: '{"id":2}', ...testLimits});
   }
+  */
 
   // Create classes
   const basicClassName = 'Basic deep learning';
@@ -96,11 +101,12 @@ export default async function initDevData() {
   // Submit hello xor solution
   const romanToken = getTokenFromUser(roman);
   const context = await AppServer.getContextFromToken(romanToken);
+  const testSets = await problem.getTestSets();
   const submitInput = {
     input: {
-      problemId: getGlobalId(xorProblem),
-      testSetId: getGlobalId(xorTestSet),
-      submissionCode: await getFile('./problems/hello_xor_solution.py'),
+      problemId: getGlobalId(problem),
+      testSetId: getGlobalId(testSets[0]),
+      submissionCode: await getFile('/usr/src/problems/hello_xor_solution.py'),
     }
   }
   await resolvers.Mutation.submit(null, submitInput, context);

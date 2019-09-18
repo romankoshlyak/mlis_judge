@@ -87,13 +87,14 @@ class RunsLogs():
 class GridSearchConfig():
     RUN_COUNT = 'runs_per_params'
     def __init__(self):
-        self.case_number = 1
+        self.test_config = None
         self.random_order = False
         self.verbose = False
 
-    def set_case_number(self, case_number):
-        self.case_number = case_number
+    def set_test_config(self, test_config):
+        self.test_config = test_config
         return self
+
 
     def set_random_order(self, random_order):
         self.random_order = random_order
@@ -264,17 +265,16 @@ class GridSearch():
             print('[Grid search] Runing: grid_size={} runs_per_params={} verbose={}'.format(grid_size, config.runs_per_params, verbose))
         grid_runs_history = {}
         solution_tester = SolutionTester()
-        data_provider = tester_config.get_data_provider()
         solution = tester_config.get_solution()
+        case_data = solution_tester.get_case_data_from_test_config(tester_config, config.test_config)
         while len(grid_runs_history) <  grid_size:
             run_params = self.get_run_params(config.runs_params_grid, grid_runs_history, config.random_order)
-            case_data = data_provider.create_case_data(config.case_number)
             for run_idx_per_params in range(config.runs_per_params):
                 if config.verbose:
                     print('[Grid search] Running: run_params={} run_idx_per_params={}'.format(run_params, run_idx_per_params))
                 self.run_seed = runs_logs.get_next_run_seed(run_params)
                 limits = case_data.get_limits()
-                timer = Timer(limits.time_limit, time_mult)
+                timer = Timer(limits.training_time_limit, time_mult)
                 context = GridSearchContext(
                         self.run_seed, timer, case_data, run_idx_per_params, config.runs_per_params, run_params, runs_logs)
                 solution_tester.train_model(solution, case_data.train_data, context)
