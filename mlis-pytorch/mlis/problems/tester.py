@@ -22,7 +22,9 @@ class ProblemName(Enum):
     GENERAL_CPU_V2 = 'general_cpu_v2'
     FIND_ME = 'find_me'
     VOTE_PREDICTION = 'vote_prediction'
+    MNIST = 'mnist'
     DIE_HARD = 'die_hard'
+    BB8 = 'bb8'
 
     def __str__(self):
         return self.value

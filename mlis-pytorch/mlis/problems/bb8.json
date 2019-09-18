@@ -1,0 +1,132 @@
+{
+  "name": "BB8",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/bb8/456173625185204/",
+  "dataProviderFile": "bb8_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 1000000,
+        "trainingStepsLimit": 1000000,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 0.8,
+        "testAccuracyLimit": 0.8
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "States = 2 Length = 8 Seed = 1007",
+          "dataProviderConfig": {
+            "seed": 1007,
+            "dataSize": 1024,
+            "length": 8,
+            "statesCount": 2
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "States = 3 Length = 16 Seed = 2034",
+          "dataProviderConfig": {
+            "seed": 2034,
+            "dataSize": 1024,
+            "length": 16,
+            "statesCount": 3
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "States = 4 Length = 32 Seed = 3132",
+          "dataProviderConfig": {
+            "seed": 3132,
+            "dataSize": 1024,
+            "length": 32,
+            "statesCount": 4
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "States = 5 Length = 64 Seed = 4013",
+          "dataProviderConfig": {
+            "seed": 4013,
+            "dataSize": 1024,
+            "length": 64,
+            "statesCount": 5
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "States = 6 Length = 128 Seed = 5001",
+          "dataProviderConfig": {
+            "seed": 5001,
+            "dataSize": 1024,
+            "length": 128,
+            "statesCount": 6
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "States = 7 Length = 256 Seed = 6005",
+          "dataProviderConfig": {
+            "seed": 6005,
+            "dataSize": 1024,
+            "length": 256,
+            "statesCount": 7
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "States = 7 Length = 256 Seed = 7006",
+          "dataProviderConfig": {
+            "seed": 7006,
+            "dataSize": 1024,
+            "length": 256,
+            "statesCount": 7
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "States = 7 Length = 256 Seed = 8071",
+          "dataProviderConfig": {
+            "seed": 8071,
+            "dataSize": 1024,
+            "length": 256,
+            "statesCount": 7
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "States = 7 Length = 256 Seed = 9019",
+          "dataProviderConfig": {
+            "seed": 9019,
+            "dataSize": 1024,
+            "length": 256,
+            "statesCount": 7
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "States = 7 Length = 256 Seed = 10040",
+          "dataProviderConfig": {
+            "seed": 10040,
+            "dataSize": 1024,
+            "length": 256,
+            "statesCount": 7
+          }
+        }
+      ]
+    }
+  ]
+}

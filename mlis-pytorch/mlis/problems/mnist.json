@@ -1,0 +1,113 @@
+{
+  "name": "MNIST",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/mnist/198590804276822/",
+  "dataLoaderFile": "mnist_data_loader.py",
+  "dataProviderFile": "mnist_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "modelSizeLimit": 25000,
+        "trainingStepsLimit": 1000000,
+        "trainingTimeLimit": 2.0,
+        "evaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 0.95,
+        "testAccuracyLimit": 0.95
+      },
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "Digits: 0, 1",
+          "dataProviderConfig": {
+            "seed": 1,
+            "digits": [0, 1]
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "Digits: 8, 9",
+          "dataProviderConfig": {
+            "seed": 2,
+            "digits": [8, 9]
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 3,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 4,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 5,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 6,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 7,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 8,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 9,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9",
+          "dataProviderConfig": {
+            "seed": 10,
+            "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          }
+        },
+      ]
+    }
+  ]
+}
