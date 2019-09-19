@@ -54,14 +54,29 @@ class TestRunReport extends React.Component<Props> {
                     <td>{report.test.trainingTimeLimit}</td>
                   </tr>
                   <tr>
-                    <td>Evaluation time</td>
-                    <td>{report.evaluationTime}</td>
-                    <td>{report.test.evaluationTimeLimit}</td>
+                    <td>Train evaluation time</td>
+                    <td>{report.trainEvaluationTime}</td>
+                    <td>{report.test.trainEvaluationTimeLimit}</td>
+                  </tr>
+                  <tr>
+                    <td>Train metric</td>
+                    <td>{report.trainMetric}</td>
+                    <td>{report.test.trainMetricLimit}</td>
                   </tr>
                   <tr>
                     <td>Train accuracy</td>
                     <td>{report.trainAccuracy}</td>
                     <td>{report.test.trainAccuracyLimit}</td>
+                  </tr>
+                  <tr>
+                    <td>Test evaluation time</td>
+                    <td>{report.testEvaluationTime}</td>
+                    <td>{report.test.testEvaluationTimeLimit}</td>
+                  </tr>
+                  <tr>
+                    <td>Test metric</td>
+                    <td>{report.testMetric}</td>
+                    <td>{report.test.testMetricLimit}</td>
                   </tr>
                   <tr>
                     <td>Test accuracy</td>
@@ -96,25 +111,29 @@ export default createFragmentContainer(
         modelSize
         trainingSteps
         trainingTime
-        evaluationTime
+        trainEvaluationTime
         trainError
+        trainMetric
         trainCorrect
         trainTotal
         trainAccuracy
-        trainMetric
+        testEvaluationTime
         testError
+        testMetric
         testCorrect
         testTotal
         testAccuracy
-        testMetric
         test {
           number
           description
           modelSizeLimit
           trainingStepsLimit
           trainingTimeLimit
-          evaluationTimeLimit
+          trainEvaluationTimeLimit
+          trainMetricLimit
           trainAccuracyLimit
+          testEvaluationTimeLimit
+          testMetricLimit
           testAccuracyLimit
         }
       }

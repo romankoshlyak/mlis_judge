@@ -14,7 +14,7 @@ class SolutionTester():
     REJECTED_RED = '\033[91m'
     END_COLOR = '\033[0m'
     def __init__(self):
-        self = self
+        self.metric = nn.MSELoss()
 
     def calc_model_size(self, model):
         modelSize = 0
@@ -29,7 +29,7 @@ class SolutionTester():
         data = data.view(tuple(dataSize))
         return data
 
-    def calc_model_stats(self, config, model, data, target):
+    def calc_model_stats(self, case_data, model, data, target):
         with torch.no_grad():
             data = self.sampleData(data)
             target = self.sampleData(target)
@@ -37,15 +37,23 @@ class SolutionTester():
             output = model(data)
             evaluation_end_time = time.time()
             # Number of correct predictions
-            predict = model.calc_predict(output)
-            error = model.calc_error(output, target)
-            correct = predict.eq(target.view_as(predict)).long().sum()
-            total = predict.view(-1).size(0)
+            error = model.calc_error(output, target).item()
+            total = data.size(0)
+            metric = self.metric(output, target).item()
+            if case_data.type == case_data.CLASSIFICATION:
+                predict = model.calc_predict(output)
+                correct = predict.eq(target.view_as(predict)).long().sum().item()
+                accuracy = correct/total
+            else:
+                correct = None
+                accuracy = None
+
             return {
-                    'error': error.item(),
-                    'correct': correct.item(),
+                    'error': error,
+                    'correct': correct,
                     'total': total,
-                    'accuracy': correct.item()/total,
+                    'accuracy': accuracy,
+                    'metric': metric,
                     'evaluation_time': evaluation_end_time - evaluation_start_time,
                     }
 
@@ -80,10 +88,8 @@ class SolutionTester():
         training_time = training_end_time - training_start_time
         model_size = self.calc_model_size(model)
         model.eval()
-        data, target = case_data.train_data
-        train_stat = self.calc_model_stats(config, model, data, target)
-        data, target = case_data.test_data
-        test_stat = self.calc_model_stats(config, model, data, target)
+        train_stat = self.calc_model_stats(case_data, model, *case_data.train_data)
+        test_stat = self.calc_model_stats(case_data, model, *case_data.test_data)
 
         return {
             'modelSize': model_size,
@@ -91,16 +97,16 @@ class SolutionTester():
             'trainingTime': training_time,
             'trainEvaluationTime': train_stat['evaluation_time'],
             'trainError': train_stat['error'],
+            'trainMetric': train_stat['metric'],
             'trainCorrect': train_stat['correct'],
             'trainTotal': train_stat['total'],
             'trainAccuracy': train_stat['accuracy'],
-            'trainMetric': 1.0,
             'testEvaluationTime': test_stat['evaluation_time'],
             'testError': test_stat['error'],
+            'testMetric': test_stat['metric'],
             'testCorrect': test_stat['correct'],
             'testTotal': test_stat['total'],
             'testAccuracy': test_stat['accuracy'],
-            'testMetric': 1.0,
         }
 
     def run_case_from_test_config(self, config, test_config, time_mult = 1.0):
@@ -134,31 +140,42 @@ class SolutionTester():
         size = r['modelSize']
         step = r['trainingSteps']
         time = r['trainingTime']
-        reject_reason = None
         train_error = r['trainError']
+        train_metric = r['trainMetric']
         train_correct = r['trainCorrect']
         train_total = r['trainTotal']
-        train_ration = r['trainAccuracy']
+        train_accuracy = r['trainAccuracy']
         test_error = r['testError']
+        test_metric = r['testMetric']
         test_correct = r['testCorrect']
         test_total = r['testTotal']
-        test_ratio = r['testAccuracy']
+        test_accuracy = r['testAccuracy']
 
         print("Case #{}[{}] Step={} Size={}/{} Time={:.1f}/{:.1f}".format(
             case, description, step, size, limits.model_size_limit, time, limits.training_time_limit))
-        print("Train correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
-            train_correct, train_total, train_ration, limits.train_accuracy_limit, train_error))
-        print("Test  correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
-            test_correct, test_total, test_ratio, limits.test_accuracy_limit, test_error))
+        if train_metric is not None:
+            print("Train metric/limit={:.4f}/{} Error={}".format(
+                train_metric, limits.train_metric_limit, train_error))
+        if test_metric is not None:
+            print("Test  metric/limit={:.4f}/{} Error={}".format(
+                test_metric, limits.test_metric_limit, test_error))
+        if train_accuracy is not None:
+            print("Train correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
+                train_correct, train_total, train_accuracy, limits.train_accuracy_limit, train_error))
+        if test_accuracy is not None:
+            print("Test  correct/total={}/{} Ratio/limit={:.2f}/{:.2f} Error={}".format(
+                test_correct, test_total, test_accuracy, limits.test_accuracy_limit, test_error))
         r['accepted'] = False
-        if size > limits.model_size_limit:
+        if limits.model_size_limit is not None and size > limits.model_size_limit:
             print(self.rejected_string("[REJECTED]")+": MODEL IS TOO BIG: Size={} Size Limit={}".format(size, limits.model_size_limit))
         elif time > limits.training_time_limit:
             print(self.rejected_string("[REJECTED]")+": TIME LIMIT EXCEEDED: Time={:.1f} Time Limit={:.1f}".format(time, limits.training_time_limit))
-        elif test_ratio < limits.test_accuracy_limit:
-            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT LEARN: Learn ratio={}/{}".format(test_ratio, limits.test_accuracy_limit))
-        elif reject_reason is not None:
-            print(self.rejected_string("[REJECTED]")+": " + reject_reason)
+        elif limits.test_accuracy_limit is not None and test_accuracy < limits.test_accuracy_limit:
+            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT LEARN: Learn ratio={}/{}".format(test_accuracy, limits.test_accuracy_limit))
+        elif limits.train_metric_limit is not None and train_metric > limits.train_metric_limit:
+            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT LEARN: Train metric={}/{}".format(train_metric, limits.train_metric_limit))
+        elif limits.test_metric_limit is not None and test_metric > limits.test_metric_limit:
+            print(self.rejected_string("[REJECTED]")+": MODEL DID NOT GENERELIZE: Test metric={}/{}".format(test_metric, limits.test_metric_limit))
         else:
             r['accepted'] = True
             print(self.accepted_string("[OK]"))
@@ -196,22 +213,23 @@ class SolutionTester():
             case_limits.append(case_data.get_limits())
             case_results.append(case_result)
 
-        test_rates = [x['testAccuracy'] for x in case_results]
-        test_rate_max = max(test_rates)
-        test_rate_mean = sum(test_rates)/len(test_rates)
-        test_rate_min = min(test_rates)
         num_cases = float(len(case_results))
+        if case_results[0]['testAccuracy'] is not None:
+            test_rates = [x['testAccuracy'] for x in case_results]
+            test_rate_max = max(test_rates)
+            test_rate_mean = sum(test_rates)/len(test_rates)
+            test_rate_min = min(test_rates)
+            test_limit_mean = sum([x.test_accuracy_limit for x in case_limits])/num_cases
+            print("Test rate (max/mean/min/limit) = {:.3f}/{:.3f}/{:.3f}/{:.3f}".format(
+                test_rate_max, test_rate_mean, test_rate_min, test_limit_mean))
         step_mean = sum([x['trainingSteps'] for x in case_results])/num_cases
         time_mean = sum([x['trainingTime'] for x in case_results])/num_cases
         size_mean = sum([x['modelSize'] for x in case_results])/num_cases
-        test_limit_mean = sum([x.test_accuracy_limit for x in case_limits])/num_cases
         time_limit_mean = sum([x.training_time_limit for x in case_limits])/num_cases
-        size_limit_mean = sum([x.model_size_limit for x in case_limits])/num_cases
-        print("Test rate (max/mean/min/limit) = {:.3f}/{:.3f}/{:.3f}/{:.3f}".format(
-            test_rate_max, test_rate_mean, test_rate_min, test_limit_mean))
+        #size_limit_mean = sum([x.model_size_limit for x in case_limits])/num_cases
         print("Average steps = {:.3f}".format(step_mean))
         print("Average time = {:.3f}/{:.3f}".format(time_mean, time_limit_mean))
-        print("Average size = {:.3f}/{:.3f}".format(size_mean, size_limit_mean))
+        print("Average size = {:.3f}".format(size_mean))
         if case_number == -1:
             print(self.accepted_string("[ACCEPTED]")+" you can submit now your score")
             print("In order to submit just do a Facebook comment with your score")

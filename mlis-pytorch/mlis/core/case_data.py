@@ -1,6 +1,12 @@
 class CaseData:
+    REGRESSION = 'regression'
+    CLASSIFICATION = 'classification'
+
     def __init__(self):
-        pass
+        self.type = self.CLASSIFICATION
+
+    def set_type(self, type):
+        self.type = type
 
     def set_number(self, number):
         self.number = number

@@ -95,16 +95,34 @@ class TestSetRunReport extends React.Component<Props> {
               <td>{this.formatNumber(report.trainingTimeMax)}</td>
             </tr>
             <tr>
-              <td>Evaluation time</td>
-              <td>{this.formatNumber(report.evaluationTimeMin)}</td>
-              <td>{this.formatNumber(report.evaluationTimeMean)}</td>
-              <td>{this.formatNumber(report.evaluationTimeMax)}</td>
+              <td>Train evaluation time</td>
+              <td>{this.formatNumber(report.trainEvaluationTimeMin)}</td>
+              <td>{this.formatNumber(report.trainEvaluationTimeMean)}</td>
+              <td>{this.formatNumber(report.trainEvaluationTimeMax)}</td>
+            </tr>
+            <tr>
+              <td>Train metric</td>
+              <td>{this.formatNumber(report.trainMetricMin)}</td>
+              <td>{this.formatNumber(report.trainMetricMean)}</td>
+              <td>{this.formatNumber(report.trainMetricMax)}</td>
             </tr>
             <tr>
               <td>Train accuracy</td>
               <td>{this.formatNumber(report.trainAccuracyMin)}</td>
               <td>{this.formatNumber(report.trainAccuracyMean)}</td>
               <td>{this.formatNumber(report.trainAccuracyMax)}</td>
+            </tr>
+            <tr>
+              <td>Test evaluation time</td>
+              <td>{this.formatNumber(report.testEvaluationTimeMin)}</td>
+              <td>{this.formatNumber(report.testEvaluationTimeMean)}</td>
+              <td>{this.formatNumber(report.testEvaluationTimeMax)}</td>
+            </tr>
+            <tr>
+              <td>Test metric</td>
+              <td>{this.formatNumber(report.testMetricMin)}</td>
+              <td>{this.formatNumber(report.testMetricMean)}</td>
+              <td>{this.formatNumber(report.testMetricMax)}</td>
             </tr>
             <tr>
               <td>Test accuracy</td>
@@ -153,12 +171,21 @@ export default createFragmentContainer(
         trainingTimeMax
         trainingTimeMean
         trainingTimeMin
-        evaluationTimeMax
-        evaluationTimeMean
-        evaluationTimeMin
+        trainEvaluationTimeMax
+        trainEvaluationTimeMean
+        trainEvaluationTimeMin
+        trainMetricMax
+        trainMetricMean
+        trainMetricMin
         trainAccuracyMax
         trainAccuracyMean
         trainAccuracyMin
+        testEvaluationTimeMax
+        testEvaluationTimeMean
+        testEvaluationTimeMin
+        testMetricMax
+        testMetricMean
+        testMetricMin
         testAccuracyMax
         testAccuracyMean
         testAccuracyMin

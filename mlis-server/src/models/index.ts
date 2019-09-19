@@ -238,8 +238,11 @@ export class Test extends Model {
   public modelSizeLimit!: number;
   public trainingStepsLimit!: number;
   public trainingTimeLimit!: number;
-  public evaluationTimeLimit!: number;
+  public trainEvaluationTimeLimit!: number;
+  public trainMetricLimit!: number;
   public trainAccuracyLimit!: number;
+  public testEvaluationTimeLimit!: number;
+  public testMetricLimit!: number;
   public testAccuracyLimit!: number;
 
   public readonly createdAt!: Date;
@@ -266,27 +269,39 @@ Test.init({
   },
   modelSizeLimit: {
     type: new DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
   trainingStepsLimit: {
     type: new DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
   trainingTimeLimit: {
     type: new DataTypes.DOUBLE,
     allowNull: false,
   },
-  evaluationTimeLimit: {
+  trainEvaluationTimeLimit: {
     type: new DataTypes.DOUBLE,
     allowNull: false,
+  },
+  trainMetricLimit: {
+    type: new DataTypes.DOUBLE,
+    allowNull: true,
   },
   trainAccuracyLimit: {
     type: new DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testEvaluationTimeLimit: {
+    type: new DataTypes.DOUBLE,
     allowNull: false,
+  },
+  testMetricLimit: {
+    type: new DataTypes.DOUBLE,
+    allowNull: true,
   },
   testAccuracyLimit: {
     type: new DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   sequelize,
@@ -326,21 +341,22 @@ export class TestRunReport extends Model {
   public status!: string;
   public stdErr!: string;
   public stdOut!: string;
-  public modelSize!: number;
-  public trainingSteps!: number;
-  public trainingTime!: number;
-  public evaluationTime!: number;
-  public trainError!: number;
-  public trainCorrect!: number;
-  public trainTotal!: number;
-  public trainAccuracy!: number;
-  public trainMetric!: number;
-  public testError!: number;
-  public testCorrect!: number;
-  public testTotal!: number;
-  public testAccuracy!: number;
-  public testMetric!: number;
-  public testSetRunReportId!: number;
+  public modelSize!: number | null;
+  public trainingSteps!: number | null;
+  public trainingTime!: number | null;
+  public trainEvaluationTime!: number | null;
+  public trainError!: number | null;
+  public trainMetric!: number | null;
+  public trainCorrect!: number | null;
+  public trainTotal!: number | null;
+  public trainAccuracy!: number | null;
+  public testEvaluationTime!: number | null;
+  public testError!: number | null;
+  public testMetric!: number | null;
+  public testCorrect!: number | null;
+  public testTotal!: number | null;
+  public testAccuracy!: number | null;
+  public testSetRunReportId!: number | null;
 
   public isAccepted!: boolean;
   public rejectReason!: string;
@@ -386,11 +402,15 @@ TestRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  evaluationTime: {
+  trainEvaluationTime: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
   trainError: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainMetric: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -406,11 +426,15 @@ TestRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  trainMetric: {
+  testEvaluationTime: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
   testError: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testMetric: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -423,10 +447,6 @@ TestRunReport.init({
     allowNull: true,
   },
   testAccuracy: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  testMetric: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -463,24 +483,33 @@ export class TestSetRunReport extends Model {
   public id!: number;
   public status!: string;
 
-  public modelSizeMax!: number;
-  public modelSizeMean!: number;
-  public modelSizeMin!: number;
-  public trainingStepsMax!: number;
-  public trainingStepsMean!: number;
-  public trainingStepsMin!: number;
-  public trainingTimeMax!: number;
-  public trainingTimeMean!: number;
-  public trainingTimeMin!: number;
-  public evaluationTimeMax!: number;
-  public evaluationTimeMean!: number;
-  public evaluationTimeMin!: number;
-  public trainAccuracyMax!: number;
-  public trainAccuracyMean!: number;
-  public trainAccuracyMin!: number;
-  public testAccuracyMax!: number;
-  public testAccuracyMean!: number;
-  public testAccuracyMin!: number;
+  public modelSizeMin!: number | null;
+  public modelSizeMean!: number | null;
+  public modelSizeMax!: number | null;
+  public trainingStepsMin!: number | null;
+  public trainingStepsMean!: number | null;
+  public trainingStepsMax!: number| null;
+  public trainingTimeMin!: number | null;
+  public trainingTimeMean!: number | null;
+  public trainingTimeMax!: number | null;
+  public trainEvaluationTimeMin!: number | null;
+  public trainEvaluationTimeMean!: number | null;
+  public trainEvaluationTimeMax!: number | null;
+  public trainMetricMin!: number | null;
+  public trainMetricMean!: number | null;
+  public trainMetricMax!: number | null;
+  public trainAccuracyMin!: number | null;
+  public trainAccuracyMean!: number | null;
+  public trainAccuracyMax!: number | null;
+  public testEvaluationTimeMin!: number | null;
+  public testEvaluationTimeMean!: number | null;
+  public testEvaluationTimeMax!: number | null;
+  public testMetricMin!: number | null;
+  public testMetricMean!: number | null;
+  public testMetricMax!: number | null;
+  public testAccuracyMin!: number | null;
+  public testAccuracyMean!: number | null;
+  public testAccuracyMax!: number | null;
 
   public isAccepted!: boolean;
 
@@ -504,31 +533,7 @@ TestSetRunReport.init({
     type: new DataTypes.STRING,
     allowNull: false,
   },
-  trainAccuracyMax: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  trainAccuracyMean: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  trainAccuracyMin: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  testAccuracyMax: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  testAccuracyMean: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  testAccuracyMin: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  modelSizeMax: {
+  modelSizeMin: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -536,15 +541,7 @@ TestSetRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  modelSizeMin: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  trainingStepsMax: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-  },
-  trainingStepsMean: {
+  modelSizeMax: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -552,11 +549,11 @@ TestSetRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  trainingTimeMax: {
+  trainingStepsMean: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  trainingTimeMean: {
+  trainingStepsMax: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
@@ -564,18 +561,87 @@ TestSetRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  evaluationTimeMax: {
+  trainingTimeMean: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  evaluationTimeMean: {
+  trainingTimeMax: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-  evaluationTimeMin: {
+  trainEvaluationTimeMin: {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
+  trainEvaluationTimeMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainEvaluationTimeMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainMetricMin: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainMetricMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainMetricMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainAccuracyMin: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainAccuracyMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  trainAccuracyMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testEvaluationTimeMin: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testEvaluationTimeMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testEvaluationTimeMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testMetricMin: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testMetricMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testMetricMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testAccuracyMin: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testAccuracyMean: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  testAccuracyMax: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+
   isAccepted: {
     type: DataTypes.BOOLEAN,
     allowNull: true,

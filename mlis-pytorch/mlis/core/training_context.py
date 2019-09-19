@@ -10,8 +10,3 @@ class TrainingContext():
 
     def increase_step(self):
         self.step += 1
-
-    def get_reject_reason(self):
-        if self.timer.pause_time > 0.0:
-            return "Timer paused"
-        return None

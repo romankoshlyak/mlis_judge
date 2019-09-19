@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Mon Sep 16 2019 06:37:27 GMT-0700 (Pacific Daylight Time)
+# timestamp: Thu Sep 19 2019 04:47:02 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -290,12 +290,13 @@ input TaskRunResult {
   modelSize: Int!
   trainingSteps: Int!
   trainingTime: Float!
-  evaluationTime: Float!
+  trainEvaluationTime: Float!
   trainError: Float!
   trainCorrect: Float
   trainTotal: Float
   trainAccuracy: Float
   trainMetric: Float
+  testEvaluationTime: Float!
   testError: Float!
   testCorrect: Float
   testTotal: Float
@@ -311,8 +312,11 @@ type Test implements Node {
   modelSizeLimit: Float
   trainingStepsLimit: Float
   trainingTimeLimit: Float
-  evaluationTimeLimit: Float
+  trainEvaluationTimeLimit: Float
+  trainMetricLimit: Float
   trainAccuracyLimit: Float
+  testEvaluationTimeLimit: Float
+  testMetricLimit: Float
   testAccuracyLimit: Float
   testSet: TestSet!
 }
@@ -337,17 +341,18 @@ type TestRunReport implements Node {
   modelSize: Float
   trainingSteps: Float
   trainingTime: Float
-  evaluationTime: Float
+  trainEvaluationTime: Float
   trainError: Float
+  trainMetric: Float
   trainCorrect: Float
   trainTotal: Float
   trainAccuracy: Float
-  trainMetric: Float
+  testEvaluationTime: Float
   testError: Float
+  testMetric: Float
   testCorrect: Float
   testTotal: Float
   testAccuracy: Float
-  testMetric: Float
   problem: Problem!
   submission: Submission!
   test: Test!
@@ -395,12 +400,21 @@ type TestSetRunReport implements Node {
   trainingTimeMax: Float
   trainingTimeMean: Float
   trainingTimeMin: Float
-  evaluationTimeMax: Float
-  evaluationTimeMean: Float
-  evaluationTimeMin: Float
+  trainEvaluationTimeMax: Float
+  trainEvaluationTimeMean: Float
+  trainEvaluationTimeMin: Float
+  trainMetricMax: Float
+  trainMetricMean: Float
+  trainMetricMin: Float
   trainAccuracyMax: Float
   trainAccuracyMean: Float
   trainAccuracyMin: Float
+  testEvaluationTimeMax: Float
+  testEvaluationTimeMean: Float
+  testEvaluationTimeMin: Float
+  testMetricMax: Float
+  testMetricMean: Float
+  testMetricMin: Float
   testAccuracyMax: Float
   testAccuracyMean: Float
   testAccuracyMin: Float

@@ -9,6 +9,7 @@ async function getFile(fileName: string) {
 }
 async function getConfigList() {
   const configList = [
+    'tutorial.json',
     'hello_xor.json',
     'general_cpu.json',
     'general_cpu_v2.json',

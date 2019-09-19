@@ -17,6 +17,7 @@ class TesterConfig:
         return self.solution()
 
 class ProblemName(Enum):
+    TUTORIAL = 'tutorial'
     HELLO_XOR = 'hello_xor'
     GENERAL_CPU = 'general_cpu'
     GENERAL_CPU_V2 = 'general_cpu_v2'

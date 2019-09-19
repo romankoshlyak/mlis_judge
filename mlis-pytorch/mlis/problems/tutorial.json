@@ -1,9 +1,9 @@
 {
-  "name": "General Cpu V2",
-  "text": "See description in the link below",
-  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/general-cpu-v2/203006817168554/",
-  "dataProviderFile": "general_cpu_data_provider.py",
-  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "name": "Tutorial",
+  "text": "If you new to Pytorch, click link below for Tutorial:",
+  "textUrl": "https://colab.research.google.com/drive/18BZOWGX217Ix2FOic2VlSEQBV6wPhA1c",
+  "dataProviderFile": "tutorial_data_provider.py",
+  "codeTemplateFile": "tutorial_code_template.py",
   "testSets": [
     {
       "name": "TestSet1",
@@ -11,98 +11,108 @@
         "trainingTimeLimit": 2.0,
         "trainEvaluationTimeLimit": 0.2,
         "testEvaluationTimeLimit": 0.2,
-        "trainAccuracyLimit": 1.0,
-        "testAccuracyLimit": 1.0
+        "trainMetricLimit": 0.1,
+        "testMetricLimit": 0.1
       },
       "tests": [
         {
           "number": 1,
           "runSeed": 1,
-          "description": "8 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 1,
-            "inputSize": 8
+            "numberOfSegments": 1,
+            "numberOfPointsPerSegment": 60
           }
         },
         {
           "number": 2,
           "runSeed": 2,
-          "description": "9 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 2,
-            "inputSize": 9
+            "numberOfSegments": 2,
+            "numberOfPointsPerSegment": 30
           }
         },
         {
           "number": 3,
           "runSeed": 3,
-          "description": "10 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 3,
-            "inputSize": 10
+            "numberOfSegments": 3,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 4,
           "runSeed": 4,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
-            "seed": 4,
-            "inputSize": 11
+            "seed": 3,
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 5,
           "runSeed": 5,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 5,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 6,
           "runSeed": 6,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 6,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 7,
           "runSeed": 7,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 7,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 8,
           "runSeed": 8,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 8,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 9,
           "runSeed": 9,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 9,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         },
         {
           "number": 10,
           "runSeed": 10,
-          "description": "11 inputs",
+          "description": "tutorial",
           "dataProviderConfig": {
             "seed": 10,
-            "inputSize": 11
+            "numberOfSegments": 4,
+            "numberOfPointsPerSegment": 20
           }
         }
       ]

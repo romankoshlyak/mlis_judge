@@ -4,25 +4,41 @@ import { fromGlobalId } from 'graphql-relay';
 import AppContext from './../context';
 import { assertTrue, requireValue } from './../utils';
 import { Test, TestRunReport } from '../models';
+import { is } from 'bluebird';
 
+function checkLess(value: number | null, limit: number | null) {
+  return limit != null && (value == null || value < limit);
+}
+function checkMore(value: number | null, limit: number | null) {
+  return limit != null && (value == null || value > limit);
+}
 function checkTestRun(testRunReport: TestRunReport, test: Test): [boolean, string | null] {
-  if (testRunReport.modelSize > test.modelSizeLimit) {
+  if (checkMore(testRunReport.modelSize, test.modelSizeLimit)) {
     return [false, `Model size ${testRunReport.modelSize} > ${test.modelSizeLimit}`];
   }
-  if (testRunReport.trainingSteps > test.trainingStepsLimit) {
+  if (checkMore(testRunReport.trainingSteps, test.trainingStepsLimit)) {
     return [false, `Training steps ${testRunReport.trainingSteps} > ${test.trainingStepsLimit}`];
   }
-  if (testRunReport.trainingTime > test.trainingTimeLimit) {
+  if (checkMore(testRunReport.trainingTime, test.trainingTimeLimit)) {
     return [false, `Training time ${testRunReport.trainingTime} > ${test.trainingTimeLimit}`];
   }
-  if (testRunReport.evaluationTime > test.evaluationTimeLimit) {
-    return [false, `Evaluation time ${testRunReport.evaluationTime} > ${test.evaluationTimeLimit}`];
+  if (checkMore(testRunReport.trainEvaluationTime, test.trainEvaluationTimeLimit)) {
+    return [false, `Train evaluation time ${testRunReport.trainEvaluationTime} > ${test.trainEvaluationTimeLimit}`];
   }
-  if (testRunReport.trainAccuracy < test.trainAccuracyLimit) {
+  if (checkMore(testRunReport.trainMetric, test.trainMetricLimit)) {
+    return [false, `Train metric ${testRunReport.trainMetric} > ${test.trainMetricLimit}`];
+  }
+  if (checkLess(testRunReport.trainAccuracy, test.trainAccuracyLimit)) {
     return [false, `Train accuracy ${testRunReport.trainAccuracy} < ${test.trainAccuracyLimit}`];
   }
-  if (testRunReport.testAccuracy < test.testAccuracyLimit) {
-    return [false, `Test accuracy ${testRunReport.testAccuracy} < ${test.testAccuracyLimit}`];
+  if (checkMore(testRunReport.testEvaluationTime, test.testEvaluationTimeLimit)) {
+    return [false, `Train evaluation time ${testRunReport.testEvaluationTime} > ${test.testEvaluationTimeLimit}`];
+  }
+  if (checkMore(testRunReport.testMetric, test.testMetricLimit)) {
+    return [false, `Train metric ${testRunReport.testMetric} > ${test.testMetricLimit}`];
+  }
+  if (checkLess(testRunReport.testAccuracy, test.testAccuracyLimit)) {
+    return [false, `Train accuracy ${testRunReport.testAccuracy} < ${test.testAccuracyLimit}`];
   }
   return [true, null];
 }
@@ -47,56 +63,50 @@ async function updateTestRunReport(testRunReport: TestRunReport, input: any, tra
   return updatedTestRunReport;
 }
 
+function calcStats(reports: TestRunReport[], puller: (report:TestRunReport) => number|null) {
+  if (reports.length == 0) {
+    return [null, null, null]
+  }
+  const firstValue = puller(reports[0]);
+  let minValue = Infinity;
+  let sumValue = 0;
+  let maxValue = -Infinity;
+  for (const report of reports) {
+    const value = puller(report);
+    if (value == null) {
+      return [null, null, null];
+    }
+    minValue = (minValue < value) ? minValue : value;
+    sumValue += value;
+    maxValue = (value < maxValue) ? maxValue : value;
+  }
+  return [minValue, sumValue/reports.length, maxValue];
+}
+
 async function updateTestSetRunReport(testRunReport: TestRunReport, transaction: Transaction) {
   const FINISHED = 'FINISHED';
   let testSetRunReport = await testRunReport.getTestSetRunReport({transaction});
   const testRunReports = await testSetRunReport.getTestRunReports({transaction});
-  testSetRunReport.isAccepted = true;
-  testSetRunReport.modelSizeMin = Infinity;
-  testSetRunReport.modelSizeMean = 0;
-  testSetRunReport.modelSizeMax = -Infinity;
-  testSetRunReport.trainingStepsMin = Infinity;
-  testSetRunReport.trainingStepsMean = 0;
-  testSetRunReport.trainingStepsMax = -Infinity;
-  testSetRunReport.trainingTimeMin = Infinity;
-  testSetRunReport.trainingTimeMean = 0;
-  testSetRunReport.trainingTimeMax = -Infinity;
-  testSetRunReport.evaluationTimeMin = Infinity;
-  testSetRunReport.evaluationTimeMean = 0;
-  testSetRunReport.evaluationTimeMax = -Infinity;
-  testSetRunReport.trainAccuracyMin = Infinity;
-  testSetRunReport.trainAccuracyMean = 0;
-  testSetRunReport.trainAccuracyMax = -Infinity;
-  testSetRunReport.testAccuracyMin = Infinity;
-  testSetRunReport.testAccuracyMean = 0;
-  testSetRunReport.testAccuracyMax = -Infinity;
-  for (const report of testRunReports) {
-    testSetRunReport.isAccepted = testSetRunReport.isAccepted && report.isAccepted;
-    testSetRunReport.modelSizeMin =  (testSetRunReport.modelSizeMin < report.modelSize) ? testSetRunReport.modelSizeMin : report.modelSize;
-    testSetRunReport.modelSizeMean += report.modelSize;
-    testSetRunReport.modelSizeMax =  (testSetRunReport.modelSizeMax > report.modelSize) ? testSetRunReport.modelSizeMax : report.modelSize;
-    testSetRunReport.trainingStepsMin =  (testSetRunReport.trainingStepsMin < report.trainingSteps) ? testSetRunReport.trainingStepsMin : report.trainingSteps;
-    testSetRunReport.trainingStepsMean += report.trainingSteps;
-    testSetRunReport.trainingStepsMax =  (testSetRunReport.trainingStepsMax > report.trainingSteps) ? testSetRunReport.trainingStepsMax : report.trainingSteps;
-    testSetRunReport.trainingTimeMin =  (testSetRunReport.trainingTimeMin < report.trainingTime) ? testSetRunReport.trainingTimeMin : report.trainingTime;
-    testSetRunReport.trainingTimeMean += report.trainingTime;
-    testSetRunReport.trainingTimeMax =  (testSetRunReport.trainingTimeMax > report.trainingTime) ? testSetRunReport.trainingTimeMax : report.trainingTime;
-    testSetRunReport.evaluationTimeMin =  (testSetRunReport.evaluationTimeMin < report.evaluationTime) ? testSetRunReport.evaluationTimeMin : report.evaluationTime;
-    testSetRunReport.evaluationTimeMean += report.evaluationTime;
-    testSetRunReport.evaluationTimeMax =  (testSetRunReport.evaluationTimeMax > report.evaluationTime) ? testSetRunReport.evaluationTimeMax : report.evaluationTime;
-    testSetRunReport.trainAccuracyMin =  (testSetRunReport.trainAccuracyMin < report.trainAccuracy) ? testSetRunReport.trainAccuracyMin : report.trainAccuracy;
-    testSetRunReport.trainAccuracyMean += report.trainAccuracy;
-    testSetRunReport.trainAccuracyMax =  (testSetRunReport.trainAccuracyMax > report.trainAccuracy) ? testSetRunReport.trainAccuracyMax : report.trainAccuracy;
-    testSetRunReport.testAccuracyMin =  (testSetRunReport.testAccuracyMin < report.testAccuracy) ? testSetRunReport.testAccuracyMin : report.testAccuracy;
-    testSetRunReport.testAccuracyMean += report.testAccuracy;
-    testSetRunReport.testAccuracyMax =  (testSetRunReport.testAccuracyMax > report.testAccuracy) ? testSetRunReport.testAccuracyMax : report.testAccuracy;
-  }
-  testSetRunReport.modelSizeMean /= testRunReports.length;
-  testSetRunReport.trainingStepsMean /= testRunReports.length;
-  testSetRunReport.trainingTimeMean /= testRunReports.length;
-  testSetRunReport.evaluationTimeMean /= testRunReports.length;
-  testSetRunReport.trainAccuracyMean /= testRunReports.length;
-  testSetRunReport.testAccuracyMean /= testRunReports.length;
+  testSetRunReport.isAccepted = testRunReports.every(report => report.isAccepted);
+
+  [testSetRunReport.modelSizeMin, testSetRunReport.modelSizeMean, testSetRunReport.modelSizeMax] =
+    calcStats(testRunReports, (report => report.modelSize));
+  [testSetRunReport.trainingStepsMin, testSetRunReport.trainingStepsMean, testSetRunReport.trainingStepsMax] =
+    calcStats(testRunReports, (report => report.trainingSteps));
+  [testSetRunReport.trainingTimeMin, testSetRunReport.trainingTimeMean, testSetRunReport.trainingTimeMax] =
+    calcStats(testRunReports, (report => report.trainingTime));
+  [testSetRunReport.trainEvaluationTimeMin, testSetRunReport.trainEvaluationTimeMean, testSetRunReport.trainEvaluationTimeMax] =
+    calcStats(testRunReports, (report => report.trainEvaluationTime));
+  [testSetRunReport.trainMetricMin, testSetRunReport.trainMetricMean, testSetRunReport.trainMetricMax] =
+    calcStats(testRunReports, (report => report.trainMetric));
+  [testSetRunReport.trainAccuracyMin, testSetRunReport.trainAccuracyMean, testSetRunReport.trainAccuracyMax] =
+    calcStats(testRunReports, (report => report.trainAccuracy));
+  [testSetRunReport.testEvaluationTimeMin, testSetRunReport.testEvaluationTimeMean, testSetRunReport.testEvaluationTimeMax] =
+    calcStats(testRunReports, (report => report.testEvaluationTime));
+  [testSetRunReport.testMetricMin, testSetRunReport.testMetricMean, testSetRunReport.testMetricMax] =
+    calcStats(testRunReports, (report => report.testMetric));
+  [testSetRunReport.testAccuracyMin, testSetRunReport.testAccuracyMean, testSetRunReport.testAccuracyMax] =
+    calcStats(testRunReports, (report => report.testAccuracy));
 
   testSetRunReport.status = FINISHED;
   const updatedTestSetRunReport = await testSetRunReport.save({transaction});
@@ -146,7 +156,7 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
           const problemId = updatedTestRunReport.problemId;
           const userId = submission.ownerId;
           const submissionId = submission.id;
-          const metric = updatedTestSetRunReport.trainingTimeMean;
+          const metric = updatedTestSetRunReport.trainingTimeMean!;
           let ranking = await models.Ranking.findOne({
             where : {
               problemId,

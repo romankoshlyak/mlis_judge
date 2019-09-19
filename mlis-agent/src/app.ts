@@ -208,7 +208,12 @@ async function executeSubmission(task: any) {
       stdErr = await fs.promises.readFile(stdErrFile, {encoding:ENCODING});
     }
     if (result != null) {
-      result = JSON.parse(result);
+      try {
+        result = JSON.parse(result);
+      } catch (e) {
+        console.log(e);
+        result = null;
+      }
     }
   }
   // Remove temp dirs

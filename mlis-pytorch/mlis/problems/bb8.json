@@ -8,10 +8,9 @@
     {
       "name": "TestSet1",
       "limits": {
-        "modelSizeLimit": 1000000,
-        "trainingStepsLimit": 1000000,
         "trainingTimeLimit": 2.0,
-        "evaluationTimeLimit": 2.0,
+        "trainEvaluationTimeLimit": 0.2,
+        "testEvaluationTimeLimit": 0.2,
         "trainAccuracyLimit": 0.8,
         "testAccuracyLimit": 0.8
       },

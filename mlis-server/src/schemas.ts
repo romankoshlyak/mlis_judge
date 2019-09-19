@@ -57,8 +57,11 @@ export default gql`
     modelSizeLimit: Float
     trainingStepsLimit: Float
     trainingTimeLimit: Float
-    evaluationTimeLimit: Float
+    trainEvaluationTimeLimit: Float
+    trainMetricLimit: Float
     trainAccuracyLimit: Float
+    testEvaluationTimeLimit: Float
+    testMetricLimit: Float
     testAccuracyLimit: Float
 
     testSet: TestSet!
@@ -140,17 +143,18 @@ export default gql`
     modelSize: Float
     trainingSteps: Float
     trainingTime: Float
-    evaluationTime: Float
+    trainEvaluationTime: Float
     trainError: Float
+    trainMetric: Float
     trainCorrect: Float
     trainTotal: Float
     trainAccuracy: Float
-    trainMetric: Float
+    testEvaluationTime: Float
     testError: Float
+    testMetric: Float
     testCorrect: Float
     testTotal: Float
     testAccuracy: Float
-    testMetric: Float
 
     problem: Problem!
     submission: Submission!
@@ -179,12 +183,21 @@ export default gql`
     trainingTimeMax: Float
     trainingTimeMean: Float
     trainingTimeMin: Float
-    evaluationTimeMax: Float
-    evaluationTimeMean: Float
-    evaluationTimeMin: Float
+    trainEvaluationTimeMax: Float
+    trainEvaluationTimeMean: Float
+    trainEvaluationTimeMin: Float
+    trainMetricMax: Float
+    trainMetricMean: Float
+    trainMetricMin: Float
     trainAccuracyMax: Float
     trainAccuracyMean: Float
     trainAccuracyMin: Float
+    testEvaluationTimeMax: Float
+    testEvaluationTimeMean: Float
+    testEvaluationTimeMin: Float
+    testMetricMax: Float
+    testMetricMean: Float
+    testMetricMin: Float
     testAccuracyMax: Float
     testAccuracyMean: Float
     testAccuracyMin: Float
