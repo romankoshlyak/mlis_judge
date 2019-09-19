@@ -125,7 +125,9 @@ class DataProvider:
         case_data = CaseData()
         # correct seed help generate data faster
         seed = config['seed']
-        data_dize = config['dataSize']
+        data_size = config['dataSize']
+        length = config['length']
+        states_count = config['statesCount']
         letters_count = 2
         data, target, best_prob = self.create_data(2*data_size, length, states_count, letters_count, seed)
         print('Best prob = {}'.format(best_prob))

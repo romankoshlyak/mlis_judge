@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
-ARG PYTHON_VERSION=3.6.8
-ARG PYTORCH_VERSION=1.0.0
+ARG PYTHON_VERSION=3.7.3
+ARG PYTORCH_VERSION=1.1.0.post2
 ARG VISION_VERSION=0.2.1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
