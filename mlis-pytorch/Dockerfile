@@ -1,8 +1,8 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ARG PYTHON_VERSION=3.7.3
-ARG PYTORCH_VERSION=1.1.0.post2
-ARG VISION_VERSION=0.2.1
+ARG PYTORCH_VERSION=1.2.0
+ARG VISION_VERSION=0.4.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
          curl \
@@ -18,12 +18,10 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
      ~/miniconda.sh -b -p /opt/conda && \
      rm ~/miniconda.sh && \
      /opt/conda/bin/conda install -y python=$PYTHON_VERSION numpy pyaml scipy ipython mkl mkl-include cython typing && \
-     /opt/conda/bin/conda install -y pytorch-cpu=$PYTORCH_VERSION torchvision-cpu=$VISION_VERSION -c pytorch && \
+     /opt/conda/bin/conda install -y pytorch=$PYTORCH_VERSION torchvision=$VISION_VERSION cpuonly -c pytorch && \
      /opt/conda/bin/conda clean -ya
 
 ENV PATH /opt/conda/bin:$PATH
-
-RUN pip install tensorflow tensorboard tensorboardX
 
 COPY ./ /usr/src/app
 
