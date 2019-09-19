@@ -16,7 +16,7 @@ class Language:
         letters_id = letters_id[perm]
         counts = counts[perm]
         total = counts.sum().item()
-        x = torch.ByteTensor(total+1).zero_()
+        x = torch.BoolTensor(total+1).zero_()
         x[0] = 1
         xs = [x]
         for letter_id, count in zip(letters_id, counts):
