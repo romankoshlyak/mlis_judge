@@ -14,7 +14,7 @@ class DataProvider:
 
         ind = torch.arange(data_size)
         for i in range(input_size):
-            data2[:,i] = (ind >> i)&1
+            data[:,i] = (ind >> i)&1
 
         return (data.float(), target.view(-1, 1).float())
 
