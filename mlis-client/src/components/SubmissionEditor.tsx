@@ -56,6 +56,8 @@ class SubmissionEditor extends React.Component<Props> {
     );
   }
   render() {
+    const edges = this.props.problem.submissions.edges;
+    const pendingSubmission = edges.length > 0 && edges[edges.length-1].node.testSetRunReport.status !== "FINISHED";
     return (
         <Panel defaultExpanded style={this.props.style}>
           <Panel.Heading>
@@ -77,7 +79,7 @@ class SubmissionEditor extends React.Component<Props> {
               }}
             />
             <ButtonGroup vertical block>
-              <Button onClick={this._submit} bsStyle="primary">Submit</Button>
+              <Button disabled={pendingSubmission} onClick={this._submit} bsStyle="primary">Submit</Button>
               <label className="btn btn-primary">
                 Load code from file
                 <input
@@ -103,6 +105,18 @@ export default createFragmentContainer(SubmissionEditor, {
         edges {
           node {
           id
+          }
+        }
+      }
+      submissions(
+        last: 10
+      ) @connection(key: "ProblemSubmissionList_submissions") {
+        edges {
+          node {
+            testSetRunReport {
+              id
+              status
+            }
           }
         }
       }
