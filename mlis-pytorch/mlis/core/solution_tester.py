@@ -22,7 +22,7 @@ class SolutionTester():
             modelSize += param.view(-1).size()[0]
         return modelSize
 
-    def sampleData(self, data, max_samples = 1000):
+    def sampleData(self, data, max_samples = 10000):
         dataSize = list(data.size())
         data = data.view(dataSize[0], -1)[:max_samples,:]
         dataSize[0] = min(dataSize[0], max_samples)
