@@ -17,7 +17,8 @@ class DataProvider:
     # slow and called during installation
     def prepare_case_data(self, force = False):
         if (force or (not os.path.exists(self.TRAIN_DATA_DIR)) or (not os.path.exists(self.TEST_DATA_DIR))):
-            shutil.rmtree(self.DATA_DIR)
+            if os.path.exists(self.DATA_DIR):
+                shutil.rmtree(self.DATA_DIR)
             print("Loading data...")
             train_dataset = torchvision.datasets.MNIST(
                 self.DATA_DIR, train=True, download=True,
