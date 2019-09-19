@@ -29,6 +29,7 @@ services:
     - INIT_DATA
     volumes:
     - ./../mlis-server:/usr/src/app
+    - ./../mlis-pytorch/mlis/problems:/usr/src/problems
     command: npm run start
   pytorch:
     build: ./../mlis-pytorch
