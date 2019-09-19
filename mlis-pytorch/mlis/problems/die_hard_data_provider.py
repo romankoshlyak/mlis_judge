@@ -71,8 +71,8 @@ class DataProvider:
         torch.manual_seed(seed)
         easy_table = self.full_func(easy_input_size)
         hard_table = self.full_func(hard_input_size)
-        train_data, train_target = self.__create_data(case, easy_table, hard_table, easy_input_size, hard_input_size, True)
-        test_data, test_target = self.__create_data(case, easy_table, hard_table, easy_input_size, hard_input_size, False)
+        train_data, train_target = self.__create_data(seed, easy_table, hard_table, easy_input_size, hard_input_size, True)
+        test_data, test_target = self.__create_data(seed, easy_table, hard_table, easy_input_size, hard_input_size, False)
         perm = torch.randperm(train_data.size(1))
         train_data = train_data[:,perm]
         test_data = test_data[:,perm]
