@@ -40,6 +40,7 @@ def main():
     parser.add_argument('--problem_name', type=ProblemName, choices=list(ProblemName), required=True)
     parser.add_argument('--solution_file', type=str)
     parser.add_argument('--case_number', type=int, default=-1)
+    parser.add_argument('--prepare_case_data_only', type=bool, default=False)
     args = parser.parse_args()
     problem_name = args.problem_name.value
     case_number = args.case_number
@@ -50,6 +51,11 @@ def main():
     data_provider_module_name = file_name_to_module_name(problem_config['dataProviderFile'])
     data_provider_module = import_module(data_provider_module_name, __package__)
     data_provider = getattr(data_provider_module, 'DataProvider')
+    if "prepare_case_data" in  dir(data_provider):
+        data_provider().prepare_case_data(force=args.prepare_case_data_only)
+    if args.prepare_case_data_only:
+        exit()
+
 
     solution_file = args.solution_file
     if solution_file is None:

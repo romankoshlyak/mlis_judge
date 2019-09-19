@@ -2,7 +2,6 @@
   "name": "MNIST",
   "text": "See description in the link below",
   "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/mnist/198590804276822/",
-  "dataLoaderFile": "mnist_data_loader.py",
   "dataProviderFile": "mnist_data_provider.py",
   "codeTemplateFile": "see_hello_xor_code_template.py",
   "testSets": [
@@ -106,7 +105,7 @@
             "seed": 10,
             "digits": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
           }
-        },
+        }
       ]
     }
   ]
