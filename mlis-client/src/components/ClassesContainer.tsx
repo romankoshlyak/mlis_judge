@@ -26,7 +26,7 @@ class ClassesContainer extends React.Component<Props> {
       return null;
     }
     const viewer = this.props.main.viewer;
-    const edges = viewer.classes!.edges!.slice(0);
+    const edges = viewer.classes.edges.slice(0);
     const lines = edges.map((edge, index) => {
       const node:any = edge.node;
       let applyButton = null;
@@ -112,7 +112,7 @@ class ClassesContainer extends React.Component<Props> {
   }
   render() {
     return (
-      <Authorized main={this.props.main}>
+      <Authorized main={this.props.main} mainRelay={this.props.relay}>
         {this.renderClasses()}
       </Authorized>
     );

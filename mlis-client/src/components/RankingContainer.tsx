@@ -52,7 +52,7 @@ class RankingContainer extends React.Component<Props> {
   }
   render() {
     return (
-      <Authorized main={this.props.main}>
+      <Authorized main={this.props.main} mainRelay={this.props.relay}>
         {this.renderRankings()}
       </Authorized>
     );

@@ -13,7 +13,7 @@ interface Props {
 class UserContainer extends React.Component<Props> {
   render() {
     return (
-      <Authorized main={this.props.main}>
+      <Authorized main={this.props.main} mainRelay={this.props.relay}>
         <Panel>
           <Panel.Body>
             <h1>USER: Under construction</h1>
