@@ -21,6 +21,7 @@
     "react": "^16.8.6",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.8.6",
+    "react-facebook": "^8.0.4",
     "react-facebook-login": "^4.1.1",
     "react-monaco-editor": "^0.28.0",
     "react-player": "^1.12.0",

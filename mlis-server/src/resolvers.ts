@@ -42,12 +42,23 @@ export default {
       return await clazz.getUser();
     },
     studentsCount: async (clazz: Class) => {
-      const students = await clazz.getClassStudents();
-      return students.length;
+      return await clazz.countClassStudents();
     },
     viewerIsApplied: async (clazz: Class, args: any, {viewer}: AppContext) => {
-      const students = await clazz.getClassStudents();
-      students.filter((student) => student.studentId == viewer!.id)
+      const students = await clazz.getClassStudents({
+        where: {
+          studentId: viewer!.id,
+        }
+      });
+      return students.length > 0;
+    },
+    viewerIsEleminated: async (clazz: Class, args: any, {viewer}: AppContext) => {
+      const students = await clazz.getClassStudents({
+          where: {
+            studentId: viewer!.id,
+            isEleminated: true
+          }
+      });
       return students.length > 0;
     },
   },
@@ -149,6 +160,11 @@ export default {
     globalRanking: async (_parent: any, args: any, { models }: AppContext) => {
       const globalRanking = await getGlobalRanking();
       return connectionFromArray(globalRanking, args);
+    },
+    class: async (_parent: any, {id}: any, { models }: AppContext) => {
+      const globalId = fromGlobalId(id);
+      const problem = await models.Class.findByPk(globalId.id);
+      return problem;
     },
     classes: async (_parent: any, args: any, { models }: AppContext) => {
       const classes = await models.Class.findAll();

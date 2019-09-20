@@ -11,7 +11,7 @@ import UserPage from './components/UserPage';
 import RankingPage from './components/RankingPage';
 import Mentors from './components/UserPage';
 import ClassesPage from './components/ClassesPage';
-import ClassPage from './components/UserPage';
+import ClassPage from './components/ClassPage';
 import ProblemRankingPage from './components/ProblemRankingPage';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route } from "react-router-dom";

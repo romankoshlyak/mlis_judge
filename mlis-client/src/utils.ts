@@ -9,3 +9,20 @@ export function assertTrue(b: boolean) {
     throw Error("Assertion failed");
   }
 }
+interface IdOwnwer {
+  id:string;
+}
+interface Viewer {
+  user: IdOwnwer;
+}
+interface Class {
+  mentor: IdOwnwer;
+  viewerIsApplied: boolean;
+  viewerIsEleminated: boolean;
+}
+export function viewerIsClassMentor(viewer: Viewer, clazz: Class) {
+  return viewer.user.id === clazz.mentor.id;
+}
+export function viewerCanAccessClass(viewer: Viewer, clazz: Class) {
+  return viewerIsClassMentor(viewer, clazz) || (clazz.viewerIsApplied && !clazz.viewerIsEleminated);
+}

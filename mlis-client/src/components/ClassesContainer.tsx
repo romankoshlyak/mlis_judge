@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Table from 'react-bootstrap/lib/Table';
 import ApplyForClassMutation from './../mutations/ApplyForClassMutation';
+import { viewerCanAccessClass } from '../utils';
 
 interface Props {
   relay: RelayRefetchProp,
@@ -28,11 +29,16 @@ class ClassesContainer extends React.Component<Props> {
     const viewer = this.props.main.viewer;
     const edges = viewer.classes.edges.slice(0);
     const lines = edges.map((edge, index) => {
-      const node:any = edge.node;
+      const node = edge.node;
       let applyButton = null;
-      if (node.viewerIsApplied) {
+      const viewerCanAccess = viewerCanAccessClass(viewer, node);
+      if (viewerCanAccess) {
         applyButton = (
-          <Button disabled bsStyle="success">Applied</Button>
+          <Link to={`/class/${node.id}`}>Enter</Link>
+        )
+      } else if (node.viewerIsEleminated) {
+        applyButton = (
+          <div>Eleminated</div>
         )
       } else {
         applyButton = (
@@ -126,6 +132,9 @@ export default createRefetchContainer(
         fragment ClassesContainer_main on Main {
           ...Authorized_main
           viewer {
+            user {
+              id
+            }
             classes(
               first: 100
             ) @connection(key: "ClassesContainer_classes") {
@@ -142,6 +151,7 @@ export default createRefetchContainer(
                   }
                   studentsCount
                   viewerIsApplied
+                  viewerIsEleminated
                 }
               }
             }

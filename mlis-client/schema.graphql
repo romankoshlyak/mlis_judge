@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Thu Sep 19 2019 04:47:02 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Sep 20 2019 01:02:50 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -63,6 +63,7 @@ type Class implements Node {
   studentsCount: Int!
   students(after: String, first: Int, before: String, last: Int): ClassStudentConnection!
   viewerIsApplied: Boolean!
+  viewerIsEleminated: Boolean!
 }
 
 type ClassConnection {
@@ -436,5 +437,6 @@ type Viewer {
   problem(id: ID!): Problem!
   problems(after: String, first: Int, before: String, last: Int): ProblemConnection!
   globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection!
+  class(id: ID!): Class!
   classes(after: String, first: Int, before: String, last: Int): ClassConnection!
 }

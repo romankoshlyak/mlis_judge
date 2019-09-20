@@ -39,6 +39,7 @@ export default gql`
     studentsCount: Int!
     students(after: String, first: Int, before: String, last: Int): ClassStudentConnection!
     viewerIsApplied: Boolean!
+    viewerIsEleminated: Boolean!
   }
   type ClassEdge {
     node: Class!
@@ -250,6 +251,7 @@ export default gql`
     problem(id: ID!): Problem!
     problems(after: String, first: Int, before: String, last: Int): ProblemConnection!
     globalRanking(after: String, first: Int, before: String, last: Int): GlobalRankingConnection!
+    class(id: ID!): Class!
     classes(after: String, first: Int, before: String, last: Int): ClassConnection!
   }
   type Main {

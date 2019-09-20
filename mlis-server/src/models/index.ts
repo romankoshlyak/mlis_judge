@@ -1,4 +1,4 @@
-import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes } from 'sequelize';
+import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes, HasManyCountAssociationsMixin } from 'sequelize';
 import { HasOneGetAssociationMixin } from 'sequelize';
 
 const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
@@ -74,6 +74,7 @@ export class Class extends Model {
   public mentorId!: number;
   public getUser!: HasOneGetAssociationMixin<User>;
   public getClassStudents!: HasManyGetAssociationsMixin<ClassStudent>;
+  public countClassStudents!: HasManyCountAssociationsMixin;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
