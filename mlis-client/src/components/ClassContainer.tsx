@@ -71,7 +71,7 @@ class ClassContainer extends React.Component<Props> {
           {body}
           {mentorTools}
           <FacebookProvider appId={process.env.REACT_APP_FB_APP_ID}>
-            <Comments width="100%" />
+            <Comments href={window.location.href.split('?')[0]} width="100%" />
           </FacebookProvider>
         </Panel.Body>
       </Panel>
