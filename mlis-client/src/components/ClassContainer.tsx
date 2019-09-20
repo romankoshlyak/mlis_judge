@@ -6,7 +6,7 @@ import Authorized from './Authorized';
 import Panel from 'react-bootstrap/lib/Panel';
 import { Link } from 'react-router-dom';
 import { viewerIsClassMentor, viewerCanAccessClass } from '../utils';
-import { FacebookProvider, Comments } from 'react-facebook';
+import { Comments } from 'react-facebook';
 
 interface Props {
   relay: RelayRefetchProp,
@@ -70,9 +70,7 @@ class ClassContainer extends React.Component<Props> {
           <h2>{viewer.class.name}</h2>
           {body}
           {mentorTools}
-          <FacebookProvider appId={process.env.REACT_APP_FB_APP_ID}>
-            <Comments href={window.location.href.split('?')[0]} width="100%" />
-          </FacebookProvider>
+          <Comments href={window.location.href.split('?')[0]} width="100%" />
         </Panel.Body>
       </Panel>
     );
@@ -114,7 +112,7 @@ export default createRefetchContainer(
     graphql`
       query ClassContainerQuery($id: ID!) {
         main {
-          ...ProblemContainer_main @arguments(id: $id)
+          ...ClassContainer_main @arguments(id: $id)
         }
       }`
 );

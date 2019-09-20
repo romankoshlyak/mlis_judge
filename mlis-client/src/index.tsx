@@ -15,24 +15,28 @@ import ClassPage from './components/ClassPage';
 import ProblemRankingPage from './components/ProblemRankingPage';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { FacebookProvider } from 'react-facebook';
 
 ReactDOM.render(
-  <Router>
-    <div>
-      <Route path='/' exact component={MainPage} />
-      <Route path='/admin' component={AdminPage} />
-      <Route path='/user/:id' component={UserPage} />
-      <Route path='/ranking' component={RankingPage} />
-      <Route path='/mentors' component={Mentors} />
-      <Route path='/classes' component={ClassesPage} />
-      <Route path='/class/:id' component={ClassPage} />
-      <Route path='/problem_ranking/:id' component={ProblemRankingPage} />
-      <Route path='/problem/:id' component={ProblemPage} />
-      <Route path='/submission/:id' component={SubmissionPage} />
-      <Route path='/privacy_policy' component={PrivacyPolicy} />
-      <Route path='/term_of_service' component={TermOfService} />
-    </div>
-  </Router>,
+  <FacebookProvider appId={process.env.REACT_APP_FB_APP_ID}>
+    <Router>
+      <div>
+        <Route path='/' exact component={MainPage} />
+        <Route path='/admin' component={AdminPage} />
+        <Route path='/user/:id' component={UserPage} />
+        <Route path='/ranking' component={RankingPage} />
+        <Route path='/mentors' component={Mentors} />
+        <Route path='/classes' component={ClassesPage} />
+        <Route path='/class/:id' component={ClassPage} />
+        <Route path='/problem_ranking/:id' component={ProblemRankingPage} />
+        <Route path='/problem/:id' component={ProblemPage} />
+        <Route path='/submission/:id' component={SubmissionPage} />
+        <Route path='/privacy_policy' component={PrivacyPolicy} />
+        <Route path='/term_of_service' component={TermOfService} />
+      </div>
+    </Router>
+  </FacebookProvider>
+  ,
    document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
