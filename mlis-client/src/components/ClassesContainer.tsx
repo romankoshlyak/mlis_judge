@@ -31,7 +31,7 @@ class ClassesContainer extends React.Component<Props> {
     const lines = edges.map((edge, index) => {
       const node = edge.node;
       let applyButton = null;
-      const viewerCanAccess = viewerCanAccessClass(viewer, node) && false;
+      const viewerCanAccess = viewerCanAccessClass(viewer, node);
       if (viewerCanAccess) {
         applyButton = (
           <Link to={`/class/${node.id}`}>Enter</Link>
