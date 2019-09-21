@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createFragmentContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import Login from './Login';
-import Viewer from './Viewer';
+import MainMenu from './MainMenu';
 import { Authorized_main } from './__generated__/Authorized_main.graphql';
 
 interface Props {
@@ -27,7 +27,7 @@ class Authorized extends React.Component<Props> {
     }
     return (
       <div>
-        <Viewer viewer={this.props.main.viewer} onLogout={this._refetch} />
+        <MainMenu viewer={this.props.main.viewer} onLogout={this._refetch} />
         <div>
             {this.props.children}
         </div>
@@ -42,7 +42,7 @@ export default createFragmentContainer(
       main: graphql`
         fragment Authorized_main on Main {
           viewer {
-            ...Viewer_viewer
+            ...MainMenu_viewer
           }
         }`,
     }

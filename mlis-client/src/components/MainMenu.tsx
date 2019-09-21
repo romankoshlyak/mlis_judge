@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createFragmentContainer, RelayProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 
-import { Viewer_viewer } from './__generated__/Viewer_viewer.graphql';
+import { MainMenu_viewer } from './__generated__/MainMenu_viewer.graphql';
 import { Navbar, NavItem, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LogoutMutation from '../mutations/LogoutMutation';
@@ -10,11 +10,11 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 interface Props {
   relay: RelayProp
-  viewer: Viewer_viewer
+  viewer: MainMenu_viewer
   onLogout: any
 }
 
-class Viewer extends React.Component<Props> {
+class MainMenu extends React.Component<Props> {
   render() {
     return (
       <Navbar>
@@ -51,9 +51,9 @@ class Viewer extends React.Component<Props> {
   }
 }
 
-export default createFragmentContainer(Viewer, {
+export default createFragmentContainer(MainMenu, {
   viewer: graphql`
-    fragment Viewer_viewer on Viewer {
+    fragment MainMenu_viewer on Viewer {
       user {
         id
         name

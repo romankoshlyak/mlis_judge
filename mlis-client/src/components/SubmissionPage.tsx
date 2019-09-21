@@ -8,12 +8,7 @@ import { SubmissionPageQuery } from './__generated__/SubmissionPageQuery.graphql
 const submissionPageQuery = graphql`
   query SubmissionPageQuery($id: ID!) {
     main {
-      ...SubmissionContainer_main
-      viewer {
-        submission(id:$id) {
-          ...SubmissionContainer_submission
-        }
-      }
+      ...SubmissionContainer_main @arguments(id: $id)
     }  
   }
 `;
@@ -29,11 +24,7 @@ class SubmissionPage extends React.Component<Props> {
         variables={{id:this.props.id}}
         render={({error, props}) => {
           if (props && props.main) {
-            let submission = null;
-            if (props.main.viewer != null) {
-              submission = props.main.viewer.submission;
-            }
-            return <SubmissionContainer main={props.main} submission={submission} />;
+            return <SubmissionContainer main={props.main} />;
           } else if (props || error) {
             console.error(`Unexpected data: ${JSON.stringify(props || error)}`)
           } else {

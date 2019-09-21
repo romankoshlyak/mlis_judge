@@ -4,7 +4,6 @@ import { fromGlobalId } from 'graphql-relay';
 import AppContext from './../context';
 import { assertTrue, requireValue } from './../utils';
 import { Test, TestRunReport } from '../models';
-import { is } from 'bluebird';
 
 function checkLess(value: number | null, limit: number | null) {
   return limit != null && (value == null || value < limit);
