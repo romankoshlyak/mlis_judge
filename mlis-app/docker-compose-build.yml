@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 services:
   client:
     build: ./../mlis-client
@@ -11,15 +11,27 @@ services:
     - ./../mlis-client:/usr/src/app
     - ./../mlis-server:/usr/src/server
     command: sh -c "npm run relay && npm run build && rm -rf ./../server/client_build/ && cp -r ./build/ ./../server/client_build/"
+    cpu_shares: 0.8
+    cpu_shares: 0
+    memswap_limit: 0
+    mem_limit: 200m
   server:
     build: ./../mlis-server
     image: mlis_server
     volumes:
     - ./../mlis-server:/usr/src/app
     command: npm run build
+    cpu_shares: 0.8
+    cpu_shares: 0
+    memswap_limit: 0
+    mem_limit: 20m
   agent:
     build: ./../mlis-agent
     image: mlis_agent
     volumes:
     - ./../mlis-agent:/usr/src/app
     command: npm run build
+    cpu_shares: 0.8
+    cpu_shares: 0
+    memswap_limit: 0
+    mem_limit: 20m
