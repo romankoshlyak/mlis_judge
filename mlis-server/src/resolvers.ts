@@ -1,6 +1,6 @@
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking, Class } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking, Class, ClassStudent } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
 import { Op, Transaction } from 'sequelize';
@@ -9,6 +9,7 @@ import AppContext from './context';
 import adminSaveTaskRunReport from './resolvers/adminSaveTaskRunReport';
 import login from './resolvers/login';
 import logout from './resolvers/logout';
+import eleminateStudentFromClass from './resolvers/eleminateStudentFromClass';
 
 export default {
   Node: {
@@ -30,6 +31,15 @@ export default {
       return connectionFromArray(problems, args);
     },
   },
+  ClassStudent: {
+    id: (parent: ClassStudent) => getGlobalId(parent),
+    student: async (classStudent: ClassStudent) => {
+      return await classStudent.getStudent();
+    },
+    createdAt: (clazz: ClassStudent) => {
+      return clazz.createdAt.getTime();
+    },
+  },
   Class: {
     id: (parent: Class) => getGlobalId(parent),
     startAt: (clazz: Class) => {
@@ -39,7 +49,13 @@ export default {
       return clazz.firstTaskDueAt.getTime();
     },
     mentor: async (clazz: Class) => {
-      return await clazz.getUser();
+      return await clazz.getMentor();
+    },
+    students: async (clazz: Class, args: any, { viewer }: AppContext) => {
+      const students = await clazz.getClassStudents({
+        order: ['createdAt']
+      });
+      return connectionFromArray(students, args);
     },
     studentsCount: async (clazz: Class) => {
       return await clazz.countClassStudents();
@@ -188,6 +204,7 @@ export default {
     login,
     logout,
     adminSaveTaskRunReport,
+    eleminateStudentFromClass,
     adminAddProblem: async (parent: any, { input }: any, { models }: any) => {
       const problem = await models.Problem.create(input);
       const problems = await models.Problem.findAll();
@@ -441,7 +458,7 @@ export default {
         await transaction.rollback()
         throw e;
       }
-    }
+    },
   },
   Subscription: {
     taskAdded: {

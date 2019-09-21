@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Fri Sep 20 2019 01:02:50 GMT-0700 (Pacific Daylight Time)
+# timestamp: Sat Sep 21 2019 00:25:37 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -78,9 +78,10 @@ type ClassEdge {
 
 type ClassStudent implements Node {
   id: ID!
+  createdAt: Float!
   class: Class!
   student: User!
-  isEliminated: Boolean!
+  isEleminated: Boolean!
 }
 
 type ClassStudentConnection {
@@ -91,6 +92,18 @@ type ClassStudentConnection {
 type ClassStudentEdge {
   node: ClassStudent!
   cursor: String!
+}
+
+input EleminateStudentFromClassInput {
+  classId: ID!
+  studentId: ID!
+  isEleminated: Boolean!
+  clientMutationId: String
+}
+
+type EleminateStuentFroMClassPayload {
+  student: ClassStudent!
+  clientMutationId: String
 }
 
 input GetTaskInput {
@@ -144,6 +157,7 @@ type Mutation {
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
   applyForClass(input: ApplyForClassInput!): ApplyForClassPayload!
+  eleminateStudentFromClass(input: EleminateStudentFromClassInput!): EleminateStuentFroMClassPayload!
   submit(input: SubmitInput!): SubmitPayload!
   adminGetTask(input: GetTaskInput!): GetTaskPayload!
   adminSaveTaskRunReport(input: SaveTaskRunReportInput!): SaveTaskRunReportPayload!

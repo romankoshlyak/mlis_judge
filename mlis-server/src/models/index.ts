@@ -72,7 +72,7 @@ export class Class extends Model {
   public startAt!: Date;
   public firstTaskDueAt!: Date;
   public mentorId!: number;
-  public getUser!: HasOneGetAssociationMixin<User>;
+  public getMentor!: HasOneGetAssociationMixin<User>;
   public getClassStudents!: HasManyGetAssociationsMixin<ClassStudent>;
   public countClassStudents!: HasManyCountAssociationsMixin;
 
@@ -117,6 +117,7 @@ export class ClassStudent extends Model {
   public classId!: number;
   public studentId!: number;
   public isEleminated!: boolean;
+  public getStudent!: HasOneGetAssociationMixin<User>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -741,8 +742,8 @@ TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
 Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
 Class.hasMany(ClassStudent, {foreignKey: 'classId'});
-Class.hasOne(User, {foreignKey: 'id', sourceKey: 'mentorId', constraints: false});
-ClassStudent.hasOne(User, {foreignKey: 'id', sourceKey: 'studentId', constraints: false});
+Class.hasOne(User, {as: 'mentor', foreignKey: 'id', sourceKey: 'mentorId', constraints: false});
+ClassStudent.hasOne(User, {as: 'student', foreignKey: 'id', sourceKey: 'studentId', constraints: false});
 ClassStudent.hasOne(Class, {foreignKey: 'id', sourceKey: 'classId', constraints: false});
 
 export default {Class, ClassStudent, User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};

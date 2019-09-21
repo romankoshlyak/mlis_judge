@@ -7,16 +7,30 @@ import Panel from 'react-bootstrap/lib/Panel';
 import { Link } from 'react-router-dom';
 import { viewerIsClassMentor, viewerCanAccessClass } from '../utils';
 import { Comments } from 'react-facebook';
+import MentorToolsPage from './MentorToolsPage';
 
 interface Props {
   relay: RelayRefetchProp,
   main: ClassContainer_main,
 }
+interface State {
+  mentorToolsOpen: boolean,
+}
 
-class ClassContainer extends React.Component<Props> {
+class ClassContainer extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      mentorToolsOpen: false
+    };
+  }
   renderMentorTool() {
+    if (!this.state.mentorToolsOpen) {
+      return null;
+    }
     return (
-      <div>TODO</div>
+      <MentorToolsPage id={this.props.main.viewer!.class.id} />
     )
   }
   renderClass() {
@@ -49,7 +63,9 @@ class ClassContainer extends React.Component<Props> {
     let mentorTools = null;
     if (viewerIsMentor) {
       mentorTools = (
-        <Panel>
+        <Panel
+          onToggle={() => this.setState({ mentorToolsOpen: !this.state.mentorToolsOpen })}
+          expanded={this.state.mentorToolsOpen}>
           <Panel.Heading>
             <Panel.Title>
               <Panel.Toggle>
@@ -97,6 +113,7 @@ export default createRefetchContainer(
               id
             }
             class(id:$id) {
+              id
               startAt
               name
               mentor {
