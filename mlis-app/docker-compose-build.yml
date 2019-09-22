@@ -22,7 +22,7 @@ services:
     command: npm run build
     cpus: 0.1
     cpu_shares: 0
-    mem_limit: 20m
+    mem_limit: 400m
   agent:
     build: ./../mlis-agent
     image: mlis_agent
@@ -31,4 +31,4 @@ services:
     command: npm run build
     cpus: 0.1
     cpu_shares: 0
-    mem_limit: 20m
+    mem_limit: 400m
