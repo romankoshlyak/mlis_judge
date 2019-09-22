@@ -20,7 +20,7 @@ services:
     volumes:
     - ./../mlis-server:/usr/src/app
     command: npm run build
-    cpus: 0.1
+    cpus: 0.8
     cpu_shares: 0
     mem_limit: 400m
   agent:
@@ -29,6 +29,6 @@ services:
     volumes:
     - ./../mlis-agent:/usr/src/app
     command: npm run build
-    cpus: 0.1
+    cpus: 0.8
     cpu_shares: 0
     mem_limit: 400m
