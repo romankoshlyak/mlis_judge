@@ -13,6 +13,7 @@ import Mentors from './components/UserPage';
 import ClassesPage from './components/ClassesPage';
 import ClassPage from './components/ClassPage';
 import ProblemRankingPage from './components/ProblemRankingPage';
+import SponsorsPage from './components/SponsorsPage';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { FacebookProvider } from 'react-facebook';
@@ -33,6 +34,7 @@ ReactDOM.render(
         <Route path='/submission/:id' component={SubmissionPage} />
         <Route path='/privacy_policy' component={PrivacyPolicy} />
         <Route path='/term_of_service' component={TermOfService} />
+        <Route path='/Sponsors' component={SponsorsPage} />
       </div>
     </Router>
   </FacebookProvider>

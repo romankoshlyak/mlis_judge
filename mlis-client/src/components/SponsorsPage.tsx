@@ -2,13 +2,13 @@ import React from 'react';
 import { QueryRenderer } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import environment from './../Environment';
-import RankingContainer from './RankingContainer';
-import { RankingPageQuery } from './__generated__/RankingPageQuery.graphql';
+import SponsorsContainer from './SponsorsContainer';
+import { SponsorsPageQuery } from './__generated__/SponsorsPageQuery.graphql';
 
-const rankingPageQuery = graphql`
-  query RankingPageQuery {
+const sponsorsPageQuery = graphql`
+  query SponsorsPageQuery {
     main {
-      ...RankingContainer_main
+      ...SponsorsContainer_main
     }  
   }
 `;
@@ -17,13 +17,13 @@ interface Props {
 export default class RankingPage extends React.Component<Props> {
   render() {
     return (
-      <QueryRenderer<RankingPageQuery>
+      <QueryRenderer<SponsorsPageQuery>
         environment={environment}
-        query={rankingPageQuery}
+        query={sponsorsPageQuery}
         variables={{}}
         render={({error, props}) => {
           if (props && props.main) {
-            return <RankingContainer main={props.main} />;
+            return <SponsorsContainer main={props.main} />;
           } else if (props || error) {
             console.error(`Unexpected data: ${JSON.stringify(props || error)}`)
           } else {
