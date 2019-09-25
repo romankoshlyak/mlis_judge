@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createFragmentContainer, RelayProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import { MentorToolsContainer_main } from './__generated__/MentorToolsContainer_main.graphql';
-import EleminateStudentFromClassMutation from './../mutations/EleminateStudentFromClass';
+import UpdateClassStudentMutation from '../mutations/UpdateClassStudent';
 import Panel from 'react-bootstrap/lib/Panel';
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/lib/Table';
@@ -12,19 +12,20 @@ interface Props {
   relay: RelayProp,
   main: MentorToolsContainer_main,
 }
-interface ClassStdents { readonly edges: readonly { readonly node: { readonly id: string; readonly createdAt: number; readonly student: { readonly id: string; readonly name: string; }; readonly isEleminated: boolean; }; }[]; };
-
 
 class MentorToolsContainer extends React.Component<Props> {
-  __eleminateStudentFromClass(classId: string, studentId: string, isEleminated: boolean) {
-    EleminateStudentFromClassMutation.commit(
+  __updateClassStudent(classId: string, studentId: string, isEleminated: boolean|null, isAdvanced: boolean|null) {
+    console.log(classId, studentId, isEleminated, isAdvanced);
+    UpdateClassStudentMutation.commit(
       this.props.relay.environment,
       classId,
       studentId,
-      isEleminated
+      isEleminated,
+      isAdvanced
     );
   }
-  __renderStudents(classId: string, students: ClassStdents) {
+  __renderStudents(classId: string) {
+    const students = this.props.main.viewer!.class.students;
     return  students.edges.map((edge, index) => {
       const node = edge.node;
       return (
@@ -32,10 +33,17 @@ class MentorToolsContainer extends React.Component<Props> {
           <td><Link to={`/user/${node.student.id}`}>{node.student.name}</Link></td>
           <td>{new Date(node.createdAt).toLocaleString()}</td>
           <td>{node.isEleminated ? 'YES': 'NO'}</td>
+          <td>{node.isAdvanced ? 'YES': 'NO'}</td>
           <td>
             <Button
-              onClick={this.__eleminateStudentFromClass.bind(this, classId, node.id, !node.isEleminated)}>
+              onClick={this.__updateClassStudent.bind(this, classId, node.id, !node.isEleminated, null)}>
                 {node.isEleminated ? 'Restore': 'Eleminate'}
+            </Button>
+          </td>
+          <td>
+            <Button
+              onClick={this.__updateClassStudent.bind(this, classId, node.id, null, !node.isAdvanced)}>
+                {node.isAdvanced ? 'Restore': 'Advance'}
             </Button>
           </td>
         </tr>
@@ -59,11 +67,13 @@ class MentorToolsContainer extends React.Component<Props> {
                 <th>Name</th>
                 <th>Joined</th>
                 <th>Eleminated</th>
+                <th>Advanced</th>
                 <th>Eleminate</th>
+                <th>Advance</th>
               </tr>
             </thead>
             <tbody>
-              {this.__renderStudents(viewer.class.id, viewer.class.students)}
+              {this.__renderStudents(viewer.class.id)}
             </tbody>
           </Table>
         </Panel.Body>
@@ -94,6 +104,7 @@ export default createFragmentContainer(
                       name
                     }
                     isEleminated
+                    isAdvanced
                   }
                 }
               }

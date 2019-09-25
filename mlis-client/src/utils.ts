@@ -1,3 +1,11 @@
+export function compareToNumber(a: any, b: any) {
+  if (a < b) {
+    return -1;
+  } else if (a > b) {
+    return 1;
+  }
+  return 0;
+}
 export function requireValue<ValueType>(input: ValueType|null|undefined){
   if (input == null) {
     throw Error("value is required!");

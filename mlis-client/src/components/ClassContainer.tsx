@@ -6,8 +6,11 @@ import Authorized from './Authorized';
 import Panel from 'react-bootstrap/lib/Panel';
 import { Link } from 'react-router-dom';
 import { viewerIsClassMentor, viewerCanAccessClass } from '../utils';
+import { compareToNumber } from '../utils';
 import { Comments } from 'react-facebook';
 import MentorToolsPage from './MentorToolsPage';
+import ListGroup from 'react-bootstrap/lib/ListGroup';
+import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 
 interface Props {
   relay: RelayRefetchProp,
@@ -32,6 +35,57 @@ class ClassContainer extends React.Component<Props, State> {
     return (
       <MentorToolsPage id={this.props.main.viewer!.class.id} />
     )
+  }
+  renderStudents() {
+    const viewer = this.props.main.viewer!;
+    return (
+      <Panel>
+        <Panel.Heading>
+          <Panel.Title componentClass="h2">Students list:</Panel.Title>
+        </Panel.Heading>
+        <Panel.Body>
+          <ListGroup>
+            {(() => {
+              const students = viewer.class.students;
+              const edges = students.edges.slice().sort((a, b) => {
+                let res = compareToNumber(a.node.isEleminated, b.node.isEleminated);
+                if (res === 0) {
+                  res = -compareToNumber(a.node.isAdvanced, a.node.isAdvanced);
+                }
+                if (res === 0) {
+                  res = compareToNumber(a.node.student.name, a.node.student.name);
+                }
+                return res;
+              })
+              return  edges.map((edge, index) => {
+                const node = edge.node;
+                const advanced = node.isAdvanced;
+                const eleminated = node.isEleminated;
+                let style = 'info';
+                if (advanced) {
+                  style = 'success';
+                }
+                if (eleminated) {
+                  style = 'danger';
+                }
+                return (
+                  <ListGroupItem bsStyle={style} key={index}>
+                    <Link to={`/user/${node.student.id}`}>{node.student.name}</Link>
+                  </ListGroupItem>
+                );
+              });
+            })()}
+          </ListGroup>
+        </Panel.Body>
+        <Panel.Footer>
+          <ListGroup>
+            <ListGroupItem bsStyle="success">Advanced to next week</ListGroupItem>
+            <ListGroupItem bsStyle="info">Not yet advanced to next week</ListGroupItem>
+            <ListGroupItem bsStyle="danger">Eleminated</ListGroupItem>
+          </ListGroup>
+        </Panel.Footer>
+      </Panel>
+    );
   }
   renderClass() {
     if (this.props.main.viewer == null) {
@@ -86,6 +140,7 @@ class ClassContainer extends React.Component<Props, State> {
           <h2>{viewer.class.name}</h2>
           {body}
           {mentorTools}
+          {this.renderStudents()}
           <Comments href={window.location.href.split('?')[0]} width="100%" />
         </Panel.Body>
       </Panel>
@@ -122,6 +177,21 @@ export default createRefetchContainer(
               }
               viewerIsApplied
               viewerIsEleminated
+              students(
+                first: 10000
+              ) @connection(key: "ClassContainer_students") {
+                edges {
+                  node {
+                    id
+                    student {
+                      id
+                      name
+                    }
+                    isAdvanced
+                    isEleminated
+                  }
+                }
+              }
             }
           }
         }`,

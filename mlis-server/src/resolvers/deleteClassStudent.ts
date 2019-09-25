@@ -1,26 +1,25 @@
 import { Transaction } from 'sequelize';
 import { fromGlobalId } from 'graphql-relay';
 
-import AppContext from './../context';
-import { assertTrue, requireValue } from './../utils';
+import AppContext from '../context';
+import { assertTrue, requireValue, getModelId } from '../utils';
 
-export default async function eleminateStudentFromClass(parent: null, { input }: any, { viewer, models, pubsub }: AppContext) {
+export default async function deleteClassStudent(parent: null, { input }: any, { viewer, models }: AppContext) {
   viewer = requireValue(viewer);
 
   const transaction = await models.sequelize.transaction({isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE});
   try {
-    const classId = fromGlobalId(input.classId).id;
-    const studentId = fromGlobalId(input.studentId).id;
-    const isEleminated = input.isEleminated;
+    const classId  = getModelId(input.classId, models.Class);
+    const studentId = getModelId(input.studentId, models.ClassStudent);
     const clazz = requireValue(await models.Class.findByPk(classId));
     const mentor = await clazz.getMentor();
-    assertTrue(viewer.id == mentor.id);
+    assertTrue(viewer.id === mentor.id);
     const student = requireValue(await models.ClassStudent.findByPk(studentId));
-    student.isEleminated = isEleminated;
-    const updatedStudent = await student.save();
+    assertTrue(student.classId === classId);
+    await student.destroy()
     transaction.commit();
     return {
-        student: updatedStudent,
+        deletedStudentId: input.studentId,
         clientMutationId: input.clientMutationId,
     };
   } catch (e) {

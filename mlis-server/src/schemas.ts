@@ -21,6 +21,7 @@ export default gql`
     class: Class!
     student: User!
     isEleminated: Boolean!
+    isAdvanced: Boolean!
   }
   type ClassStudentEdge {
     node: ClassStudent!
@@ -362,21 +363,32 @@ export default gql`
     class: Class!
     clientMutationId: String
   }
-  input EleminateStudentFromClassInput {
+  input UpdateClassStudentInput {
     classId: ID!
     studentId: ID!
-    isEleminated: Boolean!
+    isEleminated: Boolean
+    isAdvanced: Boolean
     clientMutationId: String
   }
-  type EleminateStuentFroMClassPayload {
+  type UpdateClassStudentPayload {
     student: ClassStudent!
+    clientMutationId: String
+  }
+  input DeleteClassStudentInput {
+    classId: ID!
+    studentId: ID!
+    clientMutationId: String
+  }
+  type DeleteClassStudentPayload {
+    deletedStudentId: ID!
     clientMutationId: String
   }
   type Mutation {
     login(input: LoginInput!): LoginPayload!
     logout(input: LogoutInput!): LogoutPayload!
     applyForClass(input: ApplyForClassInput!): ApplyForClassPayload!
-    eleminateStudentFromClass(input: EleminateStudentFromClassInput!): EleminateStuentFroMClassPayload!
+    updateClassStudent(input: UpdateClassStudentInput!): UpdateClassStudentPayload!
+    deleteClassStudent(input: DeleteClassStudentInput!): DeleteClassStudentPayload!
     submit(input: SubmitInput!): SubmitPayload!
 
     adminGetTask(input: GetTaskInput!): GetTaskPayload!

@@ -2,14 +2,15 @@ import { commitMutation } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
 import { Environment } from 'relay-runtime';
 
-import { EleminateStudentFromClassMutation } from './__generated__/EleminateStudentFromClassMutation.graphql';
+import { UpdateClassStudentMutation } from './__generated__/UpdateClassStudentMutation.graphql';
 
 const mutation = graphql`
-  mutation EleminateStudentFromClassMutation($input: EleminateStudentFromClassInput!) {
-    eleminateStudentFromClass(input:$input) {
+  mutation UpdateClassStudentMutation($input: UpdateClassStudentInput!) {
+    updateClassStudent(input:$input) {
       student {
         id
         isEleminated
+        isAdvanced
       }
     }
   }
@@ -20,9 +21,10 @@ function commit(
   environment: Environment,
   classId: string,
   studentId: string,
-  isEleminated: boolean,
+  isEleminated: boolean | null,
+  isAdvanced: boolean | null,
 ) {
-  return commitMutation<EleminateStudentFromClassMutation>(
+  return commitMutation<UpdateClassStudentMutation>(
     environment,
     {
       mutation,
@@ -31,6 +33,7 @@ function commit(
           classId,
           studentId,
           isEleminated,
+          isAdvanced,
           clientMutationId: (tempID++).toString(),
         },
       },

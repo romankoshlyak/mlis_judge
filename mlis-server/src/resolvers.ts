@@ -9,7 +9,8 @@ import AppContext from './context';
 import adminSaveTaskRunReport from './resolvers/adminSaveTaskRunReport';
 import login from './resolvers/login';
 import logout from './resolvers/logout';
-import eleminateStudentFromClass from './resolvers/eleminateStudentFromClass';
+import updateClassStudent from './resolvers/updateClassStudent';
+import deleteClassStudent from './resolvers/deleteClassStudent';
 
 export default {
   Node: {
@@ -39,6 +40,9 @@ export default {
     createdAt: (clazz: ClassStudent) => {
       return clazz.createdAt.getTime();
     },
+    isAdvanced: async (clazz: ClassStudent) => {
+      return false;
+    }
   },
   Class: {
     id: (parent: Class) => getGlobalId(parent),
@@ -204,7 +208,8 @@ export default {
     login,
     logout,
     adminSaveTaskRunReport,
-    eleminateStudentFromClass,
+    updateClassStudent,
+    deleteClassStudent,
     adminAddProblem: async (parent: any, { input }: any, { models }: any) => {
       const problem = await models.Problem.create(input);
       const problems = await models.Problem.findAll();

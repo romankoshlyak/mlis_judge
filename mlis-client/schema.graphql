@@ -1,5 +1,5 @@
 # source: http://localhost/graphql
-# timestamp: Sat Sep 21 2019 00:25:37 GMT-0700 (Pacific Daylight Time)
+# timestamp: Tue Sep 24 2019 19:34:27 GMT-0700 (Pacific Daylight Time)
 
 directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 
@@ -82,6 +82,7 @@ type ClassStudent implements Node {
   class: Class!
   student: User!
   isEleminated: Boolean!
+  isAdvanced: Boolean!
 }
 
 type ClassStudentConnection {
@@ -94,15 +95,14 @@ type ClassStudentEdge {
   cursor: String!
 }
 
-input EleminateStudentFromClassInput {
+input DeleteClassStudentInput {
   classId: ID!
   studentId: ID!
-  isEleminated: Boolean!
   clientMutationId: String
 }
 
-type EleminateStuentFroMClassPayload {
-  student: ClassStudent!
+type DeleteClassStudentPayload {
+  deletedStudentId: ID!
   clientMutationId: String
 }
 
@@ -157,7 +157,8 @@ type Mutation {
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
   applyForClass(input: ApplyForClassInput!): ApplyForClassPayload!
-  eleminateStudentFromClass(input: EleminateStudentFromClassInput!): EleminateStuentFroMClassPayload!
+  updateClassStudent(input: UpdateClassStudentInput!): UpdateClassStudentPayload!
+  deleteClassStudent(input: DeleteClassStudentInput!): DeleteClassStudentPayload!
   submit(input: SubmitInput!): SubmitPayload!
   adminGetTask(input: GetTaskInput!): GetTaskPayload!
   adminSaveTaskRunReport(input: SaveTaskRunReportInput!): SaveTaskRunReportPayload!
@@ -434,6 +435,19 @@ type TestSetRunReport implements Node {
   testAccuracyMean: Float
   testAccuracyMin: Float
   isAccepted: Boolean
+}
+
+input UpdateClassStudentInput {
+  classId: ID!
+  studentId: ID!
+  isEleminated: Boolean
+  isAdvanced: Boolean
+  clientMutationId: String
+}
+
+type UpdateClassStudentPayload {
+  student: ClassStudent!
+  clientMutationId: String
 }
 
 """The `Upload` scalar type represents a file upload."""
