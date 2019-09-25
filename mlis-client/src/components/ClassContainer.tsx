@@ -50,10 +50,10 @@ class ClassContainer extends React.Component<Props, State> {
               const edges = students.edges.slice().sort((a, b) => {
                 let res = compareToNumber(a.node.isEleminated, b.node.isEleminated);
                 if (res === 0) {
-                  res = -compareToNumber(a.node.isAdvanced, a.node.isAdvanced);
+                  res = -compareToNumber(a.node.isAdvanced, b.node.isAdvanced);
                 }
                 if (res === 0) {
-                  res = compareToNumber(a.node.student.name, a.node.student.name);
+                  res = compareToNumber(a.node.student.name, b.node.student.name);
                 }
                 return res;
               })
