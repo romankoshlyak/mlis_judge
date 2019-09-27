@@ -38,3 +38,4 @@ services:
     image: postgres:alpine
     volumes:
     - ./.database:/var/lib/postgresql/data
+    - ./.backups:/usr/src/backups
