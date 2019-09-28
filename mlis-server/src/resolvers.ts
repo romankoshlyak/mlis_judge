@@ -40,9 +40,6 @@ export default {
     createdAt: (clazz: ClassStudent) => {
       return clazz.createdAt.getTime();
     },
-    isAdvanced: async (clazz: ClassStudent) => {
-      return false;
-    }
   },
   Class: {
     id: (parent: Class) => getGlobalId(parent),

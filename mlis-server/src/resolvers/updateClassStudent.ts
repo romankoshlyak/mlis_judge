@@ -22,7 +22,7 @@ export default async function updateClassStudent(parent: null, { input }: any, {
       student.isEleminated = isEleminated;
     }
     if (isAdvanced != null) {
-      // student.isAdvanced = isAdvanced;
+      student.isAdvanced = isAdvanced;
     }
     const updatedStudent = await student.save();
     transaction.commit();

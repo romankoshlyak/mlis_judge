@@ -15,7 +15,8 @@
   "devDependencies": {
     "nodemon": "^1.19.1",
     "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "sequelize-cli": "^5.5.1"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.27",
@@ -35,7 +36,7 @@
     "node-fetch": "^2.6.0",
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^5.10.1",
+    "sequelize": "^5.19.1",
     "subscriptions-transport-ws": "^0.9.16"
   }
 }

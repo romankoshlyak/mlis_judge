@@ -117,6 +117,7 @@ export class ClassStudent extends Model {
   public classId!: number;
   public studentId!: number;
   public isEleminated!: boolean;
+  public isAdvanced!: boolean;
   public getStudent!: HasOneGetAssociationMixin<User>;
 
   public readonly createdAt!: Date;
@@ -139,6 +140,10 @@ ClassStudent.init({
     allowNull: false,
   },
   isEleminated: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  isAdvanced: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
