@@ -84,6 +84,9 @@ export default {
     user: async (ranking: Ranking) => {
       return await ranking.getUser();
     },
+    submission: async (ranking: Ranking) => {
+      return await ranking.getSubmission();
+    },
     updatedAt: (ranking: Ranking) => {
       return ranking.updatedAt.getTime();
     }
@@ -111,6 +114,16 @@ export default {
         order: ['metric']
       });
       return connectionFromArray(ranking, args);
+    },
+    metrics: async (problem: Problem, args: any, { viewer }: AppContext) => {
+      const result = [
+        {
+          id: 1,
+          number: 0,
+          type: 'TRAINING_TIME'
+        }
+      ];
+      return result;
     },
   },
   User: {
@@ -148,6 +161,19 @@ export default {
     testRunReports: async (testSetRunReport: TestSetRunReport, args: any, { viewer }: AppContext) => {
       const testRunReports = await testSetRunReport.getTestRunReports();
       return connectionFromArray(testRunReports, args);
+    },
+    metricValues: async (testSetRunReport: TestSetRunReport, args: any, { viewer }: AppContext) => {
+      const result = [
+        {
+          metric: {
+            id: 1,
+            number: 0,
+            type: 'TRAINING_TIME'
+          },
+          value: testSetRunReport.trainingTimeMean
+        }
+      ];
+      return result;
     },
   },
   Task: {

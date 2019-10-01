@@ -18,6 +18,7 @@ export class Ranking extends Model {
   public readonly updatedAt!: Date;
 
   public getUser!: HasOneGetAssociationMixin<User>;
+  public getSubmission!: HasOneGetAssociationMixin<Submission>;
 }
 export async function getGlobalRanking() {
   const res = await sequelize.query(`
@@ -746,6 +747,7 @@ User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
 Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
+Ranking.hasOne(Submission, {foreignKey: 'id', sourceKey: 'submissionId', constraints: false});
 Class.hasMany(ClassStudent, {foreignKey: 'classId'});
 Class.hasOne(User, {as: 'mentor', foreignKey: 'id', sourceKey: 'mentorId', constraints: false});
 ClassStudent.hasOne(User, {as: 'student', foreignKey: 'id', sourceKey: 'studentId', constraints: false});

@@ -77,6 +77,26 @@ export default gql`
     pageInfo: PageInfo!
     edges: [TestEdge]
   }
+  enum MetricType {
+    MODEL_SIZE,
+    TRAINING_STEPS,
+    TRAINING_TIME,
+    TRAIN_EVALUATION_TIME,
+    TRAIN_METRIC,
+    TRAIN_ACCURACY,
+    TEST_EVALUATION_TIME,
+    TEST_METRIC,
+    TEST_ACCURACY
+  }
+  type Metric implements Node {
+    id: ID!
+    number: Int!
+    type: MetricType!
+  }
+  type MetricValue {
+    metric: Metric!
+    value: Float!
+  }
   type TestSet implements Node {
     id: ID!
     problem: Problem!
@@ -96,7 +116,6 @@ export default gql`
     problem: Problem!
     submission: Submission!
     user: User!
-    metric: Float!
     updatedAt: Float!
   }
   type RankingEdge {
@@ -126,10 +145,12 @@ export default gql`
     textUrl: String
     codeTemplate: String!
     dataProvider: String!
+    metrics: [Metric!]!
     submissions(after: String, first: Int, before: String, last: Int): SubmissionConnection!
     testSets(after: String, first: Int, before: String, last: Int): TestSetConnection!
     ranking(after: String, first: Int, before: String, last: Int): RankingConnection!
   }
+
   enum RunStatus {
     SCHEDULED,
     RUNNING,
@@ -176,6 +197,7 @@ export default gql`
     status: RunStatus!
     submission: Submission!
     testSet: TestSet!
+    metricValues: [MetricValue!]!
     testRunReports(after: String, first: Int, before: String, last: Int): TestRunReportConnection!
     modelSizeMax: Float
     modelSizeMean: Float
