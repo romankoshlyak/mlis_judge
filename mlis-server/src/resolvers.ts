@@ -137,7 +137,6 @@ export default {
   },
   Metric: {
     id: (metric: Metric) => getGlobalId(metric),
-    number: (metric: Metric) => metric.priority,
   },
   TestSet: {
     id: (testSet: TestSet) => getGlobalId(testSet),

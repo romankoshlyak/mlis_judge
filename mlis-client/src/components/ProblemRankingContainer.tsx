@@ -118,7 +118,6 @@ export default createRefetchContainer(
             problem(id:$id) {
               metrics {
                 id
-                number
                 type
               }
               ranking(

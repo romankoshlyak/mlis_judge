@@ -90,7 +90,7 @@ export default gql`
   }
   type Metric implements Node {
     id: ID!
-    number: Int!
+    priority: Int!
     type: MetricType!
   }
   type MetricValue {
