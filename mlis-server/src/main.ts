@@ -8,8 +8,6 @@ import {Express} from "express-serve-static-core";
 
 import AppServer from './AppServer';
 import initDevData from './initDevData';
-import { migrateAddMetrics } from './loadProblemsFromConfigs';
-import { connectionFromArraySlice } from 'graphql-relay';
 
 const ENCODING = 'utf8';
 
@@ -59,11 +57,6 @@ async function main() {
         await sleep(waitingTime * 1000);
       }
     }
-  }
-  try {
-    await migrateAddMetrics();
-  } catch (e) {
-    console.log(e);
   }
 
   const graphqlServer = new AppServer();
