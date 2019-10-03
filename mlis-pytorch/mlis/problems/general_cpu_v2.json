@@ -14,6 +14,11 @@
         "trainAccuracyLimit": 1.0,
         "testAccuracyLimit": 1.0
       },
+      "metrics": [
+        "TRAINING_STEPS",
+        "MODEL_SIZE",
+        "TRAINING_TIME"
+      ],
       "tests": [
         {
           "number": 1,

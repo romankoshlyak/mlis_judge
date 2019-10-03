@@ -1,6 +1,6 @@
 import { connectionFromArray, cursorForObjectInConnection, fromGlobalId } from 'graphql-relay';
 import { UserInputError } from 'apollo-server';
-import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking, Class, ClassStudent } from './models';
+import { Test, TestSetRunReport, TestRunReport, Task, TestSet, Ranking, getGlobalRanking, Class, ClassStudent, Metric } from './models';
 import { Submission, Problem, User } from './models';
 import { assertTrue, requireValue, getGlobalId } from './utils';
 import { Op, Transaction } from 'sequelize';
@@ -111,19 +111,16 @@ export default {
     },
     ranking: async (problem: Problem, args: any, { viewer }: AppContext) => {
       const ranking = await problem.getRankings({
-        order: ['metric']
+        order: ['metric1', 'metric2', 'metric3']
       });
       return connectionFromArray(ranking, args);
     },
     metrics: async (problem: Problem, args: any, { viewer }: AppContext) => {
-      const result = [
-        {
-          id: 1,
-          number: 0,
-          type: 'TRAINING_TIME'
-        }
-      ];
-      return result;
+      const testSets = await problem.getTestSets();
+      assertTrue(testSets.length == 1);
+      const testSet = testSets[0];
+      const metrics = await testSet.getMetrics();
+      return metrics;
     },
   },
   User: {
@@ -137,6 +134,10 @@ export default {
     problem: async (submission: Submission) => {
       return await submission.getProblem();
     },
+  },
+  Metric: {
+    id: (metric: Metric) => getGlobalId(metric),
+    number: (metric: Metric) => metric.priority,
   },
   TestSet: {
     id: (testSet: TestSet) => getGlobalId(testSet),
@@ -163,17 +164,14 @@ export default {
       return connectionFromArray(testRunReports, args);
     },
     metricValues: async (testSetRunReport: TestSetRunReport, args: any, { viewer }: AppContext) => {
-      const result = [
-        {
-          metric: {
-            id: 1,
-            number: 0,
-            type: 'TRAINING_TIME'
-          },
-          value: testSetRunReport.trainingTimeMean
+      const testSet = await testSetRunReport.getTestSet();
+      const metrics = await testSet.getMetrics();
+      return metrics.map((metric) => {
+        return {
+          metric,
+          value: testSetRunReport.getMetricValue(metric),
         }
-      ];
-      return result;
+      })
     },
   },
   Task: {

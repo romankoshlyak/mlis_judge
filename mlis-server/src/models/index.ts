@@ -1,5 +1,6 @@
-import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes, HasManyCountAssociationsMixin } from 'sequelize';
+import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes, HasManyCountAssociationsMixin, Transactionable } from 'sequelize';
 import { HasOneGetAssociationMixin } from 'sequelize';
+import { assertTrue } from '../utils';
 
 const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
   host: 'database',
@@ -7,27 +8,14 @@ const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
   logging: false,
 });
 
-export class Ranking extends Model {
-  public id!: number;
-  public problemId!: number;
-  public userId!: number;
-  public submissionId!: number;
-  public metric!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-
-  public getUser!: HasOneGetAssociationMixin<User>;
-  public getSubmission!: HasOneGetAssociationMixin<Submission>;
-}
 export async function getGlobalRanking() {
   const res = await sequelize.query(`
     SELECT c."userId" as "userId", SUM(c."points") as "points"
     FROM (
-      SELECT a."problemId" as "problemId", a."userId" as "userId", GREATEST(1000-count(b."metric"), 0) as points
+      SELECT a."problemId" as "problemId", a."userId" as "userId", GREATEST(1000-count(b."userId"), 0) as points
       FROM rankings a
       LEFT OUTER JOIN rankings b
-      ON a."problemId" = b."problemId" AND b."metric" < a."metric"
+      ON a."problemId" = b."problemId" AND ARRAY[b."metric1", b."metric2", b."metric3"] < ARRAY[a."metric1", a."metric2", a."metric3"]
       GROUP BY a."problemId", a."userId"
     ) c
     GROUP BY c."userId"
@@ -36,6 +24,21 @@ export async function getGlobalRanking() {
     { type: QueryTypes.SELECT }
   );
   return res;
+}
+export class Ranking extends Model {
+  public id!: number;
+  public problemId!: number;
+  public userId!: number;
+  public submissionId!: number;
+  public metric1!: number;
+  public metric2!: number | null;
+  public metric3!: number | null;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  public getUser!: HasOneGetAssociationMixin<User>;
+  public getSubmission!: HasOneGetAssociationMixin<Submission>;
 }
 
 Ranking.init({
@@ -57,9 +60,17 @@ Ranking.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  metric: {
+  metric1: {
     type: DataTypes.DOUBLE,
     allowNull: false,
+  },
+  metric2: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
+  },
+  metric3: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
   },
 }, {
   sequelize,
@@ -239,6 +250,7 @@ Problem.init({
 
 export class Test extends Model {
   public id!: number;
+  public testSetId!: number;
   public number!: number;
   public description!: string;
   public config!: string;
@@ -262,6 +274,10 @@ Test.init({
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  testSetId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   number: {
     type: DataTypes.INTEGER,
@@ -316,10 +332,47 @@ Test.init({
   tableName: 'tests',
 });
 
+export class Metric extends Model {
+  public id!: number;
+  public testSetId!: number;
+  public priority!: number;
+  public type!: string;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+Metric.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  testSetId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  priority: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  type: {
+    type: new DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  defaultScope: {
+    order: ['priority'],
+  },
+  sequelize,
+  tableName: 'metrics',
+});
+
 export class TestSet extends Model {
   public id!: number;
   public problemId!: number;
   public name!: string;
+  public getMetrics!: HasManyGetAssociationsMixin<Metric>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -490,6 +543,7 @@ TestRunReport.init({
 export class TestSetRunReport extends Model {
   public id!: number;
   public status!: string;
+  public testSetId!: number;
 
   public modelSizeMin!: number | null;
   public modelSizeMean!: number | null;
@@ -524,11 +578,62 @@ export class TestSetRunReport extends Model {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public async getFailedTestRunReports() {
-    return [];
+  public getMetricValue(metric: Metric): number {
+    switch (metric.type) {
+      case "MODEL_SIZE":
+        return this.modelSizeMean!;
+      case "TRAINING_STEPS":
+        return this.trainingStepsMean!;
+      case "TRAINING_TIME":
+        return this.trainingTimeMean!;
+      case "TRAIN_EVALUATION_TIME":
+        return this.trainEvaluationTimeMean!;
+      case "TRAIN_METRIC":
+        return this.trainMetricMean!;
+      case "TRAIN_ACCURACY":
+        return this.trainAccuracyMean!;
+      case "TEST_EVALUATION_TIME":
+        return this.testEvaluationTimeMean!;
+      case "TEST_METRIC":
+        return this.testMetricMean!;
+      case "TEST_ACCURACY":
+        return this.testAccuracyMean!;
+      default:
+        throw "Error";
+    }
+  }
+
+  public async getMetricValues(options: Transactionable) {
+    const testSet = await this.getTestSet(options);
+    const metrics = await testSet.getMetrics(options);
+    return metrics.map((metric) => {
+      return {
+        metric,
+        value: this.getMetricValue(metric),
+      }
+    })
+  }
+
+  public async getMetricValuesForRanking(options: Transactionable) {
+    const metricValues = await this.getMetricValues(options);
+    return [0, 1, 2].map((index) => {
+      if (index < metricValues.length) {
+        const metricValue = metricValues[index];
+        switch (metricValue.metric.type) {
+          case "TRAIN_ACCURACY":
+            return -metricValue.value;
+          case "TEST_ACCURACY":
+            return -metricValue.value;
+          default:
+            return metricValue.value;
+        }
+      }
+      return null;
+    });
   }
 
   public getTestRunReports!: HasManyGetAssociationsMixin<TestRunReport>;
+  public getTestSet!: HasOneGetAssociationMixin<TestSet>;
 }
 
 TestSetRunReport.init({
@@ -536,6 +641,10 @@ TestSetRunReport.init({
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  testSetId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   status: {
     type: new DataTypes.STRING,
@@ -649,7 +758,6 @@ TestSetRunReport.init({
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-
   isAccepted: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
@@ -745,7 +853,9 @@ Problem.hasMany(TestSet, {foreignKey: 'problemId'});
 Problem.hasMany(Ranking, {foreignKey: 'problemId'});
 User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
+TestSet.hasMany(Metric, {foreignKey: "testSetId"})
 TestSetRunReport.hasMany(TestRunReport, {foreignKey: "testSetRunReportId"})
+TestSetRunReport.hasOne(TestSet, {foreignKey: 'id', sourceKey: 'testSetId', constraints: false});
 Ranking.hasOne(User, {foreignKey: 'id', sourceKey: 'userId', constraints: false});
 Ranking.hasOne(Submission, {foreignKey: 'id', sourceKey: 'submissionId', constraints: false});
 Class.hasMany(ClassStudent, {foreignKey: 'classId'});
@@ -753,4 +863,4 @@ Class.hasOne(User, {as: 'mentor', foreignKey: 'id', sourceKey: 'mentorId', const
 ClassStudent.hasOne(User, {as: 'student', foreignKey: 'id', sourceKey: 'studentId', constraints: false});
 ClassStudent.hasOne(Class, {foreignKey: 'id', sourceKey: 'classId', constraints: false});
 
-export default {Class, ClassStudent, User, Test, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};
+export default {Class, ClassStudent, User, Test, Metric, TestSet, TestRunReport, TestSetRunReport, Task, Ranking, Problem, Submission, getGlobalRanking, sequelize};

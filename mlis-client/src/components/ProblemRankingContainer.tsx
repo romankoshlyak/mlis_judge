@@ -44,9 +44,7 @@ class ProblemRankingContainer extends React.Component<Props> {
     }
     const viewer = this.props.main.viewer;
     const problem = viewer.problem;
-    const metrics = problem.metrics.slice().sort((a, b) => {
-      return a.number - b.number;
-    })
+    const metrics = problem.metrics;
     const edges = problem.ranking.edges.slice(0);
     const lines = edges.map((edge, index) => {
       const node = edge.node;

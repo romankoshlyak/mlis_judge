@@ -15,6 +15,10 @@
         "trainAccuracyLimit": 0.95,
         "testAccuracyLimit": 0.95
       },
+      "metrics": [
+        "TEST_ACCURACY",
+        "TRAINING_TIME"
+      ],
       "tests": [
         {
           "number": 1,

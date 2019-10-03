@@ -18,6 +18,9 @@ function checkTestRun(testRunReport: TestRunReport, test: Test): [boolean, strin
   if (checkMore(testRunReport.trainingSteps, test.trainingStepsLimit)) {
     return [false, `Training steps ${testRunReport.trainingSteps} > ${test.trainingStepsLimit}`];
   }
+  if (testRunReport.trainingSteps === 0) {
+    return [false, `You forget to report steps: call context.increase_step() every step`];
+  }
   if (checkMore(testRunReport.trainingTime, test.trainingTimeLimit)) {
     return [false, `Training time ${testRunReport.trainingTime} > ${test.trainingTimeLimit}`];
   }
@@ -114,6 +117,22 @@ async function updateTestSetRunReport(testRunReport: TestRunReport, transaction:
   return updatedTestSetRunReport;
 }
 
+function compareArrays(a: any[], b: any[]) {
+  for (let i = 0; i < a.length; i++) {
+    const ai = a[i];
+    const bi = b[i];
+    if (ai != bi) {
+      if (ai < bi) {
+        return -1;
+      } else if (ai > bi) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+  return 0;
+}
 export default async function adminSaveTaskRunReport(parent: null, { input }: any, { models, pubsub }: AppContext) {
   const transaction = await models.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
@@ -155,7 +174,8 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
           const problemId = updatedTestRunReport.problemId;
           const userId = submission.ownerId;
           const submissionId = submission.id;
-          const metric = updatedTestSetRunReport.trainingTimeMean!;
+          const [metric1, metric2, metric3] = await updatedTestSetRunReport.getMetricValuesForRanking({transaction});
+          const mainMetric = requireValue(metric1);
           let ranking = await models.Ranking.findOne({
             where : {
               problemId,
@@ -169,15 +189,19 @@ export default async function adminSaveTaskRunReport(parent: null, { input }: an
                 problemId,
                 userId,
                 submissionId,
-                metric,
+                metric1,
+                metric2,
+                metric3,
               },
               {
                 transaction
               }
             );
           } else {
-            if (ranking.metric > metric) {
-              ranking.metric = metric;
+            if (compareArrays([ranking.metric1, ranking.metric2, ranking.metric3], [metric1, metric2, metric3]) > 0) {
+              ranking.metric1 = mainMetric;
+              ranking.metric2 = metric2;
+              ranking.metric3 = metric3;
               ranking.submissionId = submissionId;
               ranking = await ranking.save();
             }

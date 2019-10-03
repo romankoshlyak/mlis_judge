@@ -14,6 +14,10 @@
         "trainMetricLimit": 0.1,
         "testMetricLimit": 0.1
       },
+      "metrics": [
+        "TEST_METRIC",
+        "TRAINING_TIME"
+      ],
       "tests": [
         {
           "number": 1,
