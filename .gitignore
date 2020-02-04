@@ -1,6 +1,5 @@
 .*
 *.pyc
-*.ipynb
 *.pickle
 *__generated__
 dist

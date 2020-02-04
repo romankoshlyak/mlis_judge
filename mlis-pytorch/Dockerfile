@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 
-ARG PYTHON_VERSION=3.7.3
-ARG PYTORCH_VERSION=1.2.0
-ARG VISION_VERSION=0.4.0
+ARG PYTHON_VERSION=3.6.9
+ARG PYTORCH_VERSION=1.4.0
+ARG VISION_VERSION=0.5.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
          curl \
