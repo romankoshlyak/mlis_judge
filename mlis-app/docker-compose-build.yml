@@ -14,7 +14,7 @@ services:
     command: sh -c "npm run relay && npm run build && rm -rf ./../server/client_build/ && cp -r ./build/ ./../server/client_build/"
     cpus: 0.8
     cpu_shares: 0
-    mem_limit: 400m
+    mem_limit: 600m
   server:
     build: ./../mlis-server
     image: mlis_server
