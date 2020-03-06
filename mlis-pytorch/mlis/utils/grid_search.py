@@ -262,7 +262,7 @@ class GridSearch():
         runs_logs.set_run_params_keys(list(config.runs_params_grid.keys()))
         grid_size = self.calc_grid_size(config.runs_params_grid)
         if config.verbose:
-            print('[Grid search] Runing: grid_size={} runs_per_params={} verbose={}'.format(grid_size, config.runs_per_params, verbose))
+            print('[Grid search] Runing: grid_size={} runs_per_params={} verbose={}'.format(grid_size, config.runs_per_params, config.verbose))
         grid_runs_history = {}
         solution_tester = SolutionTester()
         solution = tester_config.get_solution()

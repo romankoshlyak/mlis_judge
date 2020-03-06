@@ -31,6 +31,9 @@ class Solution():
         hidden_size = 1
         print("Hint[2]: Learning rate is too small")
         learning_rate = 0.00000001
+        # Set up trainng parameters from grid search context
+        if context.type == context.__class__.GRID_SEARCH:
+            hidden_size, learning_rate = context.run_params.hidden_size, context.run_params.learning_rate
         # Model represent our neural network
         model = HelloXorModel(train_data.size(1), train_target.size(1), hidden_size)
         # Optimizer used for training neural network
@@ -60,8 +63,27 @@ class Solution():
             self.print_stats(context.step, error, correct, total)
             # update model: model.parameters() -= lr * gradient
             optimizer.step()
+        # Log data for grid search
+        self.grid_search_tutorial(context)
         return model
 
     def print_stats(self, step, error, correct, total):
         if step % 1000 == 0:
             print("Step = {} Correct = {}/{} Error = {}".format(step, correct, total, error.item()))
+
+    def grid_search_tutorial(self, context):
+        # During grid search, train_model will be called runs_per_params times with every possible combination of params.
+        # This can be used for automatic parameters tunning.
+        if context.type == context.__class__.GRID_SEARCH:
+            print("[HelloXor] hidden_size={} learning_rate={} run_idx_per_params=[{}/{}]".format(
+                context.run_params.hidden_size, context.run_params.learning_rate,
+                context.run_idx_per_params, context.runs_per_params))
+            time_left_key = 'time_left'
+            step_key = 'step'
+            context.log_scalar(time_left_key, context.timer.get_time_left())
+            context.log_scalar(step_key, context.step)
+            if context.run_idx_per_params == context.runs_per_params-1:
+                print("[HelloXor] run_params={}".format(context.run_params))
+                print("[HelloXor] time_left_logs={}".format(context.get_scalars(time_left_key)))
+                print("[HelloXor] step_logs={}".format(context.get_scalars(step_key)))
+                print("[HelloXor] step_logs_stats={}".format(context.get_scalars_stats(step_key)))

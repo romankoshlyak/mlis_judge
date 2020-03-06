@@ -39,7 +39,7 @@ export default async function initDevData() {
     input: {
       problemId: getGlobalId(problem),
       testSetId: getGlobalId(testSets[0]),
-      submissionCode: await getFile('/usr/src/problems/hello_xor_solution.py'),
+      submissionCode: await getFile('/usr/src/mlis/problems/hello_xor_solution.py'),
     }
   }
   await resolvers.Mutation.submit(null, submitInput, context);

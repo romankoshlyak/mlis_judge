@@ -1,0 +1,38 @@
+version: '3'
+services:
+  client_audit:
+    build: ./../mlis-client
+    image: mlis_client
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    command: npm audit
+  client_audit_fix:
+    build: ./../mlis-client
+    image: mlis_client
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    command: npm audit fix
+  client_fix_relay_compiler:
+    build: ./../mlis-client
+    image: mlis_client
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    command: npm install relay-compiler@9.0.0
+  client_unfix_relay_compiler:
+    build: ./../mlis-client
+    image: mlis_client
+    volumes:
+    - ./../mlis-client:/usr/src/app
+    command: npm install relay-compiler@5.0.0
+  agent:
+    build: ./../mlis-agent
+    image: mlis_agent
+    volumes:
+    - ./../mlis-agent:/usr/src/app
+    command: npm audit
+  server:
+    build: ./../mlis-server
+    image: mlis_server
+    volumes:
+    - ./../mlis-server:/usr/src/app
+    command: npm audit

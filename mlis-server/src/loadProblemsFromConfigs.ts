@@ -2,7 +2,7 @@ import fs from 'fs';
 import models, { TestSet } from './models';
 import { assertTrue} from './utils';
 
-const DIR_NAME = '/usr/src/problems/';
+const DIR_NAME = '/usr/src/mlis-judge/mlis/problems/';
 async function getFile(fileName: string) {
   return (await fs.promises.readFile(fileName)).toString();
 }

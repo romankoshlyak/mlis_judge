@@ -12,6 +12,7 @@ services:
     - TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling
     - REACT_APP_FB_APP_ID=$APP_ID
     - REACT_APP_GRAPHQL_URL=$DEV_CLIENT_GRAPHQL_URL
+    - REACT_APP_DOWNLOAD_URL=$DEV_CLIENT_DOWNLOAD_URL
     volumes:
     - ./../mlis-client:/usr/src/app
     command: npm run start
@@ -44,7 +45,7 @@ services:
     - INIT_DATA
     volumes:
     - ./../mlis-server:/usr/src/app
-    - ./../mlis-pytorch/mlis/problems:/usr/src/problems
+    - ./../mlis-pytorch/mlis:/usr/src/mlis-pytorch/mlis
     command: npm run dev
   pytorch:
     build: ./../mlis-pytorch

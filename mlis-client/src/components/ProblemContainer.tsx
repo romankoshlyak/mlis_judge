@@ -25,6 +25,7 @@ class ProblemContainer extends React.Component<Props> {
     const problem = this.props.main.viewer.problem;
     return (
       <>
+        <Button bsStyle="info" href={`${process.env.REACT_APP_DOWNLOAD_URL}/notebook/problem/${problem.id}`} block>Download problem in notebook</Button>
         <LinkContainer to={`/problem_ranking/${problem.id}`}>
           <Button bsStyle="success" block>See ranking</Button>
         </LinkContainer>

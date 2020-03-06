@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createRefetchContainer, RelayRefetchProp } from 'react-relay';
 import { graphql } from 'babel-plugin-relay/macro';
+import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 
 import TestRunReportList from './TestRunReportList';
@@ -24,6 +25,7 @@ class SubmissionContainer extends React.Component<Props> {
     return (
       <>
         <Panel>
+          <Button bsStyle="info" href={`${process.env.REACT_APP_DOWNLOAD_URL}/notebook/submission/${submission.id}`} block>Download submission in notebook</Button>
           <Panel.Heading>
             <Panel.Title toggle>
               Submission code

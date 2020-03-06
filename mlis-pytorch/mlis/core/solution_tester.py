@@ -29,7 +29,7 @@ class SolutionTester():
         data = data.view(tuple(dataSize))
         return data
 
-    def calc_model_stats(self, case_data, model, data, target):
+    def calc_model_stats(self, case_data, model, data, target, time_mult):
         with torch.no_grad():
             data = self.sampleData(data)
             target = self.sampleData(target)
@@ -54,7 +54,7 @@ class SolutionTester():
                     'total': total,
                     'accuracy': accuracy,
                     'metric': metric,
-                    'evaluation_time': evaluation_end_time - evaluation_start_time,
+                    'evaluation_time': (evaluation_end_time - evaluation_start_time)*time_mult,
                     }
 
     def train_model(self, solution, train_data, context):
@@ -85,11 +85,11 @@ class SolutionTester():
         solution = config.get_solution()
         step, model = self.train_model(solution, case_data.train_data, context)
         training_end_time = time.time()
-        training_time = training_end_time - training_start_time
+        training_time = (training_end_time - training_start_time)*time_mult
         model_size = self.calc_model_size(model)
         model.eval()
-        train_stat = self.calc_model_stats(case_data, model, *case_data.train_data)
-        test_stat = self.calc_model_stats(case_data, model, *case_data.test_data)
+        train_stat = self.calc_model_stats(case_data, model, *case_data.train_data, time_mult)
+        test_stat = self.calc_model_stats(case_data, model, *case_data.test_data, time_mult)
 
         return {
             'modelSize': model_size,
@@ -232,7 +232,7 @@ class SolutionTester():
         print("Average size = {:.3f}".format(size_mean))
         if case_number == -1:
             print(self.accepted_string("[ACCEPTED]")+" you can submit now your score")
-            print("In order to submit just do a Facebook comment with your score")
+            print("Go to https://www.mlisjudge.com to submit your code")
         else:
             print(self.hint_string("[GOOD]")+" test passed, try to run on all tests")
 

@@ -7,6 +7,7 @@ services:
     - TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling
     - REACT_APP_FB_APP_ID=$APP_ID
     - REACT_APP_GRAPHQL_URL=$PRODUCTION_CLIENT_GRAPHQL_URL
+    - REACT_APP_DOWNLOAD_URL=$PRODUCTION_CLIENT_DOWNLOAD_URL
     volumes:
     - ./../mlis-client:/usr/src/app
     - ./../mlis-server:/usr/src/server

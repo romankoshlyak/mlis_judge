@@ -3,18 +3,8 @@ from enum import Enum
 import os 
 import json
 from importlib import import_module
+from ..core.tester_config import TesterConfig
 from ..core.solution_tester import SolutionTester
-
-class TesterConfig:
-    def __init__(self, data_provider, solution):
-        self.data_provider = data_provider
-        self.solution = solution
-
-    def get_data_provider(self):
-        return self.data_provider()
-
-    def get_solution(self):
-        return self.solution()
 
 class ProblemName(Enum):
     TUTORIAL = 'tutorial'

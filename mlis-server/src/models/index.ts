@@ -1,6 +1,5 @@
 import { Sequelize, Model, DataTypes, HasManyGetAssociationsMixin, QueryTypes, HasManyCountAssociationsMixin, Transactionable } from 'sequelize';
 import { HasOneGetAssociationMixin } from 'sequelize';
-import { assertTrue } from '../utils';
 
 const sequelize = new Sequelize('mlis', 'mlis', 'mlis', {
   host: 'database',
@@ -174,6 +173,7 @@ export class Submission extends Model {
   public readonly updatedAt!: Date;
 
   public getProblem!: HasOneGetAssociationMixin<Problem>;
+  public getOwner!: HasOneGetAssociationMixin<User>;
   public getTestSetRunReport!: HasOneGetAssociationMixin<TestSetRunReport>;
 }
 
@@ -183,6 +183,10 @@ Submission.init({
     autoIncrement: true,
     primaryKey: true,
     unique: true,
+  },
+  ownerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   problemId: {
     type: DataTypes.INTEGER,
@@ -372,6 +376,7 @@ export class TestSet extends Model {
   public id!: number;
   public problemId!: number;
   public name!: string;
+  public getTests!: HasManyGetAssociationsMixin<Test>;
   public getMetrics!: HasManyGetAssociationsMixin<Metric>;
 
   public readonly createdAt!: Date;
@@ -842,6 +847,7 @@ User.init({
   ],
 });
 Submission.hasOne(Problem, {foreignKey: 'id', sourceKey: 'problemId', constraints: false});
+Submission.hasOne(User, {as: 'Owner', foreignKey: 'id', sourceKey: 'ownerId', constraints: false});
 Submission.hasOne(TestSetRunReport, {foreignKey: 'id', sourceKey: 'testSetRunReportId', constraints: false});
 TestRunReport.hasOne(TestSetRunReport, {foreignKey: 'id', sourceKey: 'testSetRunReportId', constraints: false});
 TestRunReport.hasOne(Problem, {foreignKey: 'id', sourceKey: 'problemId', constraints: false});
@@ -851,6 +857,7 @@ Task.hasOne(TestRunReport, {foreignKey: 'id', sourceKey: 'testRunReportId', cons
 Problem.hasMany(Submission, {foreignKey: 'problemId'});
 Problem.hasMany(TestSet, {foreignKey: 'problemId'});
 Problem.hasMany(Ranking, {foreignKey: 'problemId'});
+Problem.addScope('defaultScope', { order: [['id', 'ASC']] }, { override: true })
 User.hasMany(Submission, {foreignKey: "ownerId"})
 TestSet.hasMany(Test, {foreignKey: "testSetId"})
 TestSet.hasMany(Metric, {foreignKey: "testSetId"})

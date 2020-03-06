@@ -127,7 +127,3 @@ class SpeedTest():
             print("Convol GPU time mult = {:.2f}".format(convol_time_mult))
         else:
             print("No cuda")
-
-if __name__ == '__main__':
-    SpeedTest().print_speed_report()
-

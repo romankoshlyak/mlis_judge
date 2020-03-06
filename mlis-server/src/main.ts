@@ -8,6 +8,7 @@ import {Express} from "express-serve-static-core";
 
 import AppServer from './AppServer';
 import initDevData from './initDevData';
+import DownloadServer from './DownloadServer';
 
 const ENCODING = 'utf8';
 
@@ -60,11 +61,13 @@ async function main() {
   }
 
   const graphqlServer = new AppServer();
+  const downloadServer = new DownloadServer();
 
   const app = express();
   graphqlServer.applyMiddleware({app});
   // Redirect non www to www
   redirectNonWwwToWww(app);
+  downloadServer.installDownloadHandler(app);
   app.use(express.static(path.join(__dirname, '../client_build')));
   app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client_build', 'index.html'));
