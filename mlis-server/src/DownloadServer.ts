@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { fromGlobalId } from 'graphql-relay';
 import { PubSub } from 'graphql-subscriptions';
 import { Express } from "express-serve-static-core";
+import contentDisposition from 'content-disposition';
 
 import AppContext from './context';
 import models, { Test, Problem, Submission } from './models';
@@ -30,8 +31,8 @@ export default class DownloadServer {
     });
     app.get('/download/notebook/submission/:submissionId', async function(req, res) {
       const context = await downloadServer.getContext(req);
-      const [fileName, fileContent] = await downloadServer.getNotebook(context, req.params.submissionId);
-      res.set({"Content-Disposition":`attachment; filename="${fileName}"`});
+      let [fileName, fileContent] = await downloadServer.getNotebook(context, req.params.submissionId);
+      res.set({"Content-Disposition": contentDisposition(fileName)});
       res.send(fileContent);
     });
   }
