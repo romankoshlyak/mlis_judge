@@ -11,19 +11,40 @@ from ..core.training_context import TrainingContext
 from ..core.solution_tester import SolutionTester
 from ..core.speed_calculator import SpeedCalculator
 
+def new_getfile(object, _old_getfile=inspect.getfile):
+    try:
+        return _old_getfile(object)
+    except:
+        # If parent module is __main__, lookup by methods (NEW)
+        for name, member in inspect.getmembers(object):
+            if inspect.isfunction(member) and object.__qualname__ + '.' + member.__name__ == member.__qualname__:
+                return inspect.getfile(member)
+        raise TypeError('Source for {!r} not found'.format(object))
+inspect.getfile = new_getfile
+
 class RunsLogs():
     def __init__(self):
         self.run_params_keys = []
+        self.run_params_values_sortable = []
         self.clear_data()
 
     def clear_data(self):
         self.run_params_to_scalars = {}
 
-    def set_run_params_keys(self, run_params_keys):
+    def is_sortable(self, l):
+        try:
+            sorted(l)
+            return True
+        except:
+            return False
+
+    def set_run_params_grid(self, run_params_grid):
+        run_params_keys = list(run_params_grid.keys())
         if sorted(self.run_params_keys) != sorted(run_params_keys):
             print("[WARNING] run_params keys changed, clearning data")
             self.clear_data()
         self.run_params_keys = run_params_keys
+        self.run_params_values_sortable = [self.is_sortable(values) for values in run_params_grid.values()]
 
     def get_next_run_seed(self, run_params):
         next_run_seed = 0
@@ -57,7 +78,8 @@ class RunsLogs():
     def get_dataframe(self):
         data = []
         for run_params, name_to_scalars in self.run_params_to_scalars.items():
-            datum = [run_params.params[run_param_key] for run_param_key in self.run_params_keys]
+            datum = [getattr(run_params, run_param_key) for run_param_key in self.run_params_keys]
+            datum = [d if sortable else str(d) for sortable, d in zip(self.run_params_values_sortable, datum)]
             for name, scalars in name_to_scalars.items():
                 for value in scalars.values():
                     datum_all = datum.copy()
@@ -72,8 +94,13 @@ class RunsLogs():
     @staticmethod
     def load(file_name):
         if os.path.isfile(file_name):
-            return pickle.load(open(file_name, 'rb'))
-        print("[WARNING] file with data not exists, return empty results data")
+            try:
+                return pickle.load(open(file_name, 'rb'))
+            except Exception as e:
+                print(e)
+                print("[WARNING] file with data can not be loaded, return empty results data")
+        else:
+            print("[WARNING] file with data not exists, return empty results data")
         return RunsLogs()
 
     @staticmethod
@@ -82,7 +109,6 @@ class RunsLogs():
         if 'RESULTS_DATA_INSTANCE' not in globals():
             RESULTS_DATA_INSTANCE = RunsLogs()
         return RESULTS_DATA_INSTANCE
-
 
 class GridSearchConfig():
     RUN_COUNT = 'runs_per_params'
@@ -95,7 +121,6 @@ class GridSearchConfig():
         self.test_config = test_config
         return self
 
-
     def set_random_order(self, random_order):
         self.random_order = random_order
         return self
@@ -104,7 +129,7 @@ class GridSearchConfig():
         self.verbose = verbose
         return self
 
-    def set_runs_params_grid_from_command_line(self, parser):
+    def set_runs_config_from_command_line(self, parser):
         all_args = ';'.join(sys.argv)
         runs_per_params = 1
         args = parser.parse_args()
@@ -122,9 +147,9 @@ class GridSearchConfig():
         for _, key, value in sorted(sorted_attributes):
             runs_params_grid[key] = value
 
-        self.set_runs_params_grid(runs_per_params, runs_params_grid)
+        self.set_runs_config(runs_params_grid, runs_per_params)
 
-    def set_runs_params_grid_from_solution(self, solution):
+    def set_runs_config_from_solution(self, solution):
         runs_per_params = self.get_runs_per_params_from_solution(solution)
         s = solution
         code = inspect.getsource(type(s))
@@ -135,7 +160,7 @@ class GridSearchConfig():
         for _, a in grid_attrs:
             runs_params_grid[self.calc_grid_attribute_key(s, a)] = self.get_grid_attribute_list_from_solution(s, a)
 
-        self.set_runs_params_grid(runs_per_params, runs_params_grid)
+        self.set_runs_config(runs_params_grid, runs_per_params)
 
     def set_runs_config(self, runs_params_grid, runs_per_params):
         self.runs_params_grid = runs_params_grid
@@ -189,23 +214,14 @@ class RunParams():
     SHORT_VALUE_SEPARATOR = ':'
 
     def __init__(self, params):
-        self.params = params
-        self.__key_cache__ = self.to_string(sorted_keys=True)
-
-    def __getattr__(self, name):
-        return self.params[name]
-
-    def __getstate__(self):
-        return self.params
-
-    def __setstate__(self, params):
-        self.__init__(params)
+        self.__dict__.update(params)
+        self.__key_cache = self.to_string(sorted_keys=True)
 
     def __hash__(self):
-        return hash(self.__key_cache__)
+        return hash(self.__key_cache)
 
     def __eq__(self, other):
-        return other.__key_cache__ == self.__key_cache__
+        return other.__key_cache == self.__key_cache
 
     def __str__(self):
         return self.to_string()
@@ -213,7 +229,8 @@ class RunParams():
     def to_string(self, sorted_keys=False):
         param_separator = self.__class__.SHORT_PARAM_SEPARATOR
         value_separator = self.__class__.SHORT_VALUE_SEPARATOR
-        items = self.params.items()
+        items = self.__dict__.items()
+        items = [(key, value) for key, value in items if not key.startswith('_RunParams__')]
         items = sorted(items) if sorted_keys else reversed(list(items))
         return param_separator.join(
                 [key+value_separator+repr(value) for key, value in items])
@@ -259,7 +276,7 @@ class GridSearch():
         print("Local CPU time mult = {:.2f}".format(time_mult))
 
         self.check_runs_params_grid(config.runs_params_grid)
-        runs_logs.set_run_params_keys(list(config.runs_params_grid.keys()))
+        runs_logs.set_run_params_grid(config.runs_params_grid)
         grid_size = self.calc_grid_size(config.runs_params_grid)
         if config.verbose:
             print('[Grid search] Runing: grid_size={} runs_per_params={} verbose={}'.format(grid_size, config.runs_per_params, config.verbose))
