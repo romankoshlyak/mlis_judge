@@ -87,3 +87,51 @@ class Solution():
                 print("[HelloXor] time_left_logs={}".format(context.get_scalars(time_left_key)))
                 print("[HelloXor] step_logs={}".format(context.get_scalars(step_key)))
                 print("[HelloXor] step_logs_stats={}".format(context.get_scalars_stats(step_key)))
+
+# The code below this line will not run on server
+if __name__ != 'mlis.submission.solution':
+    TESTER_CASE_NUMBER = -1
+    TESTER_ENABLED = True
+    GRID_SEARCH_CASE_NUMBER = 1
+    GRID_SEARCH_ENABLED = True
+    GRID_SEARCH_LOG_FILE = 'helloxor_runs_logs.pickle'
+
+    from ..core.config import Config
+    from ..core.tester_config import TesterConfig
+    from ..core.solution_tester import SolutionTester
+    from ..utils.grid_search import RunsLogs, GridSearchConfig, GridSearch
+    from ..utils.plotter import Plotter
+
+    if TESTER_ENABLED:
+        SolutionTester().run(TesterConfig(Config.DataProvider, Solution), Config.TestSet, TESTER_CASE_NUMBER)
+
+    if GRID_SEARCH_ENABLED:
+        tests = SolutionTester().get_tests_with_limits(Config.TestSet, GRID_SEARCH_CASE_NUMBER)
+        grid_search_config = GridSearchConfig()
+        grid_search_config.set_test_config(tests[0])
+        grid_search_config.set_verbose(False)
+        grid_search_config.set_runs_config(
+            runs_params_grid = dict(
+                hidden_size=[3, 4],
+                learning_rate=[1.0,2.0,3.0],
+            ),
+            runs_per_params=10
+        )
+        # Uncomment to config grid search from solution
+        # grid_search_config.set_runs_config_from_solution(Solution())
+
+        # Note: we can save and accumulate results data if grid keys did not change
+        runs_logs_file = GRID_SEARCH_LOG_FILE
+        runs_logs = RunsLogs.load(runs_logs_file)
+        runs_logs = GridSearch().run(TesterConfig(Config.DataProvider, Solution), grid_search_config, runs_logs)
+        runs_logs.save(runs_logs_file)
+
+        # Explore data
+        df = runs_logs.get_dataframe()
+        df = df.groupby(['name', 'hidden_size', 'learning_rate']).agg({'value':['count', 'min', 'mean', 'max']})
+        df.columns = df.columns.map('_'.join)
+        df = df.reset_index()
+        print(df)
+
+        # Plot grid search data
+        Plotter(runs_logs).show_1d(query="hidden_size==4 and name=='time_left'")

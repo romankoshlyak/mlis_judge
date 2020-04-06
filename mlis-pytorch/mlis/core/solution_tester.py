@@ -182,25 +182,21 @@ class SolutionTester():
 
         return r
 
-    def get_tests_with_limits(self, test_set):
+    def get_tests_with_limits(self, test_set, case_number):
         limits = test_set.get('limits', None)
         tests = test_set['tests']
         for test in tests:
             if ('limits' not in test):
                 test['limits'] = limits
-        return tests
-
-    def filter_tests(self, tests, case_number):
-        tests = [test for test in tests if test['number'] == case_number]
+        if case_number != -1:
+            tests = [test for test in tests if test['number'] == case_number]
         return tests
 
     def run(self, config, test_set, case_number):
-        tests = self.get_tests_with_limits(test_set)
+        tests = self.get_tests_with_limits(test_set, case_number)
         speed_calculator = SpeedCalculator()
         time_mult = speed_calculator.calc_linear_time_mult()
         print("Local CPU time mult = {:.2f}".format(time_mult))
-        if case_number != -1:
-            tests = self.filter_tests(tests, case_number)
         case_results = []
         case_limits = []
         for test_config in tests:

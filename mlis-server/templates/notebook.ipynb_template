@@ -59,46 +59,6 @@
    "source": [
     MLIS_PROBLEM_SOLUTION
    ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {
-       "id": "HEADRUNTESTER"
-   },
-   "source": [
-    "# Run tester"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {
-       "id": "CODERUNTESTER"
-   },
-   "outputs": [],
-   "source": [
-    "run_tester(case_number=-1)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {
-       "id": "HEADRUNGRIDSEARCH"
-   },
-   "source": [
-    "# Run grid search"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {
-       "id": "CODERUNGRIDSEARCH"
-   },
-   "outputs": [],
-   "source": [
-    MLIS_RUN_GRID_SEARCH
-   ]
   }
  ],
  "metadata": {
@@ -122,8 +82,7 @@
   "colab": {
       "collapsed_sections": [
           "HEADCODEBASE",
-          "HEADPROBLEM",
-          "HEADRUNGRIDSEARCH"
+          "HEADPROBLEM"
       ]
   }
  },

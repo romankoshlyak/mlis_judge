@@ -7,13 +7,12 @@ import contentDisposition from 'content-disposition';
 
 import AppContext from './context';
 import models, { Test, Problem, Submission } from './models';
-import { requireValue, assertTrue } from './utils';
+import { getModelId, requireValue, assertTrue } from './utils';
 
 const ENCODING = 'utf8';
 const MLIS_DIR_NAME = '/usr/src/mlis-pytorch/mlis/';
 const MLIS_CORE_DIR_NAME = `${MLIS_DIR_NAME}core/`;
 const MLIS_UTILS_DIR_NAME = `${MLIS_DIR_NAME}utils/`;
-const MLIS_RUN_GRID_SEARCH = `${MLIS_DIR_NAME}notebook_utils/run_grid_search.py`;
 class None {
   toJson() {
     return "None";
@@ -37,9 +36,23 @@ export default class DownloadServer {
     });
   }
 
+  private async fixProblemTemplate(context: AppContext) {
+    const problemId = getModelId("UHJvYmxlbToy", Problem);
+    const problem = requireValue(await Problem.findByPk(problemId));
+    if (problem.name == "Hello Xor") {
+      let notebookTemplate  = await fs.promises.readFile(`${MLIS_DIR_NAME}problems/hello_xor_code_template.py`, {encoding: ENCODING});
+      console.log("before_check");
+      if (problem.codeTemplate != notebookTemplate) {
+        console.log("update");
+        problem.codeTemplate = notebookTemplate;
+        await problem.save();
+      }
+    }
+  }
+
   private async getNotebook(context: AppContext, id: string): Promise<[string, string]> {
+    await this.fixProblemTemplate(context);
     let notebookTemplate  = await fs.promises.readFile("./templates/notebook.ipynb_template", {encoding: ENCODING});
-    let runGridSearch  = await fs.promises.readFile(MLIS_RUN_GRID_SEARCH, {encoding: ENCODING});
     const mlisCoreCodebase = await this.getCodeFromDir(MLIS_CORE_DIR_NAME);
     const mlisUtilsCodebase = await this.getCodeFromDir(MLIS_UTILS_DIR_NAME);
     let submission = null;
@@ -63,11 +76,14 @@ export default class DownloadServer {
     }
     const problemSolutionTemplate = this.commentOutLocalImports(code);
     const testSet = await this.getTestSet(problem);
+    const config = `
+Config.RuntimeName = 'notebook'
+Config.DataProvider = DataProvider
+Config.TestSet = TestSet`;
     const values = {
       'MLIS_CODEBASE': mlisCoreCodebase + mlisUtilsCodebase,
-      'MLIS_PROBLEM_DATA_PROVIDER': testSet + '\n' + problemDataProvider,
-      'MLIS_PROBLEM_SOLUTION': problemSolutionTemplate,
-      'MLIS_RUN_GRID_SEARCH': runGridSearch
+      'MLIS_PROBLEM_DATA_PROVIDER': testSet + '\n' + problemDataProvider + '\n' + config,
+      'MLIS_PROBLEM_SOLUTION': problemSolutionTemplate
     };
     for (const [key, value] of Object.entries(values)) {
       notebookTemplate = notebookTemplate.replace(key, JSON.stringify(value));

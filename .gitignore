@@ -5,6 +5,7 @@
 dist
 node_modules
 mlis-pytorch/data
+mlis-pytorch/notebooks
 mlis-pytorch/mlis/problems/runs
 mlis-amazon/server.pem
 mlis-agent/exec

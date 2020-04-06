@@ -5,6 +5,7 @@ import json
 from importlib import import_module
 from ..core.tester_config import TesterConfig
 from ..core.solution_tester import SolutionTester
+from ..core.config import Config
 
 class ProblemName(Enum):
     TUTORIAL = 'tutorial'
@@ -53,13 +54,14 @@ def main():
         solution_file = problem_config['codeTemplateFile']
         print('No solution file provided, using solution template {}'.format(solution_file))
 
+    # Set up runtime context
+    Config.RuntimeName = 'local'
+    Config.DataProvider = data_provider
+    Config.TestSet = problem_config['testSets'][0]
+
     solution_module_name = file_name_to_module_name(solution_file)
     solution_module = import_module(solution_module_name, __package__)
-    solution = getattr(solution_module, 'Solution')
-    tester_config = TesterConfig(data_provider, solution)
-
-    test_set = problem_config['testSets'][0]
-    SolutionTester().run(tester_config, test_set, case_number)
+    # This will run the solution
 
 if __name__ == '__main__':
     main()
