@@ -27,6 +27,6 @@ COPY ./ /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN python -m mlis.problems.tester --problem_name mnist --prepare_case_data_only True
+RUN python -m mlis.problems.local_runner --problem_name mnist --prepare_case_data_only True
 
 CMD [ "uname" ]

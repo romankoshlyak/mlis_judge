@@ -1,0 +1,174 @@
+{
+  "name": "Hola",
+  "text": "See description in the link below",
+  "textUrl": "https://www.facebook.com/notes/machine-learning-in-seconds-deep-learning-artificial-intelligence-ai/hola/685833045552593/?av=133364510765864&eav=AfbhMsDdMhUnI954ECLLWptLNZm6j-S0oiroa_3y76xv7XTJWC2kLTznYgI7-ZgQmfU",
+  "dataProviderFile": "hola_data_provider.py",
+  "codeTemplateFile": "see_hello_xor_code_template.py",
+  "testSets": [
+    {
+      "name": "TestSet1",
+      "limits": {
+        "trainingTimeLimit": 2.0,
+        "trainEvaluationTimeLimit": 2.0,
+        "testEvaluationTimeLimit": 2.0,
+        "trainAccuracyLimit": 1.0,
+        "testAccuracyLimit": 1.0
+      },
+      "metrics": [
+        "TRAINING_TIME"
+      ],
+      "tests": [
+        {
+          "number": 1,
+          "runSeed": 1,
+          "description": "hola vs hello",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "languages": [
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 1,
+                    "words": ["hola"]
+                },
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 1,
+                    "words": ["hello"]
+                }
+            ]
+          }
+        },
+        {
+          "number": 2,
+          "runSeed": 2,
+          "description": "ab vs ba 1-3",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "languages": [
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 3,
+                    "words": ["ab", "bac"]
+                },
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 3,
+                    "words": ["ba", "abc"]
+                }
+            ]
+          }
+        },
+        {
+          "number": 3,
+          "runSeed": 3,
+          "description": "ab vs ba 1-10",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "languages": [
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 10,
+                    "words": ["ab", "bac"]
+                },
+                {
+                    "minWordsCount": 1,
+                    "maxWordsCount": 10,
+                    "words": ["ba", "abc"]
+                }
+            ]
+          }
+        },
+        {
+          "number": 4,
+          "runSeed": 4,
+          "description": "ab vs ba 10-20",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "languages": [
+                {
+                    "minWordsCount": 10,
+                    "maxWordsCount": 20,
+                    "words": ["ab", "bac"]
+                },
+                {
+                    "minWordsCount": 10,
+                    "maxWordsCount": 20,
+                    "words": ["ba", "abc"]
+                }
+            ]
+          }
+        },
+        {
+          "number": 5,
+          "runSeed": 5,
+          "description": "8 inputs per voter and 5 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 5
+          }
+        },
+        {
+          "number": 6,
+          "runSeed": 6,
+          "description": "8 inputs per voter and 6 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 6
+          }
+        },
+        {
+          "number": 7,
+          "runSeed": 7,
+          "description": "8 inputs per voter and 7 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 7
+          }
+        },
+        {
+          "number": 8,
+          "runSeed": 8,
+          "description": "8 inputs per voter and 8 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 8
+          }
+        },
+        {
+          "number": 9,
+          "runSeed": 9,
+          "description": "8 inputs per voter and 1 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 9
+          }
+        },
+        {
+          "number": 10,
+          "runSeed": 10,
+          "description": "8 inputs per voter and 10 voters",
+          "dataProviderConfig": {
+            "seed": 1,
+            "dataSize": 8192,
+            "inputSize": 8,
+            "inputCountSize": 10
+          }
+        }
+      ]
+    }
+  ]
+}

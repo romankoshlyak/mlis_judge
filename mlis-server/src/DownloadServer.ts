@@ -7,7 +7,8 @@ import contentDisposition from 'content-disposition';
 
 import AppContext from './context';
 import models, { Test, Problem, Submission } from './models';
-import { getModelId, requireValue, assertTrue } from './utils';
+import { requireValue, assertTrue } from './utils';
+import { loadProblemFromConfigFile, updateProblemFromConfigFile } from './loadProblemsFromConfigs';
 
 const ENCODING = 'utf8';
 const MLIS_DIR_NAME = '/usr/src/mlis-pytorch/mlis/';
@@ -36,22 +37,19 @@ export default class DownloadServer {
     });
   }
 
-  private async fixProblemTemplate(context: AppContext) {
-    const problemId = getModelId("UHJvYmxlbToy", Problem);
-    const problem = requireValue(await Problem.findByPk(problemId));
-    if (problem.name == "Hello Xor") {
-      let notebookTemplate  = await fs.promises.readFile(`${MLIS_DIR_NAME}problems/hello_xor_code_template.py`, {encoding: ENCODING});
-      console.log("before_check");
-      if (problem.codeTemplate != notebookTemplate) {
-        console.log("update");
-        problem.codeTemplate = notebookTemplate;
-        await problem.save();
-      }
+  private async saveHola(context: AppContext) {
+    let problems = await context.models.Problem.findAll();
+    let holaProblems = problems.filter((p) => p.name == "Hola");
+    if (holaProblems.length == 0) {
+      console.log('Hola saved');
+      loadProblemFromConfigFile("hola.json");
+    } else {
+      await updateProblemFromConfigFile("hola.json", holaProblems[0]);
     }
   }
 
   private async getNotebook(context: AppContext, id: string): Promise<[string, string]> {
-    await this.fixProblemTemplate(context);
+    await this.saveHola(context);
     let notebookTemplate  = await fs.promises.readFile("./templates/notebook.ipynb_template", {encoding: ENCODING});
     const mlisCoreCodebase = await this.getCodeFromDir(MLIS_CORE_DIR_NAME);
     const mlisUtilsCodebase = await this.getCodeFromDir(MLIS_UTILS_DIR_NAME);

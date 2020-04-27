@@ -1,8 +1,8 @@
 import fs from 'fs';
-import models, { TestSet } from './models';
+import models, { TestSet, Problem } from './models';
 import { assertTrue} from './utils';
 
-const DIR_NAME = '/usr/src/mlis-judge/mlis/problems/';
+const DIR_NAME = '/usr/src/mlis-pytorch/mlis/problems/';
 async function getFile(fileName: string) {
   return (await fs.promises.readFile(fileName)).toString();
 }
@@ -17,6 +17,7 @@ async function getConfigList() {
     'mnist.json',
     'die_hard.json',
     'bb8.json',
+    'hola.json',
   ];
   return configList.map(x => DIR_NAME + x);;
 }
@@ -78,13 +79,46 @@ async function loadProblemFromConfig(config: ProblemConfig) {
   }
   return problem;
 }
+export async function updateProblemFromConfigFile(configFile: string, problem: Problem) {
+  const configJson = await getFile(DIR_NAME + configFile);
+  const config = JSON.parse(configJson);
+  //const dataProvider = await getFile(DIR_NAME + config.dataProviderFile);
+  //const codeTemplate = await getFile(DIR_NAME + config.codeTemplateFile);
+  //const problem = await models.Problem.create({name: config.name, text: config.text, textUrl: config.textUrl, dataProvider: dataProvider, codeTemplate: codeTemplate});
+  const testSets = await problem.getTestSets();
+  if (testSets.length != config.testSets.length) {
+    throw "More then one test set";
+  }
+  const testSet = testSets[0];
+  const testSetConfig = config.testSets[0];
+  const tests = await testSet.getTests();
+  const testsConfig = testSetConfig.tests;
+  if (tests.length != testsConfig.length) {
+    throw "Different number of tests";
+  }
+  const testSetLimits = testSetConfig.limits;
+  for (const testConfig of testsConfig) {
+    testConfig.limits = testConfig.limits || testSetLimits;
+    const testConfigJson = JSON.stringify(testConfig);
+    const testToUpdate = tests.filter(t => t.number == testConfig.number)[0];
+    if (testToUpdate.config != testConfigJson) {
+      console.log("Updating test config");
+      testToUpdate.config = testConfigJson;
+      testToUpdate.save();
+    }
+  }
+}
+export async function loadProblemFromConfigFile(configFile: string) {
+  const configJson = await getFile(DIR_NAME + configFile);
+  const config = JSON.parse(configJson);
+  const problem = await loadProblemFromConfig(config);
+  return problem;
+}
 export default async function loadProblemsFromConfigs() {
   let helloXorProblem = null;
   const configList = await getConfigList();
   for (const configFile of configList) {
-    const configJson = await getFile(configFile);
-    const config = JSON.parse(configJson);
-    const problem = await loadProblemFromConfig(config);
+    const problem = await loadProblemFromConfigFile(configFile);
     if (problem.name == "Hello Xor") {
       helloXorProblem = problem;
     }

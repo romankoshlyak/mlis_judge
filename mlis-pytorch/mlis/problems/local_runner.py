@@ -17,6 +17,7 @@ class ProblemName(Enum):
     MNIST = 'mnist'
     DIE_HARD = 'die_hard'
     BB8 = 'bb8'
+    HOLA = 'hola'
 
     def __str__(self):
         return self.value

@@ -10,7 +10,7 @@ def main():
     _, config_path, result_path = sys.argv
     with open(config_path, 'r') as myfile:
         test_config = json.loads(myfile.read())
-    tester_config = TesterConfig(DataProvider, SolutionTester)
+    tester_config = TesterConfig(DataProvider, Solution)
     test_result = SolutionTester().run_case_from_test_config(tester_config, test_config)
     with open(result_path, "w") as myfile:
         myfile.write(json.dumps(test_result))

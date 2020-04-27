@@ -14,7 +14,7 @@ class SolutionTester():
     REJECTED_RED = '\033[91m'
     END_COLOR = '\033[0m'
     def __init__(self):
-        self.metric = nn.MSELoss()
+        self.mse_loss = nn.MSELoss()
 
     def calc_model_size(self, model):
         modelSize = 0
@@ -22,27 +22,34 @@ class SolutionTester():
             modelSize += param.view(-1).size()[0]
         return modelSize
 
-    def sampleData(self, data, max_samples = 10000):
-        dataSize = list(data.size())
-        data = data.view(dataSize[0], -1)[:max_samples,:]
-        dataSize[0] = min(dataSize[0], max_samples)
-        data = data.view(tuple(dataSize))
-        return data
+    def sample_data(self, data, max_samples = 10000):
+        return data[:max_samples]
+
+    def metric(self, output, target):
+        if isinstance(target, list):
+            target = torch.FloatTensor(target).view_as(output)
+        return self.mse_loss(output, target).item()
+
+    def calc_correct(self, predict, target):
+        if isinstance(target, list):
+            return sum([p == t for p, t in zip(predict, target)])
+        else:
+            return predict.eq(target.view_as(predict)).long().sum().item()
 
     def calc_model_stats(self, case_data, model, data, target, time_mult):
         with torch.no_grad():
-            data = self.sampleData(data)
-            target = self.sampleData(target)
+            data = self.sample_data(data)
+            target = self.sample_data(target)
             evaluation_start_time = time.time()
             output = model(data)
             evaluation_end_time = time.time()
             # Number of correct predictions
             error = model.calc_error(output, target).item()
-            total = data.size(0)
-            metric = self.metric(output, target).item()
+            total = len(data)
+            metric = self.metric(output, target)
             if case_data.type == case_data.CLASSIFICATION:
                 predict = model.calc_predict(output)
-                correct = predict.eq(target.view_as(predict)).long().sum().item()
+                correct = self.calc_correct(predict, target)
                 accuracy = correct/total
             else:
                 correct = None
