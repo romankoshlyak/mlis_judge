@@ -5,15 +5,14 @@ ARG PYTORCH_VERSION=1.4.0
 ARG VISION_VERSION=0.5.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-         curl \
+         wget \
          ca-certificates \
          bzip2 \
          screen \
          git \
          vim && \
      rm -rf /var/lib/apt/lists/*
-
-RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh  && \
      chmod +x ~/miniconda.sh && \
      ~/miniconda.sh -b -p /opt/conda && \
      rm ~/miniconda.sh && \
