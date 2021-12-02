@@ -236,8 +236,11 @@ export default async function app() {
       const taskAddedNotifivationPromise = observeOne(environment.request(taskAddedSubscription, taskAddedVariables));
       const taskObj = await observeOne(environment.request(getTaskQuery, getTaskVariables));
       if (taskObj.data.adminGetTask.task == null) {
-        console.log('Wating for a task...');
-        await taskAddedNotifivationPromise;
+        const waitingTime = 60 * 60;
+        const timeoutPromise = new Promise((res) => setTimeout(() => res("timeout"), waitingTime * 1000));
+        console.log(`Wating for a task for ${waitingTime} seconds ...`);
+        const res = await Promise.race([ taskAddedNotifivationPromise, timeoutPromise]);
+        console.log(`Waiting res = ${res}`)
       } else {
         const task = taskObj.data.adminGetTask.task;
         environment.dispose();
