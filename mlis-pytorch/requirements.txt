@@ -6,7 +6,7 @@ torchvision==0.5.0
 ipywidgets==7.5.1
 
 # Other
-notebook==6.0.3
+notebook==6.4.12
 bootstrapped==0.0.2
 seaborn==0.10.0
 jupyter_http_over_ws==0.0.7
